@@ -25,7 +25,7 @@
     "motiondeck-studio": {
       "preview": { "kicker": "Motion workspace", "headline": "Build on the stage.", "support": "Assets, animation, and connectors in one production shell.", "visual": "canvas", "rail": ["Library", "Projects", "Connectors"] },
       "frame": { "desktop": "64px topbar + collapsible rail + production stage", "content": "Rail 64px collapsed / 248px expanded; canvas owns remaining width", "heroHeight": "Viewport workbench", "breakpoint": "1100px compress · 820px mobile dock" },
-      "hero": { "composition": "Not a marketing hero: the live canvas is the primary surface", "primary": "Asset/chat controls left of a persistent stage", "secondary": "Property controls and timeline around the stage", "visual": "Neutral canvas with live badge, orbit hint, and editable object" },
+      "hero": { "composition": "350px chat rail + flexible canvas/timeline + 270px property inspector", "primary": "Prompt and asset controls in a dedicated left production column", "secondary": "Persistent right property inspector with the timeline attached to the center stage", "visual": "Neutral canvas with live badge, orbit hint, and editable object" },
       "sections": ["Topbar", "Collapsible asset rail", "Stage toolbar", "Live canvas", "Timeline", "Property panel", "Connector gallery"],
       "components": ["Asset rail", "Stage badge", "Canvas", "Timeline track", "Connector card"],
       "responsive": ["Controls compress at 1100px", "At 820px navigation becomes a four-item bottom dock", "Canvas and property panels become a vertical production stack"],
@@ -45,7 +45,7 @@
     "kaggriculture-fieldbook": {
       "preview": { "kicker": "Strategy fieldbook", "headline": "One farm. Shared economy.", "support": "Experiments, agents, and results arranged like a working notebook.", "visual": "plots", "rail": ["Competition", "Agents", "Experiments"] },
       "frame": { "desktop": "246px fixed fieldbook rail + 1040px reading shell", "content": "Shell is min(1040px, viewport − 64px)", "heroHeight": "Content-led, 48–78px vertical padding", "breakpoint": "980px hero stack · 680px compact" },
-      "hero": { "composition": "1.5fr strategy statement plus 310px state panel", "primary": "Thin editorial headline, short rules statement, two actions", "secondary": "Farm-state or competition summary", "visual": "Ruled field paper, crop-state marks, and ledger borders" },
+      "hero": { "composition": "1.5fr strategy statement plus a minimum 310px deadline card", "primary": "Thin editorial headline, short rules statement, two actions", "secondary": "Competition deadline, submission state, and current operating constraint", "visual": "Ruled field paper, crop-state marks, and ledger borders" },
       "sections": ["Competition overview", "Submission record", "Strategy library", "Agent systems", "Mechanics", "Experiment log", "Next bet"],
       "components": ["Fieldbook rail", "Stat strip", "Experiment notebook", "Agent diagram", "Result ledger"],
       "responsive": ["Hero stacks at 980px", "Rail narrows before becoming mobile navigation", "At 680px controls and actions become full-width"],
@@ -55,22 +55,22 @@
     "sounddeck": {
       "preview": { "kicker": "Audio workbench", "headline": "Shape the sound.", "support": "Generate, compare, and assemble takes without leaving the project.", "visual": "waveform", "rail": ["Workbench", "Projects", "Pipeline"] },
       "frame": { "desktop": "Collapsible rail + workbench + dark audio stage", "content": "62px compact rail; central stage owns flexible space", "heroHeight": "Viewport workbench", "breakpoint": "1120px compact · 850px bottom dock" },
-      "hero": { "composition": "The waveform stage replaces a traditional hero", "primary": "Generation controls and take selection", "secondary": "Project context, sequence controls, and handoff state", "visual": "Radial dark stage with waveform, local-generation badge, and center lockup" },
+      "hero": { "composition": "Two-column studio: stacked waveform/chat workspace left, workflow and inspector right", "primary": "Generation controls, waveform state, and take selection share the working column", "secondary": "Workflow, project context, and inspector controls form the supporting column", "visual": "Radial dark stage with waveform, local-generation badge, and center lockup" },
       "sections": ["Topbar", "Mode switch", "Workbench controls", "Audio stage", "Take strip", "Project library", "Pipeline handoff"],
       "components": ["Mode switch", "Waveform stage", "Take card", "Transport controls", "Pipeline card"],
       "responsive": ["Rail collapses by 1120px", "At 850px navigation moves to a five-item bottom dock", "Workbench panels stack while the waveform keeps a fixed usable height"],
       "buildSteps": ["Build the persistent production shell", "Make the stage communicate state without extra copy", "Separate sound and song modes visibly", "Keep handoff provenance attached to projects"],
-      "sourceFiles": ["src/main.js:83-137", "src/styles.css:26-190,328-372"]
+      "sourceFiles": ["src/main.js:83-137", "src/styles.css:482 .studio-grid"]
     },
     "cost-basis": {
       "preview": { "kicker": "A finance notebook", "headline": "Markets, structures, businesses.", "support": "Personal research with the precision of a ledger and the pace of an essay.", "visual": "ledger", "rail": ["Latest thesis", "Companies", "Notebook"] },
       "frame": { "desktop": "Wide editorial hero followed by bounded publication sections", "content": "Reading layouts top out near 1220px", "heroHeight": "635px", "breakpoint": "1100px compress · 760px stack" },
-      "hero": { "composition": ".9fr thesis copy plus 1.1fr visual/latest-note column", "primary": "Serif investment statement and notebook action", "secondary": "Grid-field visual and featured research card", "visual": "32px ledger grid, concentric field marks, and tabular metadata" },
+      "hero": { "composition": "1.55fr editorial thesis plus .65fr stacked chart/latest-note column", "primary": "Serif investment statement and notebook action", "secondary": "Compact chart field above the latest research note", "visual": "32px ledger grid, concentric field marks, and tabular metadata" },
       "sections": ["Markets hero", "Featured research", "Recent notes", "Topic archive", "About strip", "Notebook reader"],
       "components": ["Ledger field", "Featured thesis", "Post card", "Topic grid", "Reading index"],
       "responsive": ["Hero keeps two columns until 760px", "Three-card archive becomes two then one", "Private studio removes side panels on mobile"],
       "buildSteps": ["Establish ledger spacing and tabular metadata", "Pair the thesis with a precise visual field", "Use large section titles sparingly", "Separate public reading from private studio tools"],
-      "sourceFiles": ["src/pages/HomePage.tsx", "src/styles.css:44-194"]
+      "sourceFiles": ["src/pages/HomePage.tsx:.markets-hero", "src/styles.css:483 .markets-hero"]
     },
     "seat-scout": {
       "preview": { "kicker": "Reservation field desk", "headline": "Plan the table before it opens.", "support": "Wish lists, release windows, and dining history in one private command center.", "visual": "calendar", "rail": ["Upcoming", "Shortlist", "Release desk"] },
@@ -105,7 +105,7 @@
     "worth-more": {
       "preview": { "kicker": "The company valuation game", "headline": "Which company is worth more?", "support": "Make the call, reveal the number, and build a streak.", "visual": "versus", "rail": ["Choose mode", "Compare", "Reveal"] },
       "frame": { "desktop": "1720px maximum game canvas", "content": "Two equal company cards with a centered versus marker", "heroHeight": "Game-first, cards up to 470px", "breakpoint": "980px toolbar stack · 700px card stack" },
-      "hero": { "composition": "Rules strip and setup toolbar immediately above the matchup", "primary": "Known company card versus mystery company card", "secondary": "Streak header and higher/lower answer panel", "visual": "Large numbers, binary colors, and concentric valuation marks" },
+      "hero": { "composition": "Setup toolbar and rules intro, then run header, two-card matchup, and answer controls", "primary": "Known company card versus mystery company card with a centered versus marker", "secondary": "Mode setup, streak state, and higher/lower answer panel stay in the same opening game loop", "visual": "Large numbers, binary colors, and concentric valuation marks" },
       "sections": ["Mode setup", "Play intro", "Matchup", "Answer/reveal", "Insights", "Data studio", "Methodology"],
       "components": ["Mode toolbar", "Company card", "Streak pips", "Answer buttons", "Result panel"],
       "responsive": ["Toolbar stacks at 980px", "Company cards stack at 700px while versus stays centered", "At 430px actions become full-width and cards reduce to 250px"],

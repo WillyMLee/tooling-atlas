@@ -155,8 +155,10 @@ if (command === "plan") {
 } else if (command === "check") {
   const template = await readJson(join(root, "evals", "observations", "pilot.template.json"));
   assert(template.dataKind === "template" && template.suite === suite.slug && Array.isArray(template.observations), "Observation template is invalid");
+  const measured = await readJson(join(root, "evals", "observations", "2026-08-15-measured.json"));
+  validateObservations(measured, suite, scenarioIds);
   for (const module of suite.modules) for (const scenario of module.cases) await access(join(root, scenario.fixture));
-  console.log(`Validated ${suite.modules.length} pilot modules and ${scenarioIds.size} agent scenarios.`);
+  console.log(`Validated ${suite.modules.length} pilot modules, ${scenarioIds.size} agent scenarios, and ${measured.observations.length} measured runs.`);
 } else if (command === "score") {
   const positionalInput = process.argv[3] && !process.argv[3].startsWith("--") ? process.argv[3] : "";
   const inputPath = pathOption("input", positionalInput);

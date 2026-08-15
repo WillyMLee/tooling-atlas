@@ -30,6 +30,8 @@ Preserve intent, decisions, provenance, and active state. Reduce bulk—not evid
 
 ## Routing Rules
 
+- Stay direct for a routine task with a handful of short sources. A measured Atlas pilot found that loading this module added overhead on a four-source evidence map.
+- Use the full workflow when the task spans many sources, large outputs, repeated retrieval, or a handoff/compaction risk. In the first measured eleven-project audit, the candidate preserved quality while finishing materially faster, but this still needs replication.
 - Prefer narrow search over full-file reads.
 - Prefer one structured reduction over repeated summaries.
 - Keep user instructions, approvals, failures, and destructive-action boundaries verbatim enough to preserve their meaning.

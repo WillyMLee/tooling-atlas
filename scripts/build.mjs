@@ -9,5 +9,5 @@ const files = ["index.html", "control-tower.html", "styles.css", "app.js", "LICE
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
 await Promise.all(files.map((file) => cp(join(root, file), join(dist, file))));
-await Promise.all(["modules", "catalog", "skills", "docs", "observability", "evals"].map((folder) => cp(join(root, folder), join(dist, folder), { recursive: true })));
+await Promise.all(["assets", "modules", "catalog", "skills", "docs", "observability", "evals"].map((folder) => cp(join(root, folder), join(dist, folder), { recursive: true })));
 console.log(`Built Tooling Atlas in ${dist}`);

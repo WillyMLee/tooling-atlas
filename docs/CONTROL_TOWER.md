@@ -8,8 +8,8 @@ Control Tower answers one question: did a module improve the outcome enough to j
 - A backend-neutral JSON event schema.
 - An opt-in Codex lifecycle hook collector that stores no prompts, tool inputs, tool outputs, or assistant messages.
 - ClickHouse DDL and quality-gated comparison queries.
-- A two-module eval pilot with six reproducible agent scenarios and a quality-gated scorer.
-- An Atlas dashboard that prefers measured eval results and otherwise falls back to clearly labeled example data.
+- A three-module eval pilot with nine reproducible agent scenarios and a quality-gated scorer.
+- An Atlas dashboard that prefers measured eval results, exposes actual matched pairs, and otherwise falls back to clearly labeled example data.
 
 The local user hook is installed separately from this repository and requires Codex review/trust before it runs. No ClickHouse database is connected by default.
 
@@ -103,7 +103,7 @@ The schema uses a 180-day TTL as a starting point, not a universal retention pol
 
 1. Use the local example dataset only for interface development.
 2. Capture privacy-minimal hook events to local NDJSON.
-3. Run the six stable pilot scenarios in `evals/pilot-suite.json` as matched pairs.
+3. Run the nine stable pilot scenarios in `evals/pilot-suite.json` as matched pairs.
 4. Score correctness, evidence, instruction adherence, and safety before comparing efficiency.
 5. Add API usage and grader results where available.
 6. Ingest normalized events to ClickHouse using JSONEachRow or OpenTelemetry infrastructure.

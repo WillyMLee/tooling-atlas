@@ -4,10 +4,10 @@
   "modules": [
     {
       "slug": "context-budget",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "packagePath": "skills/context-budget",
       "maturity": "Experimental",
-      "evidenceStatus": "Unmeasured",
+      "evidenceStatus": "Measured pilot · threshold-dependent",
       "hypothesis": "Narrow retrieval and resume packets reduce repeated reads and context growth without losing required evidence.",
       "primaryMetric": "Repeated source reads per completed task",
       "guardrailMetrics": ["Task success", "Evidence completeness", "Resume success"],
@@ -16,10 +16,10 @@
     },
     {
       "slug": "batch-tool-calls",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "packagePath": "skills/batch-tool-calls",
-      "maturity": "Ready",
-      "evidenceStatus": "Ready to benchmark",
+      "maturity": "Experimental",
+      "evidenceStatus": "Measured regression on small batches",
       "hypothesis": "Bounded batches of independent reads reduce wall-clock time and round trips while preserving final evidence quality.",
       "primaryMetric": "Tool round trips per completed task",
       "guardrailMetrics": ["Task success", "Evidence completeness", "Duplicate call rate"],

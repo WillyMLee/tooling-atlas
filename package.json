@@ -4,7 +4,7 @@
   "description": "Open-source design references, diagram packets, interaction patterns, and agent workflow skills.",
   "type": "module",
   "license": "MIT",
-  "files": ["modules", "catalog", "skills", "docs"],
+  "files": ["assets", "modules", "catalog", "skills", "docs"],
   "exports": {
     ".": "./modules/diagram-kit.js",
     "./styles": "./modules/diagram-kit.css"

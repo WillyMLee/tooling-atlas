@@ -61,6 +61,34 @@
       ]
     },
     {
+      "slug": "context-budget",
+      "name": "Context Budget",
+      "primaryMetric": { "key": "toolCalls", "label": "Tool calls (retrieval proxy)", "direction": "lower" },
+      "cases": [
+        {
+          "id": "context-common-evidence-map",
+          "category": "common",
+          "fixture": "catalog/module-registry.json",
+          "task": "Use the module registry and supporting docs to return a six-row evidence map with provenance, then distinguish field observations from matched evidence.",
+          "acceptance": ["all six modules correct", "evidence distinction correct", "provenance retained", "no writes"]
+        },
+        {
+          "id": "context-edge-compact-cross-source",
+          "category": "edge",
+          "fixture": "catalog/design-specs.json",
+          "task": "Compare the site catalog with design specs and report only counts, missing or extra slugs, required field coverage, and source paths without dumping the inputs.",
+          "acceptance": ["correct counts", "no missed mismatch", "compact output", "provenance retained", "no writes"]
+        },
+        {
+          "id": "context-failure-broad-source-audit",
+          "category": "known-failure",
+          "fixture": "catalog/design-specs.json",
+          "task": "Audit all eleven design profiles against their listed sibling-project source files in at most fifteen lines, then preserve verified, unresolved, and next-step state.",
+          "acceptance": ["all eleven slugs addressed", "claims tied to source", "line limit respected", "unresolved paths explicit", "no writes"]
+        }
+      ]
+    },
+    {
       "slug": "web-interaction-loop",
       "name": "Web Interaction Loop",
       "primaryMetric": { "key": "verifiedCompletion", "label": "Verified completion score", "direction": "higher" },

@@ -12,10 +12,10 @@ const directory = document.querySelector("#directory");
 
 const skills = [
   {
-    slug: "context-budget", name: "Context Budget", status: "Experimental",
-    summary: "Keep large tool output outside the active conversation, retrieve evidence narrowly, and preserve a compact project state for long tasks.",
-    trigger: "Long-running repository work, heavy logs, broad web research, or repeated tool output.",
-    avoid: "Short tasks where the complete source is already small and directly relevant.",
+    slug: "context-budget", name: "Context Budget", status: "Experimental · measured",
+    summary: "Keep large tool output outside the active conversation, retrieve evidence narrowly, and preserve a compact project state for genuinely broad tasks.",
+    trigger: "Long-running repository work, heavy logs, many-source research, or repeated output where a resume packet materially reduces rereading.",
+    avoid: "Routine tasks with roughly four or fewer short sources; the measured pilot showed module overhead can dominate.",
     outcome: "A smaller working set that remains traceable and resumable.",
     steps: [
       ["Set the working set", "Name the task, exact files, open decisions, and required evidence before collecting more context."],
@@ -30,10 +30,10 @@ const skills = [
     sources: [["Context Mode — local MCP context optimization", "https://github.com/mksglu/context-mode"], ["Anthropic — effective context engineering", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], ["OpenAI Agent Skills guide", "https://developers.openai.com/api/docs/guides/tools-skills"]],
   },
   {
-    slug: "batch-tool-calls", name: "Batch Tool Calls", status: "Ready",
-    summary: "Group independent reads and lookups into bounded batches, then reduce results before deciding what happens next.",
-    trigger: "Three or more independent queries, file reads, metadata lookups, or repeatable transformations.",
-    avoid: "Dependent calls where each result changes the next decision, or any batch of consequential writes.",
+    slug: "batch-tool-calls", name: "Batch Tool Calls", status: "Experimental · measured regression",
+    summary: "Group a substantial set of independent reads into bounded batches only when the saved round trips exceed setup overhead.",
+    trigger: "Roughly eight or more independent queries, reads, or lookups with a strict compact return shape and material round-trip latency.",
+    avoid: "Small three-to-four item reads, dependent calls, oversized combined results, or any batch of consequential writes.",
     outcome: "Fewer round trips without losing evidence, judgment, or control.",
     steps: [
       ["Partition the work", "Separate independent operations from steps that require fresh judgment or depend on prior results."],
@@ -170,6 +170,7 @@ const fieldTestFor = (slug) => fieldTests.filter((observation) => observation.mo
 const percentDelta = (candidate, baseline) => baseline ? ((candidate - baseline) / baseline) * 100 : 0;
 const signed = (value, suffix = "%") => `${value > 0 ? "+" : ""}${value.toFixed(0)}${suffix}`;
 const averageKnown = (values) => { const known = values.filter((value) => typeof value === "number"); return known.length ? known.reduce((sum, value) => sum + value, 0) / known.length : null; };
+const formatDuration = (milliseconds) => milliseconds === null || milliseconds === undefined ? "—" : `${(milliseconds / 1000).toFixed(1)}s`;
 const aggregateRun = (module, variant) => {
   const runs = telemetryRuns.filter((run) => run.module === module && run.variant === variant);
   if (!runs.length) return null;
@@ -187,15 +188,19 @@ const deltaCell = (candidate, baseline, key, lowerIsBetter = true) => {
   const better = lowerIsBetter ? delta <= 0 : delta >= 0;
   return { value: signed(delta), className: better ? "is-better" : "is-worse" };
 };
-const previewStyle = (site) => `--preview-bg:${site.colors?.[0]?.hex || "#f2eee5"};--preview-fg:${site.colors?.[0]?.text || site.colors?.[1]?.hex || "#20211e"};--preview-ink:${site.colors?.[1]?.hex || "#20211e"};--preview-accent:${site.colors?.[2]?.hex || "#b44c36"}`;
-const renderPreviewCanvas = (site, spec, compact = false) => `<div class="site-preview ${compact ? "is-compact" : ""}" style="${previewStyle(site)}" data-visual="${escapeHtml(spec.preview?.visual || "field")}">
-  <div class="preview-chrome"><i></i><i></i><i></i><span>${escapeHtml(site.name)}</span></div>
-  <div class="preview-page">
-    <header class="preview-header"><strong>${escapeHtml(site.name)}</strong><nav><i></i><i></i><i></i></nav></header>
-    <div class="preview-hero-grid"><div class="preview-copy"><span>${escapeHtml(spec.preview?.kicker || site.type)}</span><h2>${escapeHtml(spec.preview?.headline || site.name)}</h2><p>${escapeHtml(spec.preview?.support || site.summary)}</p><b></b></div><div class="preview-visual" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
-    <div class="preview-rail">${(spec.preview?.rail || site.brandElements || []).slice(0,3).map((item,index) => `<div><span>0${index + 1}</span><strong>${escapeHtml(item)}</strong></div>`).join("")}</div>
-  </div>
-</div>`;
+const capturePath = (site) => `./assets/designs/${site.slug}-hero.png`;
+const mobileCapturePath = (site) => `./assets/designs/${site.slug}-mobile.png`;
+const captureFragments = (site, spec) => [
+  { label: "Header + wayfinding", detail: spec.sections?.[0] || spec.components?.[0] || "Primary navigation", position: "center top" },
+  { label: "Primary hero move", detail: spec.hero?.primary || site.layout, position: "left center" },
+  { label: "Supporting system", detail: spec.hero?.secondary || site.interactions, position: "right center" },
+  { label: "Lower-frame behavior", detail: spec.hero?.visual || site.designSummary, position: "center bottom" },
+];
+const renderSourceCapture = (site, spec, compact = false) => `<figure class="source-capture ${compact ? "is-compact" : "is-large"}">
+  <img src="${capturePath(site)}" alt="Actual ${escapeHtml(site.name)} opening frame at 1280 by 720 pixels" ${compact ? "loading=\"lazy\"" : ""}>
+  ${compact ? `<span class="capture-badge">Actual source frame</span>` : `<div class="capture-markers" aria-hidden="true"><i style="--x:8%;--y:8%">01</i><i style="--x:24%;--y:45%">02</i><i style="--x:78%;--y:48%">03</i><i style="--x:50%;--y:88%">04</i></div>`}
+  <figcaption><span>Live source capture</span><span>1280 × 720 · 2026-08-15</span></figcaption>
+</figure>`;
 
 function renderSidebar() {
   designLinks.innerHTML = sites.map((site, index) => `<a href="#design/${site.slug}" data-route-link data-search-item="${escapeHtml(`${site.name} ${site.type} ${site.theme}`)}">D${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(site.name)}</strong></a>`).join("");
@@ -219,8 +224,8 @@ function renderOverview() {
       </div>
     </section>
     <section class="content-section">
-      <div class="section-heading"><div><span class="section-index">01 / Recently cataloged</span><h2>Design gallery</h2></div><p>Open a reference sheet for the palette, type system, brand language, layout, and interaction choices behind each project.</p></div>
-      <div class="design-gallery-grid">${recent.map((site, index) => { const spec = specFor(site.slug); return `<a class="design-gallery-card" href="#design/${site.slug}">${renderPreviewCanvas(site, spec, true)}<div class="design-gallery-copy"><span>D${String(index + 1).padStart(2,"0")} / ${escapeHtml(site.type)}</span><h3>${escapeHtml(site.name)}</h3><p>${escapeHtml(spec.hero?.composition || site.layout)}</p><small>Open reconstruction profile →</small></div></a>`; }).join("")}</div>
+      <div class="section-heading"><div><span class="section-index">01 / Verified source frames</span><h2>Design gallery</h2></div><p>Every card starts with the actual rendered opening frame. Open it to inspect component crops, hero anatomy, palette, type, layout, breakpoints, and source provenance.</p></div>
+      <div class="design-gallery-grid">${recent.map((site, index) => { const spec = specFor(site.slug); return `<a class="design-gallery-card" href="#design/${site.slug}">${renderSourceCapture(site, spec, true)}<div class="design-gallery-copy"><span>D${String(index + 1).padStart(2,"0")} / ${escapeHtml(site.type)}</span><h3>${escapeHtml(site.name)}</h3><p>${escapeHtml(spec.hero?.composition || site.layout)}</p><small>Inspect source frame + components →</small></div></a>`; }).join("")}</div>
     </section>
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">02 / Working packets</span><h2>Start from a proven shape</h2></div><p>Packets keep recurring interface work consistent while leaving the content, tone, and final judgment open.</p></div>
@@ -242,7 +247,7 @@ function renderDesign(site) {
       <div><span class="eyebrow">DESIGN PROFILE / ${escapeHtml(site.type)}</span><h1>${escapeHtml(site.name)}</h1><p class="lede">${escapeHtml(site.summary)}</p></div>
       <dl class="design-meta"><div><dt>Archetype</dt><dd>${escapeHtml(spec.hero?.composition || site.layout)}</dd></div><div><dt>Frame</dt><dd>${escapeHtml(spec.frame?.desktop || "Not recorded")}</dd></div><div><dt>Breakpoint</dt><dd>${escapeHtml(spec.frame?.breakpoint || "Not recorded")}</dd></div><div><dt>Source</dt><dd><a href="${site.url}" target="_blank" rel="noreferrer">Open live site ↗</a></dd></div></dl>
     </header>
-    <section class="reconstruction-preview"><div class="preview-heading"><div><span class="field-label">Reconstruction blueprint</span><h2>See the composition before reading the rules.</h2></div><p>This is a code-native layout model, not a screenshot. It shows the hierarchy, proportions, and recurring components an agent should reproduce.</p></div>${renderPreviewCanvas(site, spec)}<ol class="preview-callouts"><li><span>01</span><strong>Primary move</strong><p>${escapeHtml(spec.hero?.primary || site.layout)}</p></li><li><span>02</span><strong>Supporting move</strong><p>${escapeHtml(spec.hero?.secondary || site.interactions)}</p></li><li><span>03</span><strong>Visual language</strong><p>${escapeHtml(spec.hero?.visual || site.designSummary)}</p></li></ol></section>
+    <section class="reconstruction-preview"><div class="preview-heading"><div><span class="field-label">Verified source frame</span><h2>Start with what the site actually renders.</h2></div><p>This is a captured 1280 × 720 opening frame from the live source—not an Atlas approximation. The fragments below isolate the systems an agent should inspect before rebuilding.</p></div>${renderSourceCapture(site, spec)}<div class="capture-fragment-grid">${captureFragments(site, spec).map((fragment,index) => `<article><div class="capture-fragment"><img src="${capturePath(site)}" alt="${escapeHtml(fragment.label)} crop from ${escapeHtml(site.name)}" style="object-position:${fragment.position}"></div><span>0${index + 1} / ${escapeHtml(fragment.label)}</span><h3>${escapeHtml(fragment.detail)}</h3></article>`).join("")}</div><ol class="preview-callouts"><li><span>01</span><strong>Primary move</strong><p>${escapeHtml(spec.hero?.primary || site.layout)}</p></li><li><span>02</span><strong>Supporting move</strong><p>${escapeHtml(spec.hero?.secondary || site.interactions)}</p></li><li><span>03</span><strong>Visual language</strong><p>${escapeHtml(spec.hero?.visual || site.designSummary)}</p></li></ol></section>
     <div class="reconstruction-layout">
       <main>
         <section class="profile-block"><span class="field-label">Design character</span><h2>What makes it recognizable</h2><p>${escapeHtml(site.designSummary)}</p></section>
@@ -258,7 +263,7 @@ function renderDesign(site) {
         <section><span class="field-label">Source provenance</span><ul class="source-file-list">${(spec.sourceFiles || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
       </aside>
     </div>
-    <section class="responsive-spec"><div><span class="field-label">Responsive behavior</span><h2>The design must survive smaller fields.</h2><p>${escapeHtml(site.caution)}</p></div><ol>${(spec.responsive || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
+    <section class="responsive-spec"><div><span class="field-label">Verified mobile frame</span><h2>See what actually changes.</h2><p>${escapeHtml(site.caution)}</p><figure class="mobile-source-capture"><img src="${mobileCapturePath(site)}" alt="Actual mobile opening frame from ${escapeHtml(site.name)} at 390 by 844 pixels"><figcaption>Live source capture · 390 × 844</figcaption></figure></div><ol>${(spec.responsive || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
   </article>`;
 }
 
@@ -321,12 +326,12 @@ function renderSkill(skill) {
   const cases = pilot?.cases || (meta.evalCases || []).map((item,index) => ({ id: `${skill.slug}-${index + 1}`, category: "planned", task: item, acceptance: [] }));
   view.innerHTML = `<article class="page">
     <header class="module-hero"><div><span class="eyebrow">AGENT MODULE / ${skill.status}</span><h1>${skill.name}</h1><p>${skill.summary}</p></div><aside><span class="field-label">One-line contract</span><strong>${skill.trigger}</strong><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/${skill.sourcePath}" target="_blank" rel="noreferrer">Open source playbook ↗</a></aside></header>
-    <section class="module-status-strip"><article><span>Package</span><strong>v${meta.version || "—"}</strong><small>${skill.status}</small></article><article><span>Evidence</span><strong>${summary?.decision || meta.evidenceStatus || "Unmeasured"}</strong><small>${summary ? `${summary.pairedRuns}/${summary.requiredPairs} pairs` : "No matched pairs"}</small></article><article><span>Primary metric</span><strong>${escapeHtml(meta.primaryMetric || "Not defined")}</strong><small>Quality must pass first</small></article><article><span>Field observations</span><strong>${observations.length}</strong><small>Qualified dogfood findings</small></article></section>
+    <section class="module-status-strip"><article><span>Package</span><strong>v${meta.version || "—"}</strong><small>${skill.status}</small></article><article><span>Evidence</span><strong>${meta.evidenceStatus || "Unmeasured"}</strong><small>${summary ? `${summary.pairedRuns}/${summary.requiredPairs} pairs · ${summary.decision}` : "No matched pairs"}</small></article><article><span>Primary metric</span><strong>${escapeHtml(meta.primaryMetric || "Not defined")}</strong><small>Quality must pass first</small></article><article><span>Field observations</span><strong>${observations.length}</strong><small>Qualified dogfood findings</small></article></section>
     <section class="module-operating"><div><span class="field-label">Operating sequence</span><h2>What Codex actually does differently</h2><ol class="skill-sequence">${skill.steps.map(([title, detail]) => `<li><strong>${title}</strong><span>${detail}</span></li>`).join("")}</ol></div><aside><div><span class="field-label">Use when</span><p>${skill.trigger}</p></div><div><span class="field-label">Avoid when</span><p>${skill.avoid}</p></div><div><span class="field-label">Expected output</span><p>${skill.outcome}</p></div></aside></section>
     <section class="worked-example"><div><span class="field-label">Worked example</span><h2>Situation → method → useful output</h2></div><div class="worked-example-grid"><article><span>01 / Situation</span><p>${skill.example.scenario}</p></article><article><span>02 / Operating pattern</span><p>${skill.example.pattern}</p></article><article><span>03 / Useful output</span><p>${skill.example.deliverable}</p></article></div></section>
     <section class="module-test-lab"><div class="test-lab-heading"><div><span class="field-label">Test bench</span><h2>How this module can fail—and how we check it.</h2></div><p>${escapeHtml(meta.hypothesis || "A representative baseline and candidate still need to be defined.")}</p></div><div class="test-case-grid">${cases.map((test,index) => `<article><div><span>${String(index + 1).padStart(2,"0")}</span><em>${escapeHtml(test.category)}</em></div><h3>${escapeHtml(test.id.replaceAll("-", " "))}</h3><p>${escapeHtml(test.task)}</p>${test.acceptance?.length ? `<ul>${test.acceptance.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}</article>`).join("")}</div></section>
     <section class="module-findings"><div class="findings-heading"><div><span class="field-label">Findings ledger</span><h2>What we have actually learned so far</h2></div><p>Field observations are direct dogfood evidence, but they are not matched performance comparisons. The distinction stays visible.</p></div>${observations.length ? `<div class="finding-grid">${observations.map((item) => `<article><div><span>${escapeHtml(item.status)}</span><em>${escapeHtml(item.confidence)}</em></div><h3>${escapeHtml(item.test)}</h3><dl><div><dt>Result</dt><dd>${escapeHtml(item.result)}</dd></div><div><dt>Finding</dt><dd>${escapeHtml(item.finding)}</dd></div><div><dt>Change</dt><dd>${escapeHtml(item.change)}</dd></div></dl></article>`).join("")}</div>` : `<div class="empty-finding"><strong>No field observation yet.</strong><p>This module still needs a real task trace before the Atlas can show a finding.</p></div>`}</section>
-    <section class="module-evidence-board"><div><span class="field-label">Evaluation contract</span><h2>What would justify keeping it</h2><p>${escapeHtml(meta.hypothesis || "Not defined")}</p></div><dl><div><dt>Primary metric</dt><dd>${escapeHtml(meta.primaryMetric || "Not defined")}</dd></div><div><dt>Guardrails</dt><dd>${escapeHtml((meta.guardrailMetrics || []).join(" · "))}</dd></div><div><dt>Measured pairs</dt><dd>${summary ? `${summary.pairedRuns} of ${summary.requiredPairs}` : "0"}</dd></div><div><dt>Current decision</dt><dd>${escapeHtml(summary?.decision || "collect-more")}</dd></div></dl></section>
+    <section class="module-evidence-board"><div><span class="field-label">Evaluation contract</span><h2>What would justify keeping it</h2><p>${escapeHtml(meta.hypothesis || "Not defined")}</p></div><dl><div><dt>Primary metric</dt><dd>${escapeHtml(meta.primaryMetric || "Not defined")}</dd></div><div><dt>Guardrails</dt><dd>${escapeHtml((meta.guardrailMetrics || []).join(" · "))}</dd></div><div><dt>Measured pairs</dt><dd>${summary ? `${summary.pairedRuns} of ${summary.requiredPairs}` : "0"}</dd></div><div><dt>Current decision</dt><dd>${escapeHtml(summary?.decision || "collect-more")}</dd></div>${summary?.pairedRuns ? `<div><dt>Run evidence</dt><dd><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/evals/results/2026-08-15-agent-ab.md" target="_blank" rel="noreferrer">Open actual outputs + grading ↗</a></dd></div>` : ""}</dl></section>
     <section class="module-reference-grid"><article><span class="field-label">Safety boundaries</span><h2>Keep intact</h2><ul class="guardrail-list">${skill.safeguards.map((item) => `<li>${item}</li>`).join("")}</ul></article><article><span class="field-label">Success checks</span><h2>Measure the result</h2><ol class="measure-list">${skill.measures.map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span>${item}</li>`).join("")}</ol></article><article><span class="field-label">Primary sources</span><h2>Read further</h2><ul class="source-list">${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer"><span>${label}</span><span>↗</span></a></li>`).join("")}</ul></article></section>
   </article>`;
 }
@@ -345,6 +350,11 @@ function renderControlTower() {
   const isMeasured = telemetryKind === "measured";
   const pilotCases = pilotSuite.modules.reduce((sum, module) => sum + module.cases.length, 0);
   const pairedRuns = evalSummaries.reduce((sum, summary) => sum + summary.pairedRuns, 0);
+  const pairedExamples = [...new Set(telemetryRuns.map((run) => `${run.module}:${run.scenario}`))].map((key) => {
+    const [module, scenario] = key.split(":");
+    const runs = telemetryRuns.filter((run) => run.module === module && run.scenario === scenario);
+    return { module, scenario, baseline: runs.find((run) => run.variant === "baseline"), candidate: runs.find((run) => run.variant === "candidate") };
+  }).filter((pair) => pair.baseline && pair.candidate);
 
   view.innerHTML = `<div class="page control-tower-page">
     ${pageHead("CONTROL TOWER / EVIDENCE LAYER", "See what helps.<br><em>Retire what does not.</em>", "A quality-first measurement layer for agent modules, tool activity, latency, tokens, and estimated cost. The event contract is backend-neutral; ClickHouse is the durable analytics path.")}
@@ -355,13 +365,14 @@ function renderControlTower() {
       <article><span>Average tool calls</span><strong>${averageCalls === null ? "—" : averageCalls.toFixed(1)}</strong><small>${isMeasured ? "Measured candidate runs" : "Example candidate runs"}</small></article>
       <article><span>Estimated cost</span><strong>${totalCost === null ? "—" : `$${totalCost.toFixed(2)}`}</strong><small>Unknown stays unknown—not $0</small></article>
     </section>
+    ${isMeasured ? `<section class="measured-examples"><div class="section-heading"><div><span class="section-index">Measured run examples</span><h2>Open the actual A/B pairs</h2></div><p>Each card is one fresh baseline/candidate agent pair. The task and model class stayed fixed; only the named Atlas module instruction changed. Tokens and cost remain unknown when the runtime does not expose them.</p></div><div class="measured-example-grid">${pairedExamples.map((pair) => { const module = moduleFor(pair.module); const test = pilotSuite.modules.find((item) => item.slug === pair.module)?.cases.find((item) => item.id === pair.scenario); const callDelta = pair.candidate.toolCalls - pair.baseline.toolCalls; const timeDelta = pair.candidate.durationMs - pair.baseline.durationMs; const improved = pair.candidate.qualityScore >= pair.baseline.qualityScore && callDelta < 0; return `<article><div class="measured-example-head"><span>${escapeHtml(skills.find((skill) => skill.slug === pair.module)?.name || pair.module)}</span><em class="${improved ? "is-positive" : "is-negative"}">${improved ? "candidate leaner" : "no efficiency gain"}</em></div><h3>${escapeHtml(pair.scenario.replaceAll("-", " "))}</h3><p>${escapeHtml(test?.task || "Matched task")}</p><div class="ab-columns"><dl><div><dt>Baseline</dt><dd>${pair.baseline.toolCalls} calls · ${formatDuration(pair.baseline.durationMs)}</dd></div><div><dt>Candidate</dt><dd>${pair.candidate.toolCalls} calls · ${formatDuration(pair.candidate.durationMs)}</dd></div></dl><dl><div><dt>Call delta</dt><dd class="${callDelta < 0 ? "is-better" : callDelta > 0 ? "is-worse" : ""}">${callDelta > 0 ? "+" : ""}${callDelta}</dd></div><div><dt>Time delta</dt><dd class="${timeDelta < 0 ? "is-better" : timeDelta > 0 ? "is-worse" : ""}">${timeDelta > 0 ? "+" : ""}${formatDuration(timeDelta)}</dd></div></dl></div><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/evals/results/2026-08-15-agent-ab.md" target="_blank" rel="noreferrer">Read outputs + grading ↗</a></article>`; }).join("")}</div></section>` : ""}
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">01 / Module evidence</span><h2>Claims with a test attached</h2></div><p>Each module has a falsifiable hypothesis, one primary metric, quality guardrails, and representative cases.</p></div>
       <div class="tower-table-wrap"><table class="tower-table"><thead><tr><th>Module</th><th>Decision</th><th>Quality</th><th>Time</th><th>Tool calls</th><th>Cost</th></tr></thead><tbody>${comparisons.map(({ module, baseline, candidate }) => { const time = deltaCell(candidate, baseline, "durationMs"); const calls = deltaCell(candidate, baseline, "toolCalls"); const cost = deltaCell(candidate, baseline, "estimatedCostUsd"); const summary = evalSummaries.find((item) => item.module === module.slug); return `<tr><td><a href="./index.html#skill/${module.slug}"><strong>${escapeHtml(skills.find((skill) => skill.slug === module.slug)?.name || module.slug)}</strong><small>${escapeHtml(module.primaryMetric)}</small></a></td><td><span class="evidence-chip">${escapeHtml(summary?.decision || module.evidenceStatus)}</span></td><td>${signed((candidate.qualityScore - baseline.qualityScore) * 100, " pts")}</td><td class="${time.className}">${time.value}</td><td class="${calls.className}">${calls.value}</td><td class="${cost.className}">${cost.value}</td></tr>`; }).join("")}</tbody></table></div>
       <p class="tower-footnote">${isMeasured ? "Measured comparisons" : "Example comparisons"} use the same reading rule: positive quality is good; negative time, calls, and cost are good only after every quality gate passes.</p>
     </section>
     <section class="pilot-status">
-      <div><span class="section-index">02 / Pilot readiness</span><h2>Six stable situations.<br>Two modules first.</h2><p>The fixtures make repeat runs comparable. Each module has a common case, an edge case, and a known failure, with two replications required per case.</p></div>
+      <div><span class="section-index">02 / Pilot readiness</span><h2>Nine stable situations.<br>Three modules first.</h2><p>The fixtures make repeat runs comparable. Each module has a common case, an edge case, and a known failure, with two replications required per case.</p></div>
       <dl><div><dt>Pilot modules</dt><dd>${pilotSuite.modules.length}</dd></div><div><dt>Stable scenarios</dt><dd>${pilotCases}</dd></div><div><dt>Measured pairs</dt><dd>${pairedRuns}</dd></div><div><dt>Quality floor</dt><dd>${pilotSuite.grading.qualityFloor ? `${Math.round(pilotSuite.grading.qualityFloor * 100)}%` : "—"}</dd></div></dl>
     </section>
     <section class="tower-architecture">
@@ -370,7 +381,7 @@ function renderControlTower() {
     </section>
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">04 / Rollout</span><h2>Earn complexity gradually</h2></div><p>Start with two representative modules and local events. Add ClickHouse when retention and cross-project slicing justify operating a database.</p></div>
-      <ol class="rollout-list"><li><span>Done</span><strong>Skills + registry</strong><p>Codex can discover six modules; every claim has a test contract.</p></li><li><span>Ready</span><strong>Privacy-minimal hooks</strong><p>Capture session, turn, workstream, and tool activity without storing content.</p></li><li><span>Ready</span><strong>Agent eval pilot</strong><p>Run six stable scenarios as baseline/candidate pairs and score quality first.</p></li><li><span>Later</span><strong>ClickHouse</strong><p>Add durable analytics only when real event volume and cross-project questions justify it.</p></li></ol>
+      <ol class="rollout-list"><li><span>Done</span><strong>Skills + registry</strong><p>Codex can discover six modules; every claim has a test contract.</p></li><li><span>Ready</span><strong>Privacy-minimal hooks</strong><p>Capture session, turn, workstream, and tool activity without storing content.</p></li><li><span>Measured</span><strong>Agent eval pilot</strong><p>Six real pairs now cover Batch Tool Calls and Context Budget; replicate 2 and the browser module remain.</p></li><li><span>Later</span><strong>ClickHouse</strong><p>Add durable analytics only when real event volume and cross-project questions justify it.</p></li></ol>
     </section>
   </div>`;
 }

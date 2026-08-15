@@ -7,6 +7,7 @@ const registry = JSON.parse(await readFile(join(root, "catalog", "module-registr
 const sites = JSON.parse(await readFile(join(root, "catalog", "sites.json"), "utf8"));
 const designSpecs = JSON.parse(await readFile(join(root, "catalog", "design-specs.json"), "utf8"));
 const fieldTests = JSON.parse(await readFile(join(root, "observability", "field-tests.json"), "utf8"));
+const evalSummary = JSON.parse(await readFile(join(root, "observability", "eval-summary.json"), "utf8"));
 const slugs = new Set();
 
 for (const module of registry.modules) {
@@ -32,6 +33,8 @@ for (const slug of siteSlugs) {
   const spec = designSpecs.profiles[slug];
   if (!spec) throw new Error(`Missing design spec: ${slug}`);
   if (!spec.preview?.headline || !spec.frame?.desktop || !spec.hero?.composition) throw new Error(`${slug}: incomplete preview, frame, or hero spec`);
+  await access(join(root, "assets", "designs", `${slug}-hero.png`));
+  await access(join(root, "assets", "designs", `${slug}-mobile.png`));
   for (const field of ["sections", "components", "responsive", "buildSteps", "sourceFiles"]) {
     if (!Array.isArray(spec[field]) || spec[field].length < 2) throw new Error(`${slug}: incomplete ${field}`);
   }
@@ -47,6 +50,7 @@ for (const observation of fieldTests.observations ?? []) {
     if (!observation[field]) throw new Error(`${observation.module}: incomplete field observation ${field}`);
   }
 }
+if (evalSummary.dataKind !== "measured" || evalSummary.runs.length < 12) throw new Error("Control Tower must load the measured pilot rather than synthetic preview results");
 
 const eventSchema = JSON.parse(await readFile(join(root, "observability", "events.schema.json"), "utf8"));
 for (const field of ["schema_version", "event_time", "event_name", "run_id", "status"]) {
@@ -60,4 +64,4 @@ for (const run of example.runs) {
   if (!["baseline", "candidate"].includes(run.variant)) throw new Error(`Invalid example variant: ${run.variant}`);
 }
 
-console.log(`Validated ${registry.modules.length} agent modules, ${sites.sites.length} design specs, ${fieldTests.observations.length} field observations, and ${example.runs.length} example runs.`);
+console.log(`Validated ${registry.modules.length} agent modules, ${sites.sites.length} captured design profiles, ${fieldTests.observations.length} field observations, ${evalSummary.runs.length} measured runs, and ${example.runs.length} labeled examples.`);

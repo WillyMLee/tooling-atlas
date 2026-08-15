@@ -4,7 +4,8 @@ Tooling Atlas is an open working library for interface references, source-derive
 
 ## What is inside
 
-- `catalog/` — source-derived reconstruction profiles with code-native previews, hero anatomy, frame dimensions, responsive rules, build order, and provenance.
+- `assets/designs/` — verified live-source opening frames used by the gallery and component crops.
+- `catalog/` — source-derived reconstruction profiles with hero anatomy, frame dimensions, responsive rules, build order, and provenance.
 - `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
 - `skills/` — validated Agent Skills for context, batching, browser work, orchestration, evals, and tool-surface design.
 - `observability/` — the backend-neutral event contract, qualified field observations, example dashboard data, and ClickHouse DDL.
@@ -61,11 +62,11 @@ npm run skills:link
 
 ## Control Tower
 
-The Control Tower is a separate measurement surface at `/control-tower.html`, not part of the editorial Atlas directory. It distinguishes a valid module from a proven module. The site ships with clearly labeled example telemetry so the dashboard can be designed without implying measured gains. See `docs/CONTROL_TOWER.md` for the event flow, privacy boundary, optional Codex hooks, and ClickHouse rollout.
+The Control Tower is a separate measurement surface at `/control-tower.html`, not part of the editorial Atlas directory. It distinguishes a valid module from a proven module. It now prefers the first measured Codex A/B pilot and links each pair to its task, output evidence, grading, and machine-readable observation. See `docs/CONTROL_TOWER.md` for the event flow, privacy boundary, optional Codex hooks, and ClickHouse rollout.
 
 Module pages show two intentionally separate evidence types: dogfood field observations explain what happened during real Atlas work, while matched baseline/candidate benchmarks determine whether a module is actually proven.
 
-Print the first two-module pilot plan with `npm run eval:plan`. After recording matched observations, run `npm run eval:score -- <file>` to update the Control Tower. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
+Print the three-module pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
 
 ## License
 

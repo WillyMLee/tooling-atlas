@@ -1,6 +1,6 @@
 ---
 name: batch-tool-calls
-description: Reduce tool round trips by grouping independent read-only operations into bounded batches and returning only the fields needed for the next decision. Use for three or more searches, file reads, metadata lookups, API queries, or repeatable transformations that do not depend on each other's results.
+description: Reduce tool round trips for a substantial set of independent read-only operations by using bounded batches and compact return shapes. Prefer direct work for small three-to-four item reads; consider this module around eight or more comparable operations when round-trip latency is material.
 ---
 
 # Batch Tool Calls
@@ -8,6 +8,8 @@ description: Reduce tool round trips by grouping independent read-only operation
 Batch deterministic work. Keep semantic judgment and consequential actions direct.
 
 ## Decide Whether to Batch
+
+Do not load this module merely because a task contains three or four files. A measured Atlas pilot found that the setup and skill-read overhead increased both calls and elapsed time on batches of that size. For small sets, read directly. Treat roughly eight independent operations as a provisional consideration threshold, then confirm that batching can actually reduce round trips.
 
 Batch when all operations:
 
@@ -17,6 +19,13 @@ Batch when all operations:
 - can share a clear stopping condition.
 
 Do not batch approvals, destructive actions, writes to the same target, or steps whose inputs depend on earlier results.
+
+Do not batch when:
+
+- fewer than roughly eight quick operations are involved;
+- one compact direct command can already return the required fields;
+- the combined result could exceed the active context budget;
+- semantic judgment is required after each result.
 
 ## Workflow
 
