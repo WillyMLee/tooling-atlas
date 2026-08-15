@@ -1,0 +1,16 @@
+{
+  "name": "@willymlee/interface-atlas",
+  "version": "0.1.0",
+  "description": "Open-source diagram modules and field notes for expressive web interfaces.",
+  "type": "module",
+  "license": "MIT",
+  "files": ["modules", "catalog", "docs"],
+  "exports": {
+    ".": "./modules/diagram-kit.js",
+    "./styles": "./modules/diagram-kit.css"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs"
+  }
+}
