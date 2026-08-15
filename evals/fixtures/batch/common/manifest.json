@@ -1,0 +1,4 @@
+{
+  "files": ["alpine.json", "beacon.json", "cedar.json", "delta.json"],
+  "requiredFields": ["account", "region", "openTickets", "renewalRisk"]
+}

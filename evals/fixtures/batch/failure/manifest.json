@@ -1,0 +1,5 @@
+{
+  "files": ["harbor.json", "iris.json", "juno-malformed.json", "kestrel-missing.json"],
+  "expectedValid": 2,
+  "expectedErrors": 2
+}

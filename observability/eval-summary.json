@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "synthetic",
+  "suite": "atlas-agent-pilot-v1",
+  "generatedAt": "2026-08-15T22:22:04.786Z",
+  "notice": "Synthetic scorer test data. Never use this dataset as evidence that a module helps.",
+  "summaries": [
+    {
+      "module": "batch-tool-calls",
+      "pairedRuns": 1,
+      "requiredPairs": 6,
+      "qualityPassed": true,
+      "baselineQuality": 1,
+      "candidateQuality": 1,
+      "primaryMetric": "Tool round trips",
+      "primaryImprovementPercent": 60,
+      "decision": "collect-more"
+    },
+    {
+      "module": "web-interaction-loop",
+      "pairedRuns": 0,
+      "requiredPairs": 6,
+      "qualityPassed": false,
+      "baselineQuality": null,
+      "candidateQuality": null,
+      "primaryMetric": "Verified completion score",
+      "primaryImprovementPercent": null,
+      "decision": "collect-more"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "synthetic-baseline",
+      "module": "batch-tool-calls",
+      "scenario": "batch-common-independent-records",
+      "replicate": 1,
+      "variant": "baseline",
+      "success": true,
+      "qualityScore": 1,
+      "durationMs": 1000,
+      "toolCalls": 5,
+      "estimatedCostUsd": null,
+      "primaryMetric": 5
+    },
+    {
+      "runId": "synthetic-candidate",
+      "module": "batch-tool-calls",
+      "scenario": "batch-common-independent-records",
+      "replicate": 1,
+      "variant": "candidate",
+      "success": true,
+      "qualityScore": 1,
+      "durationMs": 800,
+      "toolCalls": 5,
+      "estimatedCostUsd": null,
+      "primaryMetric": 2
+    }
+  ]
+}

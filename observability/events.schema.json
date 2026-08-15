@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tooling-atlas.local/schemas/agent-event-v1.json",
+  "title": "Tooling Atlas Agent Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_time", "event_name", "run_id", "status"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_time": { "type": "string", "format": "date-time" },
+    "event_name": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "turn_id": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "span_id": { "type": "string" },
+    "parent_span_id": { "type": "string" },
+    "project": { "type": "string" },
+    "surface": { "type": "string" },
+    "module_slug": { "type": "string" },
+    "variant": { "type": "string", "enum": ["", "baseline", "candidate", "production"] },
+    "model": { "type": "string" },
+    "reasoning_effort": { "type": "string" },
+    "tool_name": { "type": "string" },
+    "status": { "type": "string", "enum": ["started", "completed", "failed", "blocked", "unknown"] },
+    "duration_ms": { "type": ["integer", "null"], "minimum": 0 },
+    "input_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "output_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "cached_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "tool_calls": { "type": "integer", "minimum": 0 },
+    "estimated_cost_usd": { "type": ["number", "null"], "minimum": 0 },
+    "quality_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "success": { "type": ["boolean", "null"] },
+    "error_code": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

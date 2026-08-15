@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "synthetic",
+  "suite": "atlas-agent-pilot-v1",
+  "observations": [
+    {
+      "runId": "synthetic-baseline",
+      "module": "batch-tool-calls",
+      "scenario": "batch-common-independent-records",
+      "replicate": 1,
+      "variant": "baseline",
+      "success": true,
+      "scores": { "correctness": 1, "evidence": 1, "instruction": 1, "safety": 1 },
+      "metrics": { "primary": 5, "toolCalls": 5, "durationMs": 1000, "inputTokens": null, "outputTokens": null, "estimatedCostUsd": null },
+      "evaluator": "synthetic",
+      "notes": "Scorer test only."
+    },
+    {
+      "runId": "synthetic-candidate",
+      "module": "batch-tool-calls",
+      "scenario": "batch-common-independent-records",
+      "replicate": 1,
+      "variant": "candidate",
+      "success": true,
+      "scores": { "correctness": 1, "evidence": 1, "instruction": 1, "safety": 1 },
+      "metrics": { "primary": 2, "toolCalls": 5, "durationMs": 800, "inputTokens": null, "outputTokens": null, "estimatedCostUsd": null },
+      "evaluator": "synthetic",
+      "notes": "Scorer test only."
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-08-15",
+  "profiles": {
+    "mumblings": {
+      "preview": { "kicker": "Vol. 01 / Issue 001", "headline": "Mumblings.", "support": "A personal periodical for whatever survived the walk home.", "visual": "issue", "rail": ["Recent stories", "Article gallery", "Drafting table"] },
+      "frame": { "desktop": "Full-bleed magazine field", "content": "Fluid masthead, then bounded editorial sections", "heroHeight": "680px masthead", "breakpoint": "900px stack · 760px compact" },
+      "hero": { "composition": "Main masthead plus 280px editor-note rail", "primary": "Oversized Newsreader wordmark, animated chorus, and small playable ornament", "secondary": "Issue note, numbered contents, and enter action", "visual": "96px and 24px nested paper grids with issue coordinates" },
+      "sections": ["Utility masthead", "Issue title + contents", "Signal ticker", "Feature story grid", "Article index", "Drafting table", "Editor note"],
+      "components": ["Issue utility strip", "Masthead chorus", "Hero mini-game", "Feature cover", "Numbered article table"],
+      "responsive": ["Masthead changes from title/280px rail to one column at 900px", "Feature grid collapses before article metadata is reduced", "At 760px the issue coordinate disappears and the chorus becomes a 4×2 grid"],
+      "buildSteps": ["Establish the issue grid and utility strip", "Build the masthead as title module plus editor-note rail", "Carry numbering into every section heading", "Preserve editorial hierarchy before adding animation"],
+      "sourceFiles": ["src/pages/HomePage.tsx", "src/styles.css:293-441"]
+    },
+    "signal-notes": {
+      "preview": { "kicker": "Company intelligence / 2026", "headline": "Signals worth following.", "support": "A research library with evidence attached.", "visual": "radar", "rail": ["Company library", "Product workflow", "Competitive field"] },
+      "frame": { "desktop": "Two-column research instrument", "content": "Hero spans full width; profile sections use a 980px evidence column", "heroHeight": "650px library · 610px profile", "breakpoint": "900px stack · 580px compact" },
+      "hero": { "composition": "1.05fr research thesis plus 430px radar panel", "primary": "Large sans statement, technical eyebrow, short evidence-led introduction", "secondary": "Interactive radar and compact research footnote", "visual": "Dark radar panel with centered signal point and square geometry" },
+      "sections": ["Library hero", "Company table", "Profile overview", "Product workflow", "Business model", "Competition", "Watch items", "Sources"],
+      "components": ["Radar stage", "Company directory row", "Fact strip", "Workflow lab", "Source ledger"],
+      "responsive": ["Radar stacks below copy by 900px", "Profile hero changes to a vertical lockup", "Action groups become full-width at 580px"],
+      "buildSteps": ["Create the monochrome research shell", "Pair thesis copy with one functional radar", "Use wide profile sections with explicit evidence labels", "Keep sources and watch items as first-class modules"],
+      "sourceFiles": ["index.html:51-334", "styles.css:2408-2705"]
+    },
+    "motiondeck-studio": {
+      "preview": { "kicker": "Motion workspace", "headline": "Build on the stage.", "support": "Assets, animation, and connectors in one production shell.", "visual": "canvas", "rail": ["Library", "Projects", "Connectors"] },
+      "frame": { "desktop": "64px topbar + collapsible rail + production stage", "content": "Rail 64px collapsed / 248px expanded; canvas owns remaining width", "heroHeight": "Viewport workbench", "breakpoint": "1100px compress · 820px mobile dock" },
+      "hero": { "composition": "Not a marketing hero: the live canvas is the primary surface", "primary": "Asset/chat controls left of a persistent stage", "secondary": "Property controls and timeline around the stage", "visual": "Neutral canvas with live badge, orbit hint, and editable object" },
+      "sections": ["Topbar", "Collapsible asset rail", "Stage toolbar", "Live canvas", "Timeline", "Property panel", "Connector gallery"],
+      "components": ["Asset rail", "Stage badge", "Canvas", "Timeline track", "Connector card"],
+      "responsive": ["Controls compress at 1100px", "At 820px navigation becomes a four-item bottom dock", "Canvas and property panels become a vertical production stack"],
+      "buildSteps": ["Lock the viewport-height shell", "Give the stage the dominant flexible column", "Make rail collapse preserve tool identity", "Move navigation—not the stage—to a mobile dock"],
+      "sourceFiles": ["src/main.js:52-173", "src/style.css:24-171"]
+    },
+    "fleeting": {
+      "preview": { "kicker": "Expedition systems lab", "headline": "Keep the fleet alive.", "support": "A living workbook for the game, its rules, and its next proof.", "visual": "map", "rail": ["North star", "Systems", "Playtest"] },
+      "frame": { "desktop": "250px chapter rail + workbook canvas", "content": "Full canvas within the remaining viewport", "heroHeight": "510px", "breakpoint": "1100px hero stack · 800px horizontal nav" },
+      "hero": { "composition": ".92fr premise plus 1.08fr sector map", "primary": "Narrative premise, current status, and direct workbook actions", "secondary": "Playable sector-map visual", "visual": "Midnight system map with amber route traces" },
+      "sections": ["Workbook actions", "North star", "Core loop", "Balance lab", "Playtest", "System map", "Roadmap"],
+      "components": ["Chapter rail", "Sector map", "Metric grid", "Simulation controls", "Milestone card"],
+      "responsive": ["Hero stacks at 1100px", "At 800px the chapter rail becomes a sticky horizontal manual", "Dense maps become card grids on small screens"],
+      "buildSteps": ["Start with the chapter rail and save state", "Pair the premise with a system map", "Alternate narrative cards with runnable labs", "End each chapter in evidence or a next decision"],
+      "sourceFiles": ["index.html:17-301", "styles.css:28-91"]
+    },
+    "kaggriculture-fieldbook": {
+      "preview": { "kicker": "Strategy fieldbook", "headline": "One farm. Shared economy.", "support": "Experiments, agents, and results arranged like a working notebook.", "visual": "plots", "rail": ["Competition", "Agents", "Experiments"] },
+      "frame": { "desktop": "246px fixed fieldbook rail + 1040px reading shell", "content": "Shell is min(1040px, viewport − 64px)", "heroHeight": "Content-led, 48–78px vertical padding", "breakpoint": "980px hero stack · 680px compact" },
+      "hero": { "composition": "1.5fr strategy statement plus 310px state panel", "primary": "Thin editorial headline, short rules statement, two actions", "secondary": "Farm-state or competition summary", "visual": "Ruled field paper, crop-state marks, and ledger borders" },
+      "sections": ["Competition overview", "Submission record", "Strategy library", "Agent systems", "Mechanics", "Experiment log", "Next bet"],
+      "components": ["Fieldbook rail", "Stat strip", "Experiment notebook", "Agent diagram", "Result ledger"],
+      "responsive": ["Hero stacks at 980px", "Rail narrows before becoming mobile navigation", "At 680px controls and actions become full-width"],
+      "buildSteps": ["Create the fixed fieldbook index", "Keep all views inside one reading shell", "Pair every strategy with results or readiness", "Use color only for crop and experiment state"],
+      "sourceFiles": ["index.html:64-750", "styles.css:120-150,463-798"]
+    },
+    "sounddeck": {
+      "preview": { "kicker": "Audio workbench", "headline": "Shape the sound.", "support": "Generate, compare, and assemble takes without leaving the project.", "visual": "waveform", "rail": ["Workbench", "Projects", "Pipeline"] },
+      "frame": { "desktop": "Collapsible rail + workbench + dark audio stage", "content": "62px compact rail; central stage owns flexible space", "heroHeight": "Viewport workbench", "breakpoint": "1120px compact · 850px bottom dock" },
+      "hero": { "composition": "The waveform stage replaces a traditional hero", "primary": "Generation controls and take selection", "secondary": "Project context, sequence controls, and handoff state", "visual": "Radial dark stage with waveform, local-generation badge, and center lockup" },
+      "sections": ["Topbar", "Mode switch", "Workbench controls", "Audio stage", "Take strip", "Project library", "Pipeline handoff"],
+      "components": ["Mode switch", "Waveform stage", "Take card", "Transport controls", "Pipeline card"],
+      "responsive": ["Rail collapses by 1120px", "At 850px navigation moves to a five-item bottom dock", "Workbench panels stack while the waveform keeps a fixed usable height"],
+      "buildSteps": ["Build the persistent production shell", "Make the stage communicate state without extra copy", "Separate sound and song modes visibly", "Keep handoff provenance attached to projects"],
+      "sourceFiles": ["src/main.js:83-137", "src/styles.css:26-190,328-372"]
+    },
+    "cost-basis": {
+      "preview": { "kicker": "A finance notebook", "headline": "Markets, structures, businesses.", "support": "Personal research with the precision of a ledger and the pace of an essay.", "visual": "ledger", "rail": ["Latest thesis", "Companies", "Notebook"] },
+      "frame": { "desktop": "Wide editorial hero followed by bounded publication sections", "content": "Reading layouts top out near 1220px", "heroHeight": "635px", "breakpoint": "1100px compress · 760px stack" },
+      "hero": { "composition": ".9fr thesis copy plus 1.1fr visual/latest-note column", "primary": "Serif investment statement and notebook action", "secondary": "Grid-field visual and featured research card", "visual": "32px ledger grid, concentric field marks, and tabular metadata" },
+      "sections": ["Markets hero", "Featured research", "Recent notes", "Topic archive", "About strip", "Notebook reader"],
+      "components": ["Ledger field", "Featured thesis", "Post card", "Topic grid", "Reading index"],
+      "responsive": ["Hero keeps two columns until 760px", "Three-card archive becomes two then one", "Private studio removes side panels on mobile"],
+      "buildSteps": ["Establish ledger spacing and tabular metadata", "Pair the thesis with a precise visual field", "Use large section titles sparingly", "Separate public reading from private studio tools"],
+      "sourceFiles": ["src/pages/HomePage.tsx", "src/styles.css:44-194"]
+    },
+    "seat-scout": {
+      "preview": { "kicker": "Reservation field desk", "headline": "Plan the table before it opens.", "support": "Wish lists, release windows, and dining history in one private command center.", "visual": "calendar", "rail": ["Upcoming", "Shortlist", "Release desk"] },
+      "frame": { "desktop": "Fixed left rail + fluid command stage", "content": "Main stage offsets by the rail and uses 28–70px side padding", "heroHeight": "490px", "breakpoint": "850px drawer rail · 620px compact" },
+      "hero": { "composition": "Single 900px command statement with an embedded 760px concierge card", "primary": "Large sans statement and compact operational explanation", "secondary": "Prompt/composer for reservation research", "visual": "Brass signals, paper panels, and release-time rows" },
+      "sections": ["Command hero", "Concierge prompt", "Upcoming bookings", "Shortlist", "Release windows", "Visit history", "Connections"],
+      "components": ["Fixed command rail", "Concierge card", "Upcoming row", "Release countdown", "Source confidence badge"],
+      "responsive": ["Rail becomes an off-canvas drawer at 850px", "Hero loses its minimum height at 620px", "Operational rows hide secondary facts before stacking actions"],
+      "buildSteps": ["Anchor the private command rail", "Lead with the next reservation decision", "Keep source confidence next to release data", "Separate browsing, reminders, and booking actions"],
+      "sourceFiles": ["src/App.tsx", "src/styles.css:8-31"]
+    },
+    "crumb": {
+      "preview": { "kicker": "Living recipe journal", "headline": "Cook it. Change it. Keep the useful version.", "support": "A cookbook that remembers what happened after the recipe was written.", "visual": "recipe", "rail": ["Recipe library", "Cook view", "Weekly plan"] },
+      "frame": { "desktop": "Bounded warm-paper shell with grid texture", "content": "Hero 1.4fr/.6fr; task views use focused reading columns", "heroHeight": "610px", "breakpoint": "980px simplify · 650px stack" },
+      "hero": { "composition": "1.4fr editorial statement plus 380px ledger card", "primary": "Large Georgia headline and quick recipe-import composer", "secondary": "Tactile summary ledger with coral shadow", "visual": "Flour-paper grid, coral signals, and herb status marks" },
+      "sections": ["Home hero", "Quick import", "Library overview", "Category rail", "Recipe library", "Cook view", "Planner", "Revision notes"],
+      "components": ["Quick-add composer", "Hero ledger", "Overview card", "Recipe row", "Step-linked ingredient panel"],
+      "responsive": ["Hero and ledger stack below the tablet breakpoint", "Overview cards collapse from two columns to one", "Recipe method rows move ingredients beneath the active step"],
+      "buildSteps": ["Build the paper grid and bounded shell", "Pair editorial copy with one useful ledger", "Treat the recipe as a versioned object", "Keep cook-mode information adjacent to the current step"],
+      "sourceFiles": ["src/App.tsx", "src/styles.css:27,55-98,207-258"]
+    },
+    "willymlee": {
+      "preview": { "kicker": "Operator / builder / writer", "headline": "William Lee builds systems people can use.", "support": "Selected work, experience, and experiments connected as one narrative.", "visual": "portrait", "rail": ["Selected work", "Experience", "Writing"] },
+      "frame": { "desktop": "Centered 1400px portfolio field", "content": "6–10px responsive gutters; narrative sections share the 1400px frame", "heroHeight": "Content-led 10–14 spacing units", "breakpoint": "md 3-column hero · single-column mobile" },
+      "hero": { "composition": "Two-thirds statement plus one-third portrait/background rail", "primary": "Clash Display name and rotating Satoshi descriptors", "secondary": "Portrait, compact background, and social links behind a divider", "visual": "Personal photography and coral signal details" },
+      "sections": ["Identity hero", "Current work", "Selected projects", "Experience", "Media", "Writing", "Contact"],
+      "components": ["Rotating descriptor", "Profile rail", "Project ribbon", "Experience row", "Media ledger"],
+      "responsive": ["Hero becomes a 2/1 grid at md", "Portrait rail centers on mobile and loses its left divider", "Narrative rows preserve logo/title/action hierarchy before dropping metadata"],
+      "buildSteps": ["Set the 1400px narrative frame", "Pair one large identity statement with a personal rail", "Use recurring row grammar for work and media", "Let coral connect sections instead of filling them"],
+      "sourceFiles": ["pages/index.js:326-445", "styles/globals.css"]
+    },
+    "worth-more": {
+      "preview": { "kicker": "The company valuation game", "headline": "Which company is worth more?", "support": "Make the call, reveal the number, and build a streak.", "visual": "versus", "rail": ["Choose mode", "Compare", "Reveal"] },
+      "frame": { "desktop": "1720px maximum game canvas", "content": "Two equal company cards with a centered versus marker", "heroHeight": "Game-first, cards up to 470px", "breakpoint": "980px toolbar stack · 700px card stack" },
+      "hero": { "composition": "Rules strip and setup toolbar immediately above the matchup", "primary": "Known company card versus mystery company card", "secondary": "Streak header and higher/lower answer panel", "visual": "Large numbers, binary colors, and concentric valuation marks" },
+      "sections": ["Mode setup", "Play intro", "Matchup", "Answer/reveal", "Insights", "Data studio", "Methodology"],
+      "components": ["Mode toolbar", "Company card", "Streak pips", "Answer buttons", "Result panel"],
+      "responsive": ["Toolbar stacks at 980px", "Company cards stack at 700px while versus stays centered", "At 430px actions become full-width and cards reduce to 250px"],
+      "buildSteps": ["Start directly in the game loop", "Make known and unknown states unmistakable", "Keep answer controls close to the matchup", "Move analysis to separate insight and data views"],
+      "sourceFiles": ["index.html:26-99", "styles.css:206-293"]
+    }
+  }
+}

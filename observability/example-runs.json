@@ -1,0 +1,18 @@
+{
+  "dataKind": "example",
+  "notice": "Illustrative telemetry for interface development. These values are not measured Codex results.",
+  "runs": [
+    { "module": "context-budget", "variant": "baseline", "success": true, "qualityScore": 0.86, "durationMs": 842000, "toolCalls": 31, "inputTokens": 92000, "outputTokens": 18000, "estimatedCostUsd": 4.82 },
+    { "module": "context-budget", "variant": "candidate", "success": true, "qualityScore": 0.88, "durationMs": 711000, "toolCalls": 23, "inputTokens": 61000, "outputTokens": 16200, "estimatedCostUsd": 3.44 },
+    { "module": "batch-tool-calls", "variant": "baseline", "success": true, "qualityScore": 0.90, "durationMs": 420000, "toolCalls": 18, "inputTokens": 44000, "outputTokens": 10200, "estimatedCostUsd": 2.36 },
+    { "module": "batch-tool-calls", "variant": "candidate", "success": true, "qualityScore": 0.90, "durationMs": 292000, "toolCalls": 10, "inputTokens": 35100, "outputTokens": 9700, "estimatedCostUsd": 1.91 },
+    { "module": "web-interaction-loop", "variant": "baseline", "success": false, "qualityScore": 0.64, "durationMs": 510000, "toolCalls": 14, "inputTokens": 38000, "outputTokens": 8600, "estimatedCostUsd": 2.02 },
+    { "module": "web-interaction-loop", "variant": "candidate", "success": true, "qualityScore": 0.92, "durationMs": 548000, "toolCalls": 17, "inputTokens": 41200, "outputTokens": 9400, "estimatedCostUsd": 2.19 },
+    { "module": "orchestration-plan", "variant": "baseline", "success": true, "qualityScore": 0.84, "durationMs": 960000, "toolCalls": 27, "inputTokens": 76000, "outputTokens": 17100, "estimatedCostUsd": 4.13 },
+    { "module": "orchestration-plan", "variant": "candidate", "success": true, "qualityScore": 0.87, "durationMs": 676000, "toolCalls": 24, "inputTokens": 80100, "outputTokens": 18200, "estimatedCostUsd": 4.38 },
+    { "module": "eval-improvement-loop", "variant": "baseline", "success": false, "qualityScore": 0.71, "durationMs": 390000, "toolCalls": 11, "inputTokens": 29800, "outputTokens": 7200, "estimatedCostUsd": 1.58 },
+    { "module": "eval-improvement-loop", "variant": "candidate", "success": true, "qualityScore": 0.91, "durationMs": 452000, "toolCalls": 13, "inputTokens": 33700, "outputTokens": 8100, "estimatedCostUsd": 1.79 },
+    { "module": "design-tool-surface", "variant": "baseline", "success": true, "qualityScore": 0.79, "durationMs": 350000, "toolCalls": 15, "inputTokens": 32100, "outputTokens": 7600, "estimatedCostUsd": 1.72 },
+    { "module": "design-tool-surface", "variant": "candidate", "success": true, "qualityScore": 0.89, "durationMs": 282000, "toolCalls": 9, "inputTokens": 25700, "outputTokens": 6800, "estimatedCostUsd": 1.39 }
+  ]
+}

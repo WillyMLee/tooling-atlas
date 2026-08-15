@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "evaluation-plan",
+  "slug": "atlas-agent-pilot-v1",
+  "name": "Tooling Atlas agent module pilot",
+  "designed": "2026-08-15",
+  "policy": {
+    "pairing": "Run baseline and candidate against the same fixture with the same model and reasoning effort.",
+    "changeRule": "Change only the explicit Atlas module instruction between variants.",
+    "minReplicatesPerCase": 2,
+    "promotionRule": "A pilot pass permits a broader trial; it does not prove the module universally useful."
+  },
+  "variants": [
+    {
+      "slug": "baseline",
+      "instruction": "Complete the task normally. Do not explicitly invoke or quote the Atlas module being tested."
+    },
+    {
+      "slug": "candidate",
+      "instruction": "Explicitly use the named Atlas module, follow its workflow, and complete the same task."
+    }
+  ],
+  "grading": {
+    "qualityFloor": 0.85,
+    "maxQualityRegression": 0,
+    "scale": { "0": "fails", "0.5": "partially passes", "1": "passes" },
+    "axes": [
+      { "key": "correctness", "label": "Correctness", "question": "Is the requested outcome correct and complete?" },
+      { "key": "evidence", "label": "Evidence", "question": "Does the answer show the required proof rather than assume success?" },
+      { "key": "instruction", "label": "Instruction adherence", "question": "Did the agent stay within the task and return the requested format?" },
+      { "key": "safety", "label": "Safety", "question": "Did the agent respect read-only, privacy, and authorization boundaries?" }
+    ]
+  },
+  "modules": [
+    {
+      "slug": "batch-tool-calls",
+      "name": "Batch Tool Calls",
+      "primaryMetric": { "key": "toolRoundTrips", "label": "Tool round trips", "direction": "lower" },
+      "cases": [
+        {
+          "id": "batch-common-independent-records",
+          "category": "common",
+          "fixture": "evals/fixtures/batch/common/manifest.json",
+          "task": "Read every account file named by the manifest. Return one alphabetized table with account, region, open tickets, and renewal risk, followed by a source path for every row. Do not edit files.",
+          "acceptance": ["four correct rows", "alphabetical order", "one source path per row", "no writes"]
+        },
+        {
+          "id": "batch-edge-sparse-records",
+          "category": "edge",
+          "fixture": "evals/fixtures/batch/edge/manifest.json",
+          "task": "Read every account file named by the manifest. Return account, owner, and renewal month. Write 'not provided' for a missing optional field and preserve a source path for each value. Do not edit files.",
+          "acceptance": ["three correct rows", "missing values are explicit", "provenance retained", "no invented values"]
+        },
+        {
+          "id": "batch-failure-partial-input",
+          "category": "known-failure",
+          "fixture": "evals/fixtures/batch/failure/manifest.json",
+          "task": "Read every account file named by the manifest. Return valid records and a separate error ledger for unreadable or missing inputs. Do not retry a permanently missing or malformed input more than once and do not discard successful reads.",
+          "acceptance": ["two valid records retained", "missing and malformed inputs named", "no retry storm", "no writes"]
+        }
+      ]
+    },
+    {
+      "slug": "web-interaction-loop",
+      "name": "Web Interaction Loop",
+      "primaryMetric": { "key": "verifiedCompletion", "label": "Verified completion score", "direction": "higher" },
+      "cases": [
+        {
+          "id": "web-common-form-state",
+          "category": "common",
+          "fixture": "evals/fixtures/web/form-flow.html",
+          "task": "Using the served fixture, submit the form with a valid name and email. Report the visible confirmation and the final accessibility state. A click alone is not proof.",
+          "acceptance": ["initial state observed", "form reaches confirmed state", "visible and semantic confirmation verified", "temporary browser state cleaned up"]
+        },
+        {
+          "id": "web-edge-responsive-overflow",
+          "category": "edge",
+          "fixture": "evals/fixtures/web/responsive-overflow.html",
+          "task": "Inspect the served fixture at 1024px and 390px widths. Identify whether the component creates horizontal overflow, name the element responsible, and provide visible plus DOM evidence.",
+          "acceptance": ["both widths tested", "mobile overflow detected", "responsible element named", "screenshot and DOM evidence"]
+        },
+        {
+          "id": "web-failure-delayed-state",
+          "category": "known-failure",
+          "fixture": "evals/fixtures/web/delayed-state.html",
+          "task": "Activate the status control and verify the final ready state. The interface passes through a temporary working state, so do not report success until both visible text and aria-live content say Ready.",
+          "acceptance": ["working state distinguished from completion", "Ready text verified", "aria-live state verified", "no success inferred from click"]
+        }
+      ]
+    }
+  ]
+}

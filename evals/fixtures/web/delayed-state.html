@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas eval · delayed state</title>
+  <style>body{max-width:34rem;margin:4rem auto;padding:1rem;font:16px system-ui;color:#1f211e;background:#f6f2e9}section{padding:2rem;border:1px solid #8d8c84}button{padding:.7rem 1rem;font:inherit}#state[data-state="ready"]{color:#286133}</style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Index status</h1>
+      <button id="refresh" type="button">Refresh index</button>
+      <p id="state" role="status" aria-live="polite" data-state="idle">Idle</p>
+    </section>
+  </main>
+  <script>
+    document.querySelector("#refresh").addEventListener("click", () => {
+      const state = document.querySelector("#state");
+      state.textContent = "Working…";
+      state.dataset.state = "working";
+      setTimeout(() => {
+        state.textContent = "Ready";
+        state.dataset.state = "ready";
+      }, 600);
+    });
+  </script>
+</body>
+</html>

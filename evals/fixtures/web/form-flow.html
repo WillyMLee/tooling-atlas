@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas eval · form flow</title>
+  <style>body{max-width:36rem;margin:4rem auto;padding:1rem;font:16px system-ui;color:#18201d;background:#f6f2e9}form{display:grid;gap:1rem;padding:2rem;border:1px solid #9b9a91}label{display:grid;gap:.4rem}input,button{padding:.7rem;font:inherit}#confirmation{padding:1rem;background:#dcebdc}</style>
+</head>
+<body>
+  <main>
+    <h1>Request a field guide</h1>
+    <form id="request-form">
+      <label>Name <input name="name" required autocomplete="off"></label>
+      <label>Email <input name="email" type="email" required autocomplete="off"></label>
+      <button type="submit">Send request</button>
+    </form>
+    <p id="confirmation" role="status" hidden></p>
+  </main>
+  <script>
+    document.querySelector("form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
+      const name = new FormData(event.currentTarget).get("name");
+      const confirmation = document.querySelector("#confirmation");
+      confirmation.textContent = `Request confirmed for ${name}.`;
+      confirmation.hidden = false;
+      event.currentTarget.dataset.state = "confirmed";
+    });
+  </script>
+</body>
+</html>

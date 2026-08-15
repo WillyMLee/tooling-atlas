@@ -1,13 +1,16 @@
 # Tooling Atlas
 
-Tooling Atlas is an open working library for interface references, source-derived pattern packets, interaction patterns, and agent workflow skills. It exists so useful decisions from one project can become dependable starting points for the next.
+Tooling Atlas is an open working library for interface references, source-derived pattern packets, interaction patterns, agent workflow skills, and evidence about whether those skills help. It exists so useful decisions from one project can become dependable starting points for the next.
 
 ## What is inside
 
-- `catalog/` — design profiles with palette, type, brand, layout, and interaction notes.
+- `catalog/` — source-derived reconstruction profiles with code-native previews, hero anatomy, frame dimensions, responsive rules, build order, and provenance.
 - `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
 - `skills/` — validated Agent Skills for context, batching, browser work, orchestration, evals, and tool-surface design.
+- `observability/` — the backend-neutral event contract, qualified field observations, example dashboard data, and ClickHouse DDL.
 - `docs/` — longer implementation notes and contribution guidance.
+
+- `evals/` — stable baseline/candidate agent scenarios, fixtures, scoring rules, and observation guidance.
 
 ## Run locally
 
@@ -24,6 +27,12 @@ npm run build
 ```
 
 The static site is written to `dist/`.
+
+Run the complete structural validation and build with:
+
+```sh
+npm run check
+```
 
 ## Pattern kit
 
@@ -42,6 +51,21 @@ Import `modules/diagram-kit.css` once and override the documented `--ia-*` custo
 ## Skills
 
 Each folder in `skills/` is a standalone Agent Skill with `SKILL.md` and `agents/openai.yaml`. Copy a folder into your agent's skills directory or install it using the tooling supported by that agent. Review the module before enabling it in a production workflow.
+
+For personal Codex use, preview and then create user-scope links while keeping this repository as the source of truth:
+
+```sh
+npm run skills:link:dry
+npm run skills:link
+```
+
+## Control Tower
+
+The Control Tower is a separate measurement surface at `/control-tower.html`, not part of the editorial Atlas directory. It distinguishes a valid module from a proven module. The site ships with clearly labeled example telemetry so the dashboard can be designed without implying measured gains. See `docs/CONTROL_TOWER.md` for the event flow, privacy boundary, optional Codex hooks, and ClickHouse rollout.
+
+Module pages show two intentionally separate evidence types: dogfood field observations explain what happened during real Atlas work, while matched baseline/candidate benchmarks determine whether a module is actually proven.
+
+Print the first two-module pilot plan with `npm run eval:plan`. After recording matched observations, run `npm run eval:score -- <file>` to update the Control Tower. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
 
 ## License
 

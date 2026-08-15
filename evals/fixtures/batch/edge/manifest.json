@@ -1,0 +1,4 @@
+{
+  "files": ["ember.json", "fjord.json", "grove.json"],
+  "optionalFields": ["owner", "renewalMonth"]
+}

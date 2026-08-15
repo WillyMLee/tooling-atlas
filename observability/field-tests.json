@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "field-observation",
+  "generatedAt": "2026-08-15T22:30:00Z",
+  "notice": "These are dogfood observations from Tooling Atlas development. They are useful findings, but they are not matched baseline/candidate performance evidence.",
+  "observations": [
+    {
+      "module": "batch-tool-calls",
+      "status": "Observed failure",
+      "test": "Inspect eleven independent design-source repositories in one bounded read batch.",
+      "result": "The repositories were reached in one orchestration round trip, but the combined result reached 50,391 source tokens and was truncated.",
+      "finding": "Batching without a strict per-source return shape moved the bottleneck from latency to context size.",
+      "change": "Limit every source to hero composition, frame, section order, responsive rule, and provenance; cap each result before synthesis.",
+      "confidence": "Direct tool observation"
+    },
+    {
+      "module": "context-budget",
+      "status": "Observed recovery",
+      "test": "Recover the design audit after the oversized multi-repository result.",
+      "result": "Follow-up retrieval was narrowed to exact selectors and source ranges, while the working set retained all eleven project paths and the requested reconstruction fields.",
+      "finding": "Narrow retrieval preserved the evidence needed for implementation without rereading complete source files.",
+      "change": "Add an explicit output budget and compact resume packet to future broad Atlas audits.",
+      "confidence": "Direct tool observation"
+    },
+    {
+      "module": "web-interaction-loop",
+      "status": "Observed finding",
+      "test": "Inspect the current Crumb design profile and Context Budget module using DOM state plus visible screenshots.",
+      "result": "The design profile had only two narrative sections and no visual preview; the module page had five useful sections but no visible test bench or evidence ledger.",
+      "finding": "The content existed, but the presentation did not make reconstruction or evaluation easy.",
+      "change": "Add a visual reconstruction blueprint, anatomy/spec tables, responsive rules, test cases, and qualified findings.",
+      "confidence": "DOM + screenshot verification"
+    },
+    {
+      "module": "eval-improvement-loop",
+      "status": "Harness verified",
+      "test": "Run the scorer against synthetic baseline/candidate observations and inspect the resulting decision.",
+      "result": "The scorer preserved the synthetic label and returned collect-more with one of six required pairs rather than promoting the module.",
+      "finding": "The evidence gate resists accidental proof claims from incomplete or synthetic data.",
+      "change": "Run measured agent pairs next; keep field observations visually separate from benchmarks.",
+      "confidence": "Deterministic scorer test"
+    }
+  ]
+}

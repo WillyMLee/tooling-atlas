@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "template",
+  "suite": "atlas-agent-pilot-v1",
+  "recordingGuide": "Copy this file for a real trial. Add one baseline and one candidate observation for the same module, scenario, and replicate. Use null when token or cost data is unavailable.",
+  "observations": []
+}

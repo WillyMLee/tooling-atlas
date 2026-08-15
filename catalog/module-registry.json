@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-08-15",
+  "modules": [
+    {
+      "slug": "context-budget",
+      "version": "0.2.0",
+      "packagePath": "skills/context-budget",
+      "maturity": "Experimental",
+      "evidenceStatus": "Unmeasured",
+      "hypothesis": "Narrow retrieval and resume packets reduce repeated reads and context growth without losing required evidence.",
+      "primaryMetric": "Repeated source reads per completed task",
+      "guardrailMetrics": ["Task success", "Evidence completeness", "Resume success"],
+      "events": ["module.selected", "context.reduced", "resume_packet.created"],
+      "evalCases": ["Large repository audit", "Long research synthesis", "Compaction recovery"]
+    },
+    {
+      "slug": "batch-tool-calls",
+      "version": "0.2.0",
+      "packagePath": "skills/batch-tool-calls",
+      "maturity": "Ready",
+      "evidenceStatus": "Ready to benchmark",
+      "hypothesis": "Bounded batches of independent reads reduce wall-clock time and round trips while preserving final evidence quality.",
+      "primaryMetric": "Tool round trips per completed task",
+      "guardrailMetrics": ["Task success", "Evidence completeness", "Duplicate call rate"],
+      "events": ["module.selected", "batch.started", "batch.completed"],
+      "evalCases": ["Multi-source company research", "Asset inventory", "Parallel metadata lookup"]
+    },
+    {
+      "slug": "web-interaction-loop",
+      "version": "0.2.0",
+      "packagePath": "skills/web-interaction-loop",
+      "maturity": "Ready",
+      "evidenceStatus": "Ready to benchmark",
+      "hypothesis": "Observe-act-verify loops catch visual and state regressions that click-only browser workflows miss.",
+      "primaryMetric": "Verified completion rate",
+      "guardrailMetrics": ["Regression detection", "Unsafe action rate", "Temporary state cleanup"],
+      "events": ["module.selected", "browser.observed", "browser.verified"],
+      "evalCases": ["Responsive UI QA", "Authenticated form flow", "Animation verification"]
+    },
+    {
+      "slug": "orchestration-plan",
+      "version": "0.2.0",
+      "packagePath": "skills/orchestration-plan",
+      "maturity": "Ready",
+      "evidenceStatus": "Ready to benchmark",
+      "hypothesis": "Dependency-aware routing shortens the critical path only when workstreams are independent and ownership does not overlap.",
+      "primaryMetric": "Critical-path duration",
+      "guardrailMetrics": ["Task success", "Duplicate work", "Merge conflicts"],
+      "events": ["module.selected", "workstream.started", "workstream.completed"],
+      "evalCases": ["Research plus implementation", "Independent asset audit", "Multi-surface verification"]
+    },
+    {
+      "slug": "eval-improvement-loop",
+      "version": "0.2.0",
+      "packagePath": "skills/eval-improvement-loop",
+      "maturity": "Ready",
+      "evidenceStatus": "Ready to benchmark",
+      "hypothesis": "Stable baseline-versus-candidate comparisons improve task quality more reliably than anecdotal prompt changes.",
+      "primaryMetric": "Quality-gated task success delta",
+      "guardrailMetrics": ["Safety", "Evidence adherence", "Regression count"],
+      "events": ["module.selected", "eval.started", "eval.completed"],
+      "evalCases": ["Prompt revision", "Model comparison", "Tool-routing regression"]
+    },
+    {
+      "slug": "design-tool-surface",
+      "version": "0.2.0",
+      "packagePath": "skills/design-tool-surface",
+      "maturity": "Ready",
+      "evidenceStatus": "Ready to benchmark",
+      "hypothesis": "Distinct tool contracts reduce first-choice routing errors, unnecessary retries, and oversized results.",
+      "primaryMetric": "Correct first tool selection rate",
+      "guardrailMetrics": ["Task success", "Error recovery", "Evidence provenance"],
+      "events": ["module.selected", "tool.selected", "tool.completed"],
+      "evalCases": ["Search versus browser routing", "Overlapping API tools", "Error recovery"]
+    }
+  ]
+}

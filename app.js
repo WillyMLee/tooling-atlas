@@ -149,6 +149,14 @@ const packetOptions = {
 
 const renderers = { live: renderLiveProcess, workflow: renderProductWorkflow, problem: renderProblemNarrative, radar: renderCompetitiveRadar, ledger: renderHeroLedger, step: renderStepDetail, planner: renderPlannerRail };
 let sites = [];
+let moduleRegistry = [];
+let telemetryRuns = [];
+let telemetryNotice = "No telemetry dataset loaded.";
+let telemetryKind = "pending";
+let evalSummaries = [];
+let pilotSuite = { modules: [], grading: {} };
+let designSpecs = {};
+let fieldTests = [];
 let currentPacket = "live";
 let packetAccent = "#b44c36";
 
@@ -156,15 +164,47 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, (character)
 const showToast = (message) => { toast.textContent = message; toast.classList.add("is-visible"); window.setTimeout(() => toast.classList.remove("is-visible"), 1600); };
 const routeTo = (hash) => { window.location.hash = hash; };
 const pageHead = (kicker, title, description) => `<header class="page-head"><span class="eyebrow">${kicker}</span><h1>${title}</h1><p>${description}</p></header>`;
+const moduleFor = (slug) => moduleRegistry.find((module) => module.slug === slug) || {};
+const specFor = (slug) => designSpecs[slug] || {};
+const fieldTestFor = (slug) => fieldTests.filter((observation) => observation.module === slug);
+const percentDelta = (candidate, baseline) => baseline ? ((candidate - baseline) / baseline) * 100 : 0;
+const signed = (value, suffix = "%") => `${value > 0 ? "+" : ""}${value.toFixed(0)}${suffix}`;
+const averageKnown = (values) => { const known = values.filter((value) => typeof value === "number"); return known.length ? known.reduce((sum, value) => sum + value, 0) / known.length : null; };
+const aggregateRun = (module, variant) => {
+  const runs = telemetryRuns.filter((run) => run.module === module && run.variant === variant);
+  if (!runs.length) return null;
+  return {
+    success: runs.filter((run) => run.success).length / runs.length,
+    qualityScore: averageKnown(runs.map((run) => run.qualityScore)),
+    durationMs: averageKnown(runs.map((run) => run.durationMs)),
+    toolCalls: averageKnown(runs.map((run) => run.toolCalls)),
+    estimatedCostUsd: averageKnown(runs.map((run) => run.estimatedCostUsd)),
+  };
+};
+const deltaCell = (candidate, baseline, key, lowerIsBetter = true) => {
+  if (candidate?.[key] === null || baseline?.[key] === null || candidate?.[key] === undefined || baseline?.[key] === undefined) return { value: "—", className: "" };
+  const delta = percentDelta(candidate[key], baseline[key]);
+  const better = lowerIsBetter ? delta <= 0 : delta >= 0;
+  return { value: signed(delta), className: better ? "is-better" : "is-worse" };
+};
+const previewStyle = (site) => `--preview-bg:${site.colors?.[0]?.hex || "#f2eee5"};--preview-fg:${site.colors?.[0]?.text || site.colors?.[1]?.hex || "#20211e"};--preview-ink:${site.colors?.[1]?.hex || "#20211e"};--preview-accent:${site.colors?.[2]?.hex || "#b44c36"}`;
+const renderPreviewCanvas = (site, spec, compact = false) => `<div class="site-preview ${compact ? "is-compact" : ""}" style="${previewStyle(site)}" data-visual="${escapeHtml(spec.preview?.visual || "field")}">
+  <div class="preview-chrome"><i></i><i></i><i></i><span>${escapeHtml(site.name)}</span></div>
+  <div class="preview-page">
+    <header class="preview-header"><strong>${escapeHtml(site.name)}</strong><nav><i></i><i></i><i></i></nav></header>
+    <div class="preview-hero-grid"><div class="preview-copy"><span>${escapeHtml(spec.preview?.kicker || site.type)}</span><h2>${escapeHtml(spec.preview?.headline || site.name)}</h2><p>${escapeHtml(spec.preview?.support || site.summary)}</p><b></b></div><div class="preview-visual" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+    <div class="preview-rail">${(spec.preview?.rail || site.brandElements || []).slice(0,3).map((item,index) => `<div><span>0${index + 1}</span><strong>${escapeHtml(item)}</strong></div>`).join("")}</div>
+  </div>
+</div>`;
 
 function renderSidebar() {
   designLinks.innerHTML = sites.map((site, index) => `<a href="#design/${site.slug}" data-route-link data-search-item="${escapeHtml(`${site.name} ${site.type} ${site.theme}`)}">D${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(site.name)}</strong></a>`).join("");
   skillLinks.innerHTML = `<a href="#skills" data-route-link data-search-item="all agent modules optimization skills">A00 <strong>All modules</strong></a>${skills.map((skill, index) => `<a href="#skill/${skill.slug}" data-route-link data-search-item="${escapeHtml(`${skill.name} ${skill.summary}`)}">A${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(skill.name)}</strong></a>`).join("")}`;
-  document.querySelector("#atlas-count").textContent = `${sites.length + packets.length + skills.length + 3} entries`;
+  document.querySelector("#atlas-count").textContent = `${sites.length + packets.length + skills.length + 4} entries`;
 }
 
 function renderOverview() {
-  const recent = sites.slice(0, 5);
+  const recent = sites;
   view.innerHTML = `<div class="page">
     <section class="overview-hero">
       <div class="overview-copy">
@@ -180,14 +220,15 @@ function renderOverview() {
     </section>
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">01 / Recently cataloged</span><h2>Design gallery</h2></div><p>Open a reference sheet for the palette, type system, brand language, layout, and interaction choices behind each project.</p></div>
-      <table class="entry-table"><thead><tr><th>No.</th><th>Design</th><th>Mode</th><th>Useful pattern</th></tr></thead><tbody>${recent.map((site, index) => `<tr data-href="#design/${site.slug}" tabindex="0"><td>${String(index + 1).padStart(2,"0")}</td><td><strong>${escapeHtml(site.name)}</strong></td><td><span class="type-chip">${escapeHtml(site.type)}</span></td><td class="table-muted">${escapeHtml(site.pattern)}</td></tr>`).join("")}</tbody></table>
+      <div class="design-gallery-grid">${recent.map((site, index) => { const spec = specFor(site.slug); return `<a class="design-gallery-card" href="#design/${site.slug}">${renderPreviewCanvas(site, spec, true)}<div class="design-gallery-copy"><span>D${String(index + 1).padStart(2,"0")} / ${escapeHtml(site.type)}</span><h3>${escapeHtml(site.name)}</h3><p>${escapeHtml(spec.hero?.composition || site.layout)}</p><small>Open reconstruction profile →</small></div></a>`; }).join("")}</div>
     </section>
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">02 / Working packets</span><h2>Start from a proven shape</h2></div><p>Packets keep recurring interface work consistent while leaving the content, tone, and final judgment open.</p></div>
-      <div class="overview-grid">
+      <div class="overview-grid overview-grid-four">
         <a class="overview-card" href="#packets"><span>P / 07</span><h3>Pattern packets</h3><p>Seven code-native modules extracted from interfaces already proven across your sites.</p><small>Open library →</small></a>
         <a class="overview-card" href="#interactions"><span>I / 03</span><h3>Interaction packets</h3><p>Quiet motion patterns with timing, purpose, and reduced-motion behavior.</p><small>Inspect motion →</small></a>
         <a class="overview-card" href="#skills"><span>A / 06</span><h3>Agent modules</h3><p>Installable operating playbooks for context, tools, browsing, orchestration, and evals.</p><small>Review modules →</small></a>
+        <a class="overview-card" href="./control-tower.html"><span>C / 01</span><h3>Control Tower</h3><p>A separate measurement site for quality, activity, latency, tokens, and cost comparisons.</p><small>Open measurement site ↗</small></a>
       </div>
     </section>
   </div>`;
@@ -195,29 +236,29 @@ function renderOverview() {
 
 function renderDesign(site) {
   if (!site) return renderNotFound();
+  const spec = specFor(site.slug);
   view.innerHTML = `<article class="page">
-    <header class="design-hero">
+    <header class="design-hero design-profile-hero">
       <div><span class="eyebrow">DESIGN PROFILE / ${escapeHtml(site.type)}</span><h1>${escapeHtml(site.name)}</h1><p class="lede">${escapeHtml(site.summary)}</p></div>
-      <dl class="design-meta"><div><dt>Theme</dt><dd>${escapeHtml(site.theme)}</dd></div><div><dt>Typeface</dt><dd>${escapeHtml(site.typeface)}</dd></div><div><dt>State</dt><dd>Observed pattern</dd></div><div><dt>Project</dt><dd><a href="${site.url}" target="_blank" rel="noreferrer">Open live site ↗</a></dd></div></dl>
+      <dl class="design-meta"><div><dt>Archetype</dt><dd>${escapeHtml(spec.hero?.composition || site.layout)}</dd></div><div><dt>Frame</dt><dd>${escapeHtml(spec.frame?.desktop || "Not recorded")}</dd></div><div><dt>Breakpoint</dt><dd>${escapeHtml(spec.frame?.breakpoint || "Not recorded")}</dd></div><div><dt>Source</dt><dd><a href="${site.url}" target="_blank" rel="noreferrer">Open live site ↗</a></dd></div></dl>
     </header>
-    <div class="profile-layout">
-      <div class="profile-main">
-        <section class="profile-block"><span class="field-label">Design summary</span><h2>What gives it its character</h2><p>${escapeHtml(site.designSummary)}</p></section>
-        <section class="profile-block"><span class="field-label">System notes</span><h2>Reusable decisions</h2><ul class="attribute-list">
-          <li><strong>Brand language</strong><span>${escapeHtml(site.brandElements.join(" · "))}</span></li>
-          <li><strong>Layout</strong><span>${escapeHtml(site.layout)}</span></li>
-          <li><strong>Interaction</strong><span>${escapeHtml(site.interactions)}</span></li>
-          <li><strong>Best reused for</strong><span>${escapeHtml(site.pattern)}</span></li>
-          <li><strong>Watch for</strong><span>${escapeHtml(site.caution)}</span></li>
-        </ul></section>
-      </div>
-      <aside class="profile-side">
-        <span class="field-label">Color system</span><h2>${escapeHtml(site.theme)}</h2>
-        <div class="palette">${site.colors.map((color) => `<div class="swatch" style="background:${color.hex};color:${color.text || "#20211e"}"><span>${escapeHtml(color.name)}</span><code>${escapeHtml(color.hex)}</code></div>`).join("")}</div>
-        <div class="type-specimen"><span class="field-label">Typeface</span><p>${escapeHtml(site.typeface)}</p></div>
-        <div class="tag-list">${site.brandElements.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
+    <section class="reconstruction-preview"><div class="preview-heading"><div><span class="field-label">Reconstruction blueprint</span><h2>See the composition before reading the rules.</h2></div><p>This is a code-native layout model, not a screenshot. It shows the hierarchy, proportions, and recurring components an agent should reproduce.</p></div>${renderPreviewCanvas(site, spec)}<ol class="preview-callouts"><li><span>01</span><strong>Primary move</strong><p>${escapeHtml(spec.hero?.primary || site.layout)}</p></li><li><span>02</span><strong>Supporting move</strong><p>${escapeHtml(spec.hero?.secondary || site.interactions)}</p></li><li><span>03</span><strong>Visual language</strong><p>${escapeHtml(spec.hero?.visual || site.designSummary)}</p></li></ol></section>
+    <div class="reconstruction-layout">
+      <main>
+        <section class="profile-block"><span class="field-label">Design character</span><h2>What makes it recognizable</h2><p>${escapeHtml(site.designSummary)}</p></section>
+        <section class="profile-block"><span class="field-label">Hero anatomy</span><h2>Rebuild the opening frame</h2><dl class="spec-ledger"><div><dt>Composition</dt><dd>${escapeHtml(spec.hero?.composition || site.layout)}</dd></div><div><dt>Primary module</dt><dd>${escapeHtml(spec.hero?.primary || "Not recorded")}</dd></div><div><dt>Secondary module</dt><dd>${escapeHtml(spec.hero?.secondary || "Not recorded")}</dd></div><div><dt>Minimum height</dt><dd>${escapeHtml(spec.frame?.heroHeight || "Content-led")}</dd></div></dl></section>
+        <section class="profile-block"><span class="field-label">Page sequence</span><h2>Section order and rhythm</h2><ol class="section-sequence">${(spec.sections || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><strong>${escapeHtml(item)}</strong></li>`).join("")}</ol></section>
+        <section class="profile-block"><span class="field-label">Agent build order</span><h2>Recreate it without copying blindly</h2><ol class="build-sequence">${(spec.buildSteps || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
+      </main>
+      <aside class="reconstruction-side">
+        <section><span class="field-label">Frame specification</span><dl class="frame-spec"><div><dt>Desktop shell</dt><dd>${escapeHtml(spec.frame?.desktop || "Not recorded")}</dd></div><div><dt>Content width</dt><dd>${escapeHtml(spec.frame?.content || "Not recorded")}</dd></div><div><dt>Responsive change</dt><dd>${escapeHtml(spec.frame?.breakpoint || "Not recorded")}</dd></div></dl></section>
+        <section><span class="field-label">Color system</span><h2>${escapeHtml(site.theme)}</h2><div class="palette">${site.colors.map((color) => `<div class="swatch" style="background:${color.hex};color:${color.text || "#20211e"}"><span>${escapeHtml(color.name)}</span><code>${escapeHtml(color.hex)}</code></div>`).join("")}</div></section>
+        <section><span class="field-label">Type roles</span><p class="type-role">${escapeHtml(site.typeface)}</p></section>
+        <section><span class="field-label">Core components</span><ul class="component-list">${(spec.components || site.brandElements).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+        <section><span class="field-label">Source provenance</span><ul class="source-file-list">${(spec.sourceFiles || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
       </aside>
     </div>
+    <section class="responsive-spec"><div><span class="field-label">Responsive behavior</span><h2>The design must survive smaller fields.</h2><p>${escapeHtml(site.caution)}</p></div><ol>${(spec.responsive || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
   </article>`;
 }
 
@@ -267,23 +308,77 @@ function renderInteractions() {
 
 function renderSkillsIndex() {
   view.innerHTML = `<div class="page">${pageHead("AGENT MODULES / WORKING SET", "Choose the operating method<br><em>before adding complexity.</em>", "Installable playbooks for recurring agent failure modes. Each module explains when it should trigger, when it should not, the operating sequence, an example, and how improvement is measured.")}
-    <section class="content-section"><div class="skill-grid">${skills.map((skill, index) => `<a class="skill-card" href="#skill/${skill.slug}"><div class="skill-card-top"><span>A${String(index+1).padStart(2,"0")}</span><span>${skill.status}</span></div><h2>${skill.name}</h2><p>${skill.summary}</p><dl><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Result</dt><dd>${skill.outcome}</dd></div></dl><span>Open playbook →</span></a>`).join("")}</div></section></div>`;
+    <section class="module-truth"><strong>Package status is not performance evidence.</strong><span>Every module below is valid and reusable; none is labeled proven until representative baseline-versus-candidate runs pass the quality gates.</span><a href="./control-tower.html">Open measurement site ↗</a></section>
+    <section class="content-section"><div class="skill-grid">${skills.map((skill, index) => { const meta = moduleFor(skill.slug); return `<a class="skill-card" href="#skill/${skill.slug}"><div class="skill-card-top"><span>A${String(index+1).padStart(2,"0")}</span><span>${meta.evidenceStatus || "Unmeasured"}</span></div><h2>${skill.name}</h2><p>${skill.summary}</p><dl><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Measure</dt><dd>${meta.primaryMetric || skill.outcome}</dd></div></dl><span>Open playbook →</span></a>`; }).join("")}</div></section></div>`;
 }
 
 function renderSkill(skill) {
   if (!skill) return renderNotFound();
+  const meta = moduleFor(skill.slug);
+  const pilot = pilotSuite.modules.find((module) => module.slug === skill.slug);
+  const summary = evalSummaries.find((item) => item.module === skill.slug);
+  const observations = fieldTestFor(skill.slug);
+  const cases = pilot?.cases || (meta.evalCases || []).map((item,index) => ({ id: `${skill.slug}-${index + 1}`, category: "planned", task: item, acceptance: [] }));
   view.innerHTML = `<article class="page">
-    <header class="design-hero skill-hero"><div><span class="eyebrow">AGENT MODULE / ${skill.status}</span><h1>${skill.name}</h1><p class="lede">${skill.summary}</p></div><dl class="design-meta"><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Avoid when</dt><dd>${skill.avoid}</dd></div><div><dt>Outcome</dt><dd>${skill.outcome}</dd></div><div><dt>Source</dt><dd><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/${skill.sourcePath}" target="_blank" rel="noreferrer">Open SKILL.md ↗</a></dd></div></dl></header>
-    <div class="skill-detail-layout"><div class="skill-main"><section class="profile-block"><span class="field-label">Operating sequence</span><h2>How the module runs</h2><ol class="skill-sequence">${skill.steps.map(([title, detail]) => `<li><strong>${title}</strong><span>${detail}</span></li>`).join("")}</ol></section>
-    <section class="profile-block"><span class="field-label">Worked example</span><h2>What changes in practice</h2><div class="skill-example"><div><small>Situation</small><p>${skill.example.scenario}</p></div><div><small>Operating pattern</small><p>${skill.example.pattern}</p></div><div><small>Useful output</small><p>${skill.example.deliverable}</p></div></div></section></div>
-    <aside class="skill-side"><section><span class="field-label">Safety boundaries</span><h2>Keep intact</h2><ul class="guardrail-list">${skill.safeguards.map((item) => `<li>${item}</li>`).join("")}</ul></section><section><span class="field-label">Measure the result</span><h2>Success checks</h2><ol class="measure-list">${skill.measures.map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span>${item}</li>`).join("")}</ol></section><section><span class="field-label">Primary sources</span><ul class="source-list">${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer"><span>${label}</span><span>↗</span></a></li>`).join("")}</ul></section></aside></div>
+    <header class="module-hero"><div><span class="eyebrow">AGENT MODULE / ${skill.status}</span><h1>${skill.name}</h1><p>${skill.summary}</p></div><aside><span class="field-label">One-line contract</span><strong>${skill.trigger}</strong><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/${skill.sourcePath}" target="_blank" rel="noreferrer">Open source playbook ↗</a></aside></header>
+    <section class="module-status-strip"><article><span>Package</span><strong>v${meta.version || "—"}</strong><small>${skill.status}</small></article><article><span>Evidence</span><strong>${summary?.decision || meta.evidenceStatus || "Unmeasured"}</strong><small>${summary ? `${summary.pairedRuns}/${summary.requiredPairs} pairs` : "No matched pairs"}</small></article><article><span>Primary metric</span><strong>${escapeHtml(meta.primaryMetric || "Not defined")}</strong><small>Quality must pass first</small></article><article><span>Field observations</span><strong>${observations.length}</strong><small>Qualified dogfood findings</small></article></section>
+    <section class="module-operating"><div><span class="field-label">Operating sequence</span><h2>What Codex actually does differently</h2><ol class="skill-sequence">${skill.steps.map(([title, detail]) => `<li><strong>${title}</strong><span>${detail}</span></li>`).join("")}</ol></div><aside><div><span class="field-label">Use when</span><p>${skill.trigger}</p></div><div><span class="field-label">Avoid when</span><p>${skill.avoid}</p></div><div><span class="field-label">Expected output</span><p>${skill.outcome}</p></div></aside></section>
+    <section class="worked-example"><div><span class="field-label">Worked example</span><h2>Situation → method → useful output</h2></div><div class="worked-example-grid"><article><span>01 / Situation</span><p>${skill.example.scenario}</p></article><article><span>02 / Operating pattern</span><p>${skill.example.pattern}</p></article><article><span>03 / Useful output</span><p>${skill.example.deliverable}</p></article></div></section>
+    <section class="module-test-lab"><div class="test-lab-heading"><div><span class="field-label">Test bench</span><h2>How this module can fail—and how we check it.</h2></div><p>${escapeHtml(meta.hypothesis || "A representative baseline and candidate still need to be defined.")}</p></div><div class="test-case-grid">${cases.map((test,index) => `<article><div><span>${String(index + 1).padStart(2,"0")}</span><em>${escapeHtml(test.category)}</em></div><h3>${escapeHtml(test.id.replaceAll("-", " "))}</h3><p>${escapeHtml(test.task)}</p>${test.acceptance?.length ? `<ul>${test.acceptance.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}</article>`).join("")}</div></section>
+    <section class="module-findings"><div class="findings-heading"><div><span class="field-label">Findings ledger</span><h2>What we have actually learned so far</h2></div><p>Field observations are direct dogfood evidence, but they are not matched performance comparisons. The distinction stays visible.</p></div>${observations.length ? `<div class="finding-grid">${observations.map((item) => `<article><div><span>${escapeHtml(item.status)}</span><em>${escapeHtml(item.confidence)}</em></div><h3>${escapeHtml(item.test)}</h3><dl><div><dt>Result</dt><dd>${escapeHtml(item.result)}</dd></div><div><dt>Finding</dt><dd>${escapeHtml(item.finding)}</dd></div><div><dt>Change</dt><dd>${escapeHtml(item.change)}</dd></div></dl></article>`).join("")}</div>` : `<div class="empty-finding"><strong>No field observation yet.</strong><p>This module still needs a real task trace before the Atlas can show a finding.</p></div>`}</section>
+    <section class="module-evidence-board"><div><span class="field-label">Evaluation contract</span><h2>What would justify keeping it</h2><p>${escapeHtml(meta.hypothesis || "Not defined")}</p></div><dl><div><dt>Primary metric</dt><dd>${escapeHtml(meta.primaryMetric || "Not defined")}</dd></div><div><dt>Guardrails</dt><dd>${escapeHtml((meta.guardrailMetrics || []).join(" · "))}</dd></div><div><dt>Measured pairs</dt><dd>${summary ? `${summary.pairedRuns} of ${summary.requiredPairs}` : "0"}</dd></div><div><dt>Current decision</dt><dd>${escapeHtml(summary?.decision || "collect-more")}</dd></div></dl></section>
+    <section class="module-reference-grid"><article><span class="field-label">Safety boundaries</span><h2>Keep intact</h2><ul class="guardrail-list">${skill.safeguards.map((item) => `<li>${item}</li>`).join("")}</ul></article><article><span class="field-label">Success checks</span><h2>Measure the result</h2><ol class="measure-list">${skill.measures.map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span>${item}</li>`).join("")}</ol></article><article><span class="field-label">Primary sources</span><h2>Read further</h2><ul class="source-list">${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer"><span>${label}</span><span>↗</span></a></li>`).join("")}</ul></article></section>
   </article>`;
+}
+
+function renderControlTower() {
+  const comparisons = moduleRegistry.map((module) => {
+    const baseline = aggregateRun(module.slug, "baseline");
+    const candidate = aggregateRun(module.slug, "candidate");
+    return { module, baseline, candidate };
+  }).filter((item) => item.baseline && item.candidate);
+  const candidates = comparisons.map((item) => item.candidate);
+  const successRate = averageKnown(candidates.map((run) => run.success)) || 0;
+  const averageQuality = averageKnown(candidates.map((run) => run.qualityScore)) || 0;
+  const averageCalls = averageKnown(candidates.map((run) => run.toolCalls));
+  const totalCost = candidates.some((run) => run.estimatedCostUsd !== null) ? candidates.reduce((sum, run) => sum + (run.estimatedCostUsd || 0), 0) : null;
+  const isMeasured = telemetryKind === "measured";
+  const pilotCases = pilotSuite.modules.reduce((sum, module) => sum + module.cases.length, 0);
+  const pairedRuns = evalSummaries.reduce((sum, summary) => sum + summary.pairedRuns, 0);
+
+  view.innerHTML = `<div class="page control-tower-page">
+    ${pageHead("CONTROL TOWER / EVIDENCE LAYER", "See what helps.<br><em>Retire what does not.</em>", "A quality-first measurement layer for agent modules, tool activity, latency, tokens, and estimated cost. The event contract is backend-neutral; ClickHouse is the durable analytics path.")}
+    <section class="telemetry-notice ${isMeasured ? "is-measured" : ""}"><strong>${isMeasured ? "Measured pilot" : "Preview data only"}</strong><p>${escapeHtml(telemetryNotice)} ${isMeasured ? "These results come from scored pairs." : "The table below demonstrates the reading model; it is not performance evidence."} No ClickHouse connection is active.</p></section>
+    <section class="control-summary">
+      <article><span>Candidate success</span><strong>${(successRate * 100).toFixed(0)}%</strong><small>${isMeasured ? "Scored candidate runs" : "Example quality gate"}</small></article>
+      <article><span>Average quality</span><strong>${averageQuality.toFixed(2)}</strong><small>Correctness · evidence · instruction · safety</small></article>
+      <article><span>Average tool calls</span><strong>${averageCalls === null ? "—" : averageCalls.toFixed(1)}</strong><small>${isMeasured ? "Measured candidate runs" : "Example candidate runs"}</small></article>
+      <article><span>Estimated cost</span><strong>${totalCost === null ? "—" : `$${totalCost.toFixed(2)}`}</strong><small>Unknown stays unknown—not $0</small></article>
+    </section>
+    <section class="content-section">
+      <div class="section-heading"><div><span class="section-index">01 / Module evidence</span><h2>Claims with a test attached</h2></div><p>Each module has a falsifiable hypothesis, one primary metric, quality guardrails, and representative cases.</p></div>
+      <div class="tower-table-wrap"><table class="tower-table"><thead><tr><th>Module</th><th>Decision</th><th>Quality</th><th>Time</th><th>Tool calls</th><th>Cost</th></tr></thead><tbody>${comparisons.map(({ module, baseline, candidate }) => { const time = deltaCell(candidate, baseline, "durationMs"); const calls = deltaCell(candidate, baseline, "toolCalls"); const cost = deltaCell(candidate, baseline, "estimatedCostUsd"); const summary = evalSummaries.find((item) => item.module === module.slug); return `<tr><td><a href="./index.html#skill/${module.slug}"><strong>${escapeHtml(skills.find((skill) => skill.slug === module.slug)?.name || module.slug)}</strong><small>${escapeHtml(module.primaryMetric)}</small></a></td><td><span class="evidence-chip">${escapeHtml(summary?.decision || module.evidenceStatus)}</span></td><td>${signed((candidate.qualityScore - baseline.qualityScore) * 100, " pts")}</td><td class="${time.className}">${time.value}</td><td class="${calls.className}">${calls.value}</td><td class="${cost.className}">${cost.value}</td></tr>`; }).join("")}</tbody></table></div>
+      <p class="tower-footnote">${isMeasured ? "Measured comparisons" : "Example comparisons"} use the same reading rule: positive quality is good; negative time, calls, and cost are good only after every quality gate passes.</p>
+    </section>
+    <section class="pilot-status">
+      <div><span class="section-index">02 / Pilot readiness</span><h2>Six stable situations.<br>Two modules first.</h2><p>The fixtures make repeat runs comparable. Each module has a common case, an edge case, and a known failure, with two replications required per case.</p></div>
+      <dl><div><dt>Pilot modules</dt><dd>${pilotSuite.modules.length}</dd></div><div><dt>Stable scenarios</dt><dd>${pilotCases}</dd></div><div><dt>Measured pairs</dt><dd>${pairedRuns}</dd></div><div><dt>Quality floor</dt><dd>${pilotSuite.grading.qualityFloor ? `${Math.round(pilotSuite.grading.qualityFloor * 100)}%` : "—"}</dd></div></dl>
+    </section>
+    <section class="tower-architecture">
+      <div><span class="section-index">03 / Event flow</span><h2>One contract, optional backends</h2><p>Codex hooks provide lifecycle and tool activity. API agents add usage and trace fields. Eval runners add deliberate attribution and grader results. Every source normalizes to the same versioned event before storage.</p><a class="text-link" href="https://github.com/WillyMLee/tooling-atlas/blob/main/docs/CONTROL_TOWER.md" target="_blank" rel="noreferrer">Read the architecture ↗</a></div>
+      <ol class="tower-flow"><li><span>01</span><strong>Capture</strong><small>Hooks, traces, evals</small></li><li><span>02</span><strong>Normalize</strong><small>Privacy-minimal v1 event</small></li><li><span>03</span><strong>Store</strong><small>Local NDJSON or ClickHouse</small></li><li><span>04</span><strong>Compare</strong><small>Baseline vs candidate</small></li><li><span>05</span><strong>Decide</strong><small>Promote, revise, retire</small></li></ol>
+    </section>
+    <section class="content-section">
+      <div class="section-heading"><div><span class="section-index">04 / Rollout</span><h2>Earn complexity gradually</h2></div><p>Start with two representative modules and local events. Add ClickHouse when retention and cross-project slicing justify operating a database.</p></div>
+      <ol class="rollout-list"><li><span>Done</span><strong>Skills + registry</strong><p>Codex can discover six modules; every claim has a test contract.</p></li><li><span>Ready</span><strong>Privacy-minimal hooks</strong><p>Capture session, turn, workstream, and tool activity without storing content.</p></li><li><span>Ready</span><strong>Agent eval pilot</strong><p>Run six stable scenarios as baseline/candidate pairs and score quality first.</p></li><li><span>Later</span><strong>ClickHouse</strong><p>Add durable analytics only when real event volume and cross-project questions justify it.</p></li></ol>
+    </section>
+  </div>`;
 }
 
 function renderAbout() {
   view.innerHTML = `<div class="page">${pageHead("04 / ABOUT", "A shelf for the parts<br><em>worth keeping.</em>", "Tooling Atlas is an open working library assembled from real projects—not a gallery of finished taste or a universal design system.")}
     <section class="about-layout"><div><span class="field-label">Why it exists</span><h2>Experience should compound.</h2><p>When a layout, diagram, interaction, or workflow works, it should become easier to reach for next time. The Atlas records the decision behind the part, not just the surface.</p><p>The visual language borrows the calm editorial roles of the Personal Writing project: warm paper, clear type roles, numbered wayfinding, and restrained motion.</p><a class="text-link" href="https://github.com/WillyMLee/tooling-atlas" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></div>
-    <ol class="about-ledger"><li><span>01</span><div><strong>Design profiles</strong><p>Observed systems summarized by theme, type, brand language, layout, and interaction.</p></div></li><li><span>02</span><div><strong>Diagram packets</strong><p>Reliable explanation shapes with reusable code and configurable content.</p></div></li><li><span>03</span><div><strong>Interaction packets</strong><p>Motion patterns tied to a clear semantic job and reduced-motion fallback.</p></div></li><li><span>04</span><div><strong>Agent modules</strong><p>Installable operating methods grounded in primary documentation and project experience.</p></div></li></ol></section></div>`;
+    <ol class="about-ledger"><li><span>01</span><div><strong>Design profiles</strong><p>Observed systems summarized by theme, type, brand language, layout, and interaction.</p></div></li><li><span>02</span><div><strong>Diagram packets</strong><p>Reliable explanation shapes with reusable code and configurable content.</p></div></li><li><span>03</span><div><strong>Interaction packets</strong><p>Motion patterns tied to a clear semantic job and reduced-motion fallback.</p></div></li><li><span>04</span><div><strong>Agent modules</strong><p>Installable operating methods grounded in primary documentation and project experience.</p></div></li><li><span>05</span><div><strong>Control Tower</strong><p>Evidence contracts and telemetry that reveal whether a module improves quality, speed, or cost.</p></div></li></ol></section></div>`;
 }
 
 function renderNotFound() { view.innerHTML = `<section class="empty-state"><span class="eyebrow">ENTRY NOT FOUND</span><h1>That shelf is empty.</h1><a class="text-link" href="#overview">Return to overview →</a></section>`; }
@@ -294,6 +389,7 @@ function renderRoute() {
   else if (route === "packets") renderPackets();
   else if (route === "interactions") renderInteractions();
   else if (route === "skills") renderSkillsIndex();
+  else if (route === "control-tower") renderControlTower();
   else if (route === "about") renderAbout();
   else if (route.startsWith("design/")) renderDesign(sites.find((site) => site.slug === route.split("/")[1]));
   else if (route.startsWith("skill/")) renderSkill(skills.find((skill) => skill.slug === route.split("/")[1]));
@@ -320,7 +416,7 @@ document.querySelector("#directory-search").addEventListener("input", (event) =>
   document.querySelectorAll("[data-search-group]").forEach((group) => { group.hidden = Boolean(query) && !group.querySelector("[data-search-item]:not([hidden])"); });
 });
 
-fetch("./catalog/sites.json")
-  .then((response) => { if (!response.ok) throw new Error("Catalog request failed"); return response.json(); })
-  .then((payload) => { sites = payload.sites; renderSidebar(); renderRoute(); })
+Promise.all([fetch("./catalog/sites.json"), fetch("./catalog/module-registry.json"), fetch("./catalog/design-specs.json"), fetch("./observability/example-runs.json"), fetch("./observability/eval-summary.json"), fetch("./observability/field-tests.json"), fetch("./evals/pilot-suite.json")])
+  .then(async (responses) => { if (responses.some((response) => !response.ok)) throw new Error("Atlas data request failed"); return Promise.all(responses.map((response) => response.json())); })
+  .then(([sitePayload, modulePayload, designPayload, examplePayload, measuredPayload, fieldPayload, suitePayload]) => { sites = sitePayload.sites; moduleRegistry = modulePayload.modules; designSpecs = designPayload.profiles; fieldTests = fieldPayload.observations; pilotSuite = suitePayload; const telemetryPayload = measuredPayload.dataKind === "measured" && measuredPayload.runs.length ? measuredPayload : examplePayload; telemetryRuns = telemetryPayload.runs; telemetryNotice = telemetryPayload.notice; telemetryKind = telemetryPayload.dataKind; evalSummaries = measuredPayload.summaries || []; renderSidebar(); renderRoute(); })
   .catch(() => { sites = []; renderSidebar(); renderRoute(); showToast("Design catalog unavailable"); });
