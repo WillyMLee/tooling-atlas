@@ -8,6 +8,7 @@
 | What connects to the central platform? | System map | A dense process flow |
 | How does an operating change create value? | Metric bridge | Unrelated KPI cards |
 | Which path should we choose? | Decision fork | A generic comparison table |
+| How did we form this working view? | Evidence chain | Hidden chain-of-thought or unsupported certainty |
 
 ## Content rules
 
@@ -16,6 +17,7 @@
 3. Put evidence and caveats in prose adjacent to the diagram.
 4. Use a maximum of one accent state unless color carries categorical meaning.
 5. Prefer three to five nodes. Split larger systems into multiple views.
+6. Highlight with brackets, rules, or labels before filling an entire card with color. Preserve the reading hierarchy when the accent changes.
 
 ## Layout rules
 

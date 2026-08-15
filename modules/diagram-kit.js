@@ -36,6 +36,7 @@ export function renderSystemMap(target, options = {}) {
     type: "system-map",
     ...options,
     body: `<div class="ia-map-stage">
+      <span class="ia-map-axis ia-map-axis-x" aria-hidden="true"></span><span class="ia-map-axis ia-map-axis-y" aria-hidden="true"></span>
       <div class="ia-map-core"><small>${html(options.core?.label || "Core")}</small><strong>${html(options.core?.title || "System")}</strong></div>
       <ul class="ia-map-nodes">${nodes.map((node, index) => `<li style="--ia-node:${index}"><small>${html(node.label)}</small><strong>${html(node.title)}</strong>${node.detail ? `<span>${html(node.detail)}</span>` : ""}</li>`).join("")}</ul>
     </div>`,
@@ -70,4 +71,18 @@ export function renderDecisionFork(target, options = {}) {
   }));
 }
 
-export const DiagramKit = { renderFlow, renderSystemMap, renderMetricBridge, renderDecisionFork };
+export function renderEvidenceChain(target, options = {}) {
+  const steps = options.steps || [];
+  return mount(target, shell({
+    type: "evidence-chain",
+    ...options,
+    body: `<ol class="ia-evidence-list">${steps.map((step, index) => `<li class="ia-evidence-step ${step.tone === "accent" ? "is-accent" : ""}">
+      <span class="ia-evidence-index">${String(index + 1).padStart(2, "0")}</span>
+      <small>${html(step.label)}</small>
+      <strong>${html(step.title)}</strong>
+      ${step.detail ? `<p>${html(step.detail)}</p>` : ""}
+    </li>`).join("")}</ol>`,
+  }));
+}
+
+export const DiagramKit = { renderFlow, renderSystemMap, renderMetricBridge, renderDecisionFork, renderEvidenceChain };

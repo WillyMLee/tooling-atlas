@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eval Improvement Loop"
+  short_description: "Turn traces into measured agent improvements"
+  default_prompt: "Use $eval-improvement-loop to diagnose and improve this agent workflow."

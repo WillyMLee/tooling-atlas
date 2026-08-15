@@ -1,4 +1,4 @@
-import { renderFlow, renderSystemMap, renderMetricBridge, renderDecisionFork } from "./modules/diagram-kit.js";
+import { renderFlow, renderSystemMap, renderMetricBridge, renderDecisionFork, renderEvidenceChain } from "./modules/diagram-kit.js";
 
 const view = document.querySelector("#view");
 const toast = document.querySelector("#toast");
@@ -9,11 +9,11 @@ const directory = document.querySelector("#directory");
 
 const skills = [
   {
-    slug: "context-budget",
-    name: "Context Budget",
-    status: "Experimental",
+    slug: "context-budget", name: "Context Budget", status: "Experimental",
     summary: "Keep large tool output outside the active conversation, retrieve evidence narrowly, and preserve a compact project state for long tasks.",
     trigger: "Long-running repository work, heavy logs, broad web research, or repeated tool output.",
+    avoid: "Short tasks where the complete source is already small and directly relevant.",
+    outcome: "A smaller working set that remains traceable and resumable.",
     steps: [
       ["Set the working set", "Name the task, exact files, open decisions, and required evidence before collecting more context."],
       ["Reduce at the source", "Filter, query, or sandbox large outputs before they enter the model context; keep provenance back to the original source."],
@@ -21,18 +21,17 @@ const skills = [
       ["Leave a resume packet", "Record completed work, active files, decisions, verification state, and the next safe action."],
     ],
     safeguards: ["Never discard source locations", "Do not compress approvals or user intent", "Measure usefulness, not token reduction alone"],
+    example: { scenario: "A repository audit returns hundreds of files, several long logs, and multiple documentation pages.", pattern: "Keep a compact working set, search the large sources in place, and reopen only the exact files or lines needed for a decision.", deliverable: "A resume packet with active files, decisions, verification state, and source pointers." },
+    measures: ["Relevant evidence retained", "Repeated reads avoided", "Another run can resume cleanly"],
     sourcePath: "skills/context-budget/SKILL.md",
-    sources: [
-      ["Context Mode — local MCP context optimization", "https://github.com/mksglu/context-mode"],
-      ["OpenAI Agent Skills guide", "https://developers.openai.com/api/docs/guides/tools-skills"],
-    ],
+    sources: [["Context Mode — local MCP context optimization", "https://github.com/mksglu/context-mode"], ["Anthropic — effective context engineering", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], ["OpenAI Agent Skills guide", "https://developers.openai.com/api/docs/guides/tools-skills"]],
   },
   {
-    slug: "batch-tool-calls",
-    name: "Batch Tool Calls",
-    status: "Ready",
+    slug: "batch-tool-calls", name: "Batch Tool Calls", status: "Ready",
     summary: "Group independent reads and lookups into bounded batches, then reduce results before deciding what happens next.",
     trigger: "Three or more independent queries, file reads, metadata lookups, or repeatable transformations.",
+    avoid: "Dependent calls where each result changes the next decision, or any batch of consequential writes.",
+    outcome: "Fewer round trips without losing evidence, judgment, or control.",
     steps: [
       ["Partition the work", "Separate independent operations from steps that require fresh judgment or depend on prior results."],
       ["Define the return shape", "Request only the fields needed for the next decision and set explicit call and retry limits."],
@@ -40,18 +39,17 @@ const skills = [
       ["Reduce once", "Combine duplicates, surface missing evidence, and feed a compact result into the next judgment."],
     ],
     safeguards: ["No parallel side effects", "Bound concurrency and retries", "Do not repeat completed calls"],
+    example: { scenario: "A company profile needs six independent source checks and five local logo-file inspections.", pattern: "Batch the independent reads, normalize each result to the same fields, then make one evidence-based editorial decision.", deliverable: "A compact evidence table with gaps and provenance surfaced before writing." },
+    measures: ["Round trips reduced", "No duplicated calls", "Final evidence remains complete"],
     sourcePath: "skills/batch-tool-calls/SKILL.md",
-    sources: [
-      ["OpenAI Batch API guide", "https://developers.openai.com/api/docs/guides/batch"],
-      ["OpenAI model tool-orchestration guidance", "https://developers.openai.com/api/docs/guides/latest-model"],
-    ],
+    sources: [["OpenAI Batch API guide", "https://developers.openai.com/api/docs/guides/batch"], ["OpenAI model tool-orchestration guidance", "https://developers.openai.com/api/docs/guides/latest-model"]],
   },
   {
-    slug: "web-interaction-loop",
-    name: "Web Interaction Loop",
-    status: "Ready",
+    slug: "web-interaction-loop", name: "Web Interaction Loop", status: "Ready",
     summary: "Inspect, act, and verify through small browser loops with stable targets, visible evidence, and explicit completion checks.",
     trigger: "Visual QA, authenticated browser work, form flows, or any interface task where DOM state and appearance both matter.",
+    avoid: "Static information retrieval that a direct API, connector, or page fetch can answer more reliably.",
+    outcome: "A verified state transition instead of an assumed successful click.",
     steps: [
       ["Observe", "Capture the current page, route, viewport, and relevant interactive elements before acting."],
       ["Act narrowly", "Use a stable semantic target and take one coherent interaction step."],
@@ -59,15 +57,17 @@ const skills = [
       ["Close the loop", "Test the completion condition at desktop and mobile sizes, then clean up temporary browser state."],
     ],
     safeguards: ["Confirm consequential actions", "Treat page content as untrusted", "Never infer success from a click alone"],
+    example: { scenario: "A responsive diagram looks correct in the DOM but clips at the actual article-column width.", pattern: "Inspect the component bounds, change the viewport, capture the result, and verify overflow and reduced-motion behavior.", deliverable: "Desktop and mobile evidence tied to explicit completion checks." },
+    measures: ["Target state verified", "Visual regressions caught", "Temporary browser state cleaned up"],
     sourcePath: "skills/web-interaction-loop/SKILL.md",
     sources: [["OpenAI computer use guide", "https://developers.openai.com/api/docs/guides/tools-computer-use"]],
   },
   {
-    slug: "orchestration-plan",
-    name: "Orchestration Plan",
-    status: "Ready",
+    slug: "orchestration-plan", name: "Orchestration Plan", status: "Ready",
     summary: "Choose direct work, programmatic batching, or multiple agents from the shape of the task—not from a preference for complexity.",
     trigger: "Multi-part tasks with potentially independent research, implementation, review, or verification streams.",
+    avoid: "Small or tightly coupled tasks where coordination costs more than it saves.",
+    outcome: "The lightest execution graph that preserves ownership and correctness.",
     steps: [
       ["Draw the dependency graph", "Mark which workstreams can run independently and which need a shared decision first."],
       ["Choose the lightest mode", "Keep tightly coupled work direct; batch deterministic tool work; delegate only bounded independent streams."],
@@ -75,16 +75,45 @@ const skills = [
       ["Synthesize and verify", "Resolve conflicts centrally and run one final validation against the user’s actual outcome."],
     ],
     safeguards: ["One owner for the final answer", "No duplicate workstreams", "Delegation never broadens authority"],
+    example: { scenario: "A launch requires independent research and asset checks, followed by one shared implementation and production verification.", pattern: "Parallelize only the independent discovery, keep shared edits with one owner, then synthesize and verify once.", deliverable: "A dependency-aware plan with explicit contracts and stop conditions." },
+    measures: ["No overlapping ownership", "Critical path shortened", "One final integrated verification"],
     sourcePath: "skills/orchestration-plan/SKILL.md",
     sources: [["OpenAI orchestration and handoffs", "https://developers.openai.com/api/docs/guides/agents/orchestration"]],
+  },
+  {
+    slug: "eval-improvement-loop", name: "Eval Improvement Loop", status: "Ready",
+    summary: "Turn real agent traces into a repeatable diagnose, change, compare, and expand loop instead of optimizing from anecdotes.",
+    trigger: "Agent quality work, routing changes, prompt revisions, tool failures, regressions, or model and reasoning-effort comparisons.",
+    avoid: "One-off stylistic edits with no stable task definition or observable success criterion.",
+    outcome: "A measured improvement tied to a representative dataset and a named failure mode.",
+    steps: [["Define success", "Translate the user outcome into task-success, evidence, safety, latency, and cost checks."], ["Read the trace", "Locate the earliest material failure across model decisions, tool selection, arguments, handoffs, and final synthesis."], ["Change one lever", "Adjust the smallest relevant prompt, tool, route, model, or guardrail so the causal effect stays legible."], ["Compare and expand", "Rerun the same cases, compare the baseline, and add the discovered edge case to the permanent set."]],
+    safeguards: ["Do not tune only to one happy path", "Change one major variable at a time", "Quality gates come before token savings"],
+    example: { scenario: "A research agent finds the right sources but omits citations in its final answer.", pattern: "Grade the trace and final message separately, fix the synthesis contract, then rerun the same source-backed cases.", deliverable: "A baseline/candidate comparison plus a new regression case for citation completeness." },
+    measures: ["Task success rate", "Tool and route correctness", "Evidence completeness", "Latency and cost after quality passes"],
+    sourcePath: "skills/eval-improvement-loop/SKILL.md",
+    sources: [["OpenAI — evaluate agent workflows", "https://developers.openai.com/api/docs/guides/agent-evals"], ["OpenAI — trace grading", "https://developers.openai.com/api/docs/guides/trace-grading"], ["Google Agents CLI — evaluation loop", "https://google.github.io/agents-cli/guide/evaluation/"]],
+  },
+  {
+    slug: "design-tool-surface", name: "Design Tool Surface", status: "Ready",
+    summary: "Reduce tool confusion by giving each tool one clear job, a predictable return shape, and explicit routing boundaries.",
+    trigger: "Agents choose the wrong tool, receive bloated outputs, retry unnecessarily, or face overlapping tools and ambiguous parameters.",
+    avoid: "A small, stable tool set already producing reliable selections and compact results.",
+    outcome: "A smaller and more legible action space for the agent.",
+    steps: [["Inventory decisions", "List the user intents the agent must route and the evidence or action each intent requires."], ["Remove overlap", "Give each tool a distinct semantic job; merge or hide tools that create indistinguishable choices."], ["Tighten contracts", "Document inputs, returns, error behavior, side effects, and when a different tool should be used."], ["Test selection", "Run representative and adversarial requests, inspect traces, and simplify again where routing remains ambiguous."]],
+    safeguards: ["Keep side effects unmistakable", "Return only decision-relevant fields", "Preserve errors and provenance"],
+    example: { scenario: "An agent can search, browse, fetch, and scrape, but cannot tell which one should answer a static documentation question.", pattern: "Route semantic retrieval to search or fetch, reserve browser control for visible interaction, and state the fallback boundary once.", deliverable: "A routing table plus concise tool descriptions with non-overlapping triggers." },
+    measures: ["Correct tool selected", "Unnecessary calls reduced", "Output size reduced", "Error recovery improves"],
+    sourcePath: "skills/design-tool-surface/SKILL.md",
+    sources: [["Anthropic — effective context engineering", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], ["OpenAI — model and tool guidance", "https://developers.openai.com/api/docs/guides/latest-model"]],
   },
 ];
 
 const packets = [
-  { slug: "flow", name: "Flow Stack", use: "Explain a product, process, or value chain as a small number of causal steps." },
-  { slug: "system", name: "System Field", use: "Place a core product or control plane among the systems and actors it coordinates." },
-  { slug: "metric", name: "Metric Bridge", use: "Connect an operating change to measurable business value without a dashboard." },
-  { slug: "decision", name: "Decision Fork", use: "Show strategic paths, their tradeoffs, and a recommendation." },
+  { slug: "flow", name: "Flow Stack", use: "A sequence where each step produces the input for the next.", shows: "How work moves", avoid: "Parallel or circular systems" },
+  { slug: "system", name: "System Field", use: "A central product coordinating several actors, systems, or policy surfaces.", shows: "Who connects to the core", avoid: "Detailed chronological flows" },
+  { slug: "metric", name: "Metric Bridge", use: "An operating change that compounds into a measurable business result.", shows: "Why an improvement matters", avoid: "Large KPI dashboards" },
+  { slug: "decision", name: "Decision Fork", use: "A choice between credible paths with an explicit recommendation and tradeoffs.", shows: "What must be decided", avoid: "More than three options" },
+  { slug: "evidence", name: "Evidence Chain", use: "A visible path from observed signal to interpretation, open question, and next test.", shows: "How the view was formed", avoid: "Private chain-of-thought" },
 ];
 
 const packetOptions = {
@@ -121,9 +150,18 @@ const packetOptions = {
       { label: "Path B", title: "Embed in the suite", detail: "Integrate with an incumbent and inherit distribution.", tradeoff: "Faster access · less control" },
     ],
   },
+  evidence: {
+    eyebrow: "Working view", title: "Move from signal to a testable conclusion",
+    steps: [
+      { label: "Observe", title: "The signal", detail: "Start with a source, behavior, or measured change that another reader can inspect." },
+      { label: "Interpret", title: "What it may mean", detail: "Connect the evidence to a market, product, or operating implication without overstating certainty." },
+      { label: "Question", title: "What remains open", detail: "Name the unknown that could change the view." },
+      { label: "Test", title: "What to watch next", detail: "Define the next observable proof point.", tone: "accent" },
+    ],
+  },
 };
 
-const renderers = { flow: renderFlow, system: renderSystemMap, metric: renderMetricBridge, decision: renderDecisionFork };
+const renderers = { flow: renderFlow, system: renderSystemMap, metric: renderMetricBridge, decision: renderDecisionFork, evidence: renderEvidenceChain };
 let sites = [];
 let currentPacket = "flow";
 let packetAccent = "#b44c36";
@@ -135,7 +173,7 @@ const pageHead = (kicker, title, description) => `<header class="page-head"><spa
 
 function renderSidebar() {
   designLinks.innerHTML = sites.map((site, index) => `<a href="#design/${site.slug}" data-route-link data-search-item="${escapeHtml(`${site.name} ${site.type} ${site.theme}`)}">D${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(site.name)}</strong></a>`).join("");
-  skillLinks.innerHTML = skills.map((skill, index) => `<a href="#skill/${skill.slug}" data-route-link data-search-item="${escapeHtml(`${skill.name} ${skill.summary}`)}">A${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(skill.name)}</strong></a>`).join("");
+  skillLinks.innerHTML = `<a href="#skills" data-route-link data-search-item="all agent modules optimization skills">A00 <strong>All modules</strong></a>${skills.map((skill, index) => `<a href="#skill/${skill.slug}" data-route-link data-search-item="${escapeHtml(`${skill.name} ${skill.summary}`)}">A${String(index + 1).padStart(2, "0")} <strong>${escapeHtml(skill.name)}</strong></a>`).join("")}`;
   document.querySelector("#atlas-count").textContent = `${sites.length + packets.length + skills.length + 3} entries`;
 }
 
@@ -161,9 +199,9 @@ function renderOverview() {
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">02 / Working packets</span><h2>Start from a proven shape</h2></div><p>Packets keep recurring interface work consistent while leaving the content, tone, and final judgment open.</p></div>
       <div class="overview-grid">
-        <a class="overview-card" href="#packets"><span>D / 04</span><h3>Diagram packets</h3><p>Four code-native explanation patterns with a live configurator.</p><small>Open builder →</small></a>
+        <a class="overview-card" href="#packets"><span>D / 05</span><h3>Diagram packets</h3><p>Five code-native explanation patterns with a live configurator.</p><small>Open builder →</small></a>
         <a class="overview-card" href="#interactions"><span>I / 03</span><h3>Interaction packets</h3><p>Quiet motion patterns with timing, purpose, and reduced-motion behavior.</p><small>Inspect motion →</small></a>
-        <a class="overview-card" href="#skill/context-budget"><span>A / 04</span><h3>Agent modules</h3><p>Research-backed skill packets for context, batching, browsing, and orchestration.</p><small>Review modules →</small></a>
+        <a class="overview-card" href="#skills"><span>A / 06</span><h3>Agent modules</h3><p>Installable operating playbooks for context, tools, browsing, orchestration, and evals.</p><small>Review modules →</small></a>
       </div>
     </section>
   </div>`;
@@ -201,14 +239,15 @@ function renderPackets() {
   view.innerHTML = `<div class="page">
     ${pageHead("02 / DIAGRAM PACKETS", "Explain the system.<br><em>Keep the seams visible.</em>", "Code-native diagrams for recurring website explanations. Choose a shape, tune its direction and accent, then copy a stable configuration.")}
     <section class="content-section">
-      <div class="packet-grid">${packets.map((packet, index) => `<article class="packet-card ${packet.slug === currentPacket ? "is-active" : ""}" data-packet="${packet.slug}" tabindex="0"><span>${String(index + 1).padStart(2,"0")}</span><h3>${packet.name}</h3><p>${packet.use}</p></article>`).join("")}</div>
+      <div class="packet-grid">${packets.map((packet, index) => `<article class="packet-card ${packet.slug === currentPacket ? "is-active" : ""}" data-packet="${packet.slug}" tabindex="0"><div class="packet-card-top"><span>${String(index + 1).padStart(2,"0")}</span><small>${packet.shows}</small></div><h3>${packet.name}</h3><p>${packet.use}</p><dl><div><dt>Best for</dt><dd>${packet.shows}</dd></div><div><dt>Avoid for</dt><dd>${packet.avoid}</dd></div></dl></article>`).join("")}</div>
     </section>
     <section class="packet-layout">
-      <div class="packet-stage" style="--packet-accent:${packetAccent}"><div id="packet-preview"></div></div>
+      <div class="packet-stage" style="--packet-accent:${packetAccent}"><div class="packet-stage-head"><span class="field-label">Live packet</span><strong>${packets.find((packet) => packet.slug === currentPacket).shows}</strong><p>${packets.find((packet) => packet.slug === currentPacket).use}</p></div><div id="packet-preview"></div></div>
       <aside class="packet-controls">
         <span class="field-label">Packet controls</span>
         <div class="control-group"><label>Diagram type<select id="packet-type">${packets.map((packet) => `<option value="${packet.slug}" ${packet.slug === currentPacket ? "selected" : ""}>${packet.name}</option>`).join("")}</select></label></div>
-        <div class="control-group"><label>Flow direction<select id="packet-direction"><option value="vertical">Vertical</option><option value="horizontal">Horizontal</option></select></label></div>
+        <div class="control-group" ${currentPacket === "flow" ? "" : "hidden"}><label>Flow direction<select id="packet-direction"><option value="vertical">Vertical</option><option value="horizontal">Horizontal</option></select></label></div>
+        <div class="packet-purpose"><span class="field-label">What it does</span><p>${packets.find((packet) => packet.slug === currentPacket).shows}</p><span class="field-label">Do not use it for</span><p>${packets.find((packet) => packet.slug === currentPacket).avoid}</p></div>
         <div class="control-group"><span class="field-label">Accent</span><div class="color-options">${["#b44c36","#35697b","#5f7056","#d2a12a"].map((color) => `<button type="button" data-accent="${color}" class="${color === packetAccent ? "is-active" : ""}" style="--choice:${color}" aria-label="Use ${color}"></button>`).join("")}</div></div>
         <button class="button" id="copy-packet" type="button">Copy configuration</button>
         <a class="button secondary" href="https://github.com/WillyMLee/tooling-atlas/tree/main/modules" target="_blank" rel="noreferrer">View source ↗</a>
@@ -241,16 +280,17 @@ function renderInteractions() {
 }
 
 function renderSkillsIndex() {
-  view.innerHTML = `<div class="page">${pageHead("AGENT MODULES / INITIAL SET", "Repeat the method,<br><em>not the mistake.</em>", "Small, installable workflow modules for common agent tasks. Each one defines its trigger, sequence, evidence, and safety boundaries.")}
-    <section class="content-section"><div class="skill-grid">${skills.map((skill, index) => `<a class="skill-card" href="#skill/${skill.slug}"><div class="skill-card-top"><span>A${String(index+1).padStart(2,"0")}</span><span>${skill.status}</span></div><h2>${skill.name}</h2><p>${skill.summary}</p><span>Open module →</span></a>`).join("")}</div></section></div>`;
+  view.innerHTML = `<div class="page">${pageHead("AGENT MODULES / WORKING SET", "Choose the operating method<br><em>before adding complexity.</em>", "Installable playbooks for recurring agent failure modes. Each module explains when it should trigger, when it should not, the operating sequence, an example, and how improvement is measured.")}
+    <section class="content-section"><div class="skill-grid">${skills.map((skill, index) => `<a class="skill-card" href="#skill/${skill.slug}"><div class="skill-card-top"><span>A${String(index+1).padStart(2,"0")}</span><span>${skill.status}</span></div><h2>${skill.name}</h2><p>${skill.summary}</p><dl><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Result</dt><dd>${skill.outcome}</dd></div></dl><span>Open playbook →</span></a>`).join("")}</div></section></div>`;
 }
 
 function renderSkill(skill) {
   if (!skill) return renderNotFound();
   view.innerHTML = `<article class="page">
-    <header class="design-hero"><div><span class="eyebrow">AGENT MODULE / ${skill.status}</span><h1>${skill.name}</h1><p class="lede">${skill.summary}</p></div><dl class="design-meta"><div><dt>Trigger</dt><dd>${skill.trigger}</dd></div><div><dt>Format</dt><dd>Codex Agent Skill</dd></div><div><dt>Source</dt><dd><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/${skill.sourcePath}" target="_blank" rel="noreferrer">Open SKILL.md ↗</a></dd></div></dl></header>
-    <div class="profile-layout"><div class="profile-main"><section class="profile-block"><span class="field-label">Operating sequence</span><h2>How the module works</h2><ol class="skill-sequence">${skill.steps.map(([title, detail]) => `<li><strong>${title}</strong><span>${detail}</span></li>`).join("")}</ol></section></div>
-    <aside class="profile-side"><span class="field-label">Safety boundaries</span><h2>Keep intact</h2><div class="tag-list">${skill.safeguards.map((item) => `<span>${item}</span>`).join("")}</div><div class="type-specimen"><span class="field-label">Primary sources</span><ul class="source-list">${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer"><span>${label}</span><span>↗</span></a></li>`).join("")}</ul></div></aside></div>
+    <header class="design-hero skill-hero"><div><span class="eyebrow">AGENT MODULE / ${skill.status}</span><h1>${skill.name}</h1><p class="lede">${skill.summary}</p></div><dl class="design-meta"><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Avoid when</dt><dd>${skill.avoid}</dd></div><div><dt>Outcome</dt><dd>${skill.outcome}</dd></div><div><dt>Source</dt><dd><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/${skill.sourcePath}" target="_blank" rel="noreferrer">Open SKILL.md ↗</a></dd></div></dl></header>
+    <div class="skill-detail-layout"><div class="skill-main"><section class="profile-block"><span class="field-label">Operating sequence</span><h2>How the module runs</h2><ol class="skill-sequence">${skill.steps.map(([title, detail]) => `<li><strong>${title}</strong><span>${detail}</span></li>`).join("")}</ol></section>
+    <section class="profile-block"><span class="field-label">Worked example</span><h2>What changes in practice</h2><div class="skill-example"><div><small>Situation</small><p>${skill.example.scenario}</p></div><div><small>Operating pattern</small><p>${skill.example.pattern}</p></div><div><small>Useful output</small><p>${skill.example.deliverable}</p></div></div></section></div>
+    <aside class="skill-side"><section><span class="field-label">Safety boundaries</span><h2>Keep intact</h2><ul class="guardrail-list">${skill.safeguards.map((item) => `<li>${item}</li>`).join("")}</ul></section><section><span class="field-label">Measure the result</span><h2>Success checks</h2><ol class="measure-list">${skill.measures.map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span>${item}</li>`).join("")}</ol></section><section><span class="field-label">Primary sources</span><ul class="source-list">${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer"><span>${label}</span><span>↗</span></a></li>`).join("")}</ul></section></aside></div>
   </article>`;
 }
 

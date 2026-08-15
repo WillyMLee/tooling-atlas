@@ -149,45 +149,66 @@
       ]
     },
     {
-      "slug": "pokemon-rogue-dungeons",
-      "name": "Pokémon Rogue Dungeons",
-      "url": "https://pokemon-rogue-dungeons.pages.dev/",
-      "type": "Playable workbook",
-      "theme": "Terrain / torchlight",
-      "typeface": "Pixel display · readable sans",
-      "summary": "A terrain-colored prototype that links a runnable expedition with its own design documentation.",
-      "designSummary": "The project uses terrain, inventory, and encounter language as both interface and documentation. Playful pixel forms create identity, while a cleaner supporting typeface keeps system notes legible outside the play surface.",
-      "brandElements": ["Terrain tiles", "Expedition cards", "Inventory marks", "Torch accents"],
-      "layout": "A playable expedition is embedded inside a chaptered design workbook with rules and encounter notes.",
-      "interactions": "Direct tile and card feedback is immediate; documentation views use calmer, conventional controls.",
-      "pattern": "Playable object embedded inside its own design workbook",
-      "caution": "Novel visual language still needs conventional focus, hover, and completion feedback.",
+      "slug": "seat-scout",
+      "name": "Seat Scout",
+      "url": "https://seat-scout.willymlee.workers.dev/",
+      "type": "Reservation command center",
+      "theme": "Warm fieldbook / brass gold",
+      "typeface": "Inter · Arial display · utility mono",
+      "summary": "A private restaurant workspace that combines wish lists, reservation release windows, booking context, and dining history.",
+      "designSummary": "Seat Scout treats reservation planning as an operating rhythm rather than a search-results page. Warm paper fields, strong sans headlines, brass-gold signals, compact countdowns, and release rules make the interface feel like a personal operations book instead of a marketplace.",
+      "brandElements": ["Release countdowns", "Reservation ledger", "Concierge prompt", "City filters"],
+      "layout": "A concise command-center home branches into restaurant directories, watched release windows, confirmed bookings, and a private connection desk.",
+      "interactions": "Motion guides page and row transitions; booking links and reminder actions stay visually distinct from browsing and note-taking.",
+      "pattern": "Time-sensitive personal dashboard with editorial place context",
+      "caution": "Urgent booking actions need clear state, source provenance, and boundaries around automated behavior.",
       "colors": [
-        { "name": "Cave", "hex": "#252720", "text": "#F7F0D6" },
-        { "name": "Moss", "hex": "#6F8E58", "text": "#15200F" },
-        { "name": "Torch", "hex": "#E1943B" },
-        { "name": "Parchment", "hex": "#EFE2BC" }
+        { "name": "Field paper", "hex": "#F2F1EB" },
+        { "name": "Ink", "hex": "#353A38", "text": "#FFFFFF" },
+        { "name": "Brass", "hex": "#B48A45" },
+        { "name": "Soft brass", "hex": "#E9DFC9" }
       ]
     },
     {
-      "slug": "margins-and-weather",
-      "name": "Margins and Weather",
-      "url": "https://margins-and-weather.pages.dev/",
-      "type": "Editorial",
-      "theme": "Cloud paper / storm blue",
-      "typeface": "Newsreader · DM Sans · DM Mono",
-      "summary": "An editorial deployment built from the same publication architecture as Personal Writing, with a quieter atmospheric identity.",
-      "designSummary": "This publication tests how far a stable editorial system can travel through token changes alone. Clouded neutrals and weather-map blue shift the mood while the issue structure, reading measures, and navigation stay familiar.",
-      "brandElements": ["Weather coordinates", "Issue rhythm", "Cloud fields", "Forecast blue"],
-      "layout": "A reusable publication shell with editorial home, index, article, about, and studio views.",
-      "interactions": "Subtle progress and hover cues maintain the calm reading system inherited from the base publication.",
-      "pattern": "Reusable publication starter with swappable identity",
-      "caution": "A shared template needs meaningful token and content variation to avoid clone-like results.",
+      "slug": "crumb",
+      "name": "Crumb",
+      "url": "https://crumb-recipe-journal.willymlee.workers.dev/",
+      "type": "Living recipe journal",
+      "theme": "Flour paper / coral / herb",
+      "typeface": "Inter · bold editorial scale · utility mono",
+      "summary": "A personal cookbook that turns messy source recipes into structured cook views, then preserves the useful changes made after each attempt.",
+      "designSummary": "Crumb makes the recipe feel alive without making the cooking surface busy. Ingredients sit beside the step where they are used, planning tools reuse the same warm field language, and revisions remain visible without polluting the current instructions.",
+      "brandElements": ["Step-linked ingredients", "Cook notes", "Revision field log", "Weekly meal rail"],
+      "layout": "A recipe library opens into focused cook views, with planning, shopping, import, and revision tools organized as adjacent modes.",
+      "interactions": "Small transitions preserve place between library, recipe, and planning views; AI import and revision states expose progress and preserve the original source.",
+      "pattern": "Versioned content object with a focused task mode",
+      "caution": "Planning and AI tools should remain secondary to fast, readable cooking instructions.",
       "colors": [
-        { "name": "Cloud", "hex": "#EEF0EB" },
-        { "name": "Storm", "hex": "#27343D", "text": "#F7F8F5" },
-        { "name": "Forecast", "hex": "#5B7E91", "text": "#FFFFFF" },
-        { "name": "Mist", "hex": "#D2D9D8" }
+        { "name": "Flour", "hex": "#F3EFDF" },
+        { "name": "Ink", "hex": "#292721", "text": "#FFFFFF" },
+        { "name": "Coral", "hex": "#EF5B53", "text": "#FFFFFF" },
+        { "name": "Herb", "hex": "#7DA278", "text": "#FFFFFF" }
+      ]
+    },
+    {
+      "slug": "willymlee",
+      "name": "WillyMLee.com",
+      "url": "https://willymlee.com/",
+      "type": "Personal portfolio",
+      "theme": "Soft white / coral signal",
+      "typeface": "Clash Display · Satoshi · Inter",
+      "summary": "A personal portfolio that connects operating experience, selected projects, writing, and experiments through one clear identity.",
+      "designSummary": "The portfolio lets personal material carry the personality while the shell stays direct. Clash Display handles the large statements, Satoshi and Inter keep supporting copy practical, and coral signals connect current work, hobbies, experience, and media coverage.",
+      "brandElements": ["Personal monogram", "Project ribbons", "Large statements", "Motion-led transitions"],
+      "layout": "A narrative home page moves from positioning into selected work, experience, writing, and contact without turning into a resume grid.",
+      "interactions": "Project reveals, directional motion, and compact hover states create continuity while preserving conventional navigation and readable content.",
+      "pattern": "Portfolio as a connected narrative rather than a project dump",
+      "caution": "Animation and breadth should support a clear professional story instead of competing with it.",
+      "colors": [
+        { "name": "Canvas", "hex": "#FAFAFA" },
+        { "name": "Ink", "hex": "#212121", "text": "#FFFFFF" },
+        { "name": "Coral", "hex": "#E85D4C", "text": "#FFFFFF" },
+        { "name": "Soft section", "hex": "#F5F5F5" }
       ]
     },
     {
@@ -209,27 +230,6 @@
         { "name": "Paper", "hex": "#F1F2EC" },
         { "name": "Market", "hex": "#5F9E6E", "text": "#0C160E" },
         { "name": "Alert", "hex": "#D46B4C", "text": "#FFFFFF" }
-      ]
-    },
-    {
-      "slug": "good-places-together",
-      "name": "Good Places, Together",
-      "url": "https://good-places-together.pages.dev/",
-      "type": "Map journal",
-      "theme": "Warm map / tomato",
-      "typeface": "Friendly serif · utility sans",
-      "summary": "A warm map-first restaurant guide built around place memory and shared recommendations rather than rankings.",
-      "designSummary": "The guide treats a recommendation as a memory attached to a place. Warm cartographic colors, handwritten-feeling editorial moments, and restrained controls keep the map personal rather than transactional.",
-      "brandElements": ["Place pins", "Memory cards", "Neighborhood color", "Shared lists"],
-      "layout": "A map and editorial place cards share the viewport, with filters and details appearing only when needed.",
-      "interactions": "Pins, cards, and list selection stay synchronized; mobile shifts from split view to a clear map-or-list mode.",
-      "pattern": "Spatial browsing with an editorial point of view",
-      "caution": "Map controls and narrative cards compete for scarce attention on small screens.",
-      "colors": [
-        { "name": "Map", "hex": "#EFE7D7" },
-        { "name": "Ink", "hex": "#23302B", "text": "#FFFFFF" },
-        { "name": "Tomato", "hex": "#C95F43", "text": "#FFFFFF" },
-        { "name": "Park", "hex": "#91A17D" }
       ]
     }
   ]

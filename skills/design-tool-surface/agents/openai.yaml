@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Tool Surface"
+  short_description: "Make agent tools easier to choose and use"
+  default_prompt: "Use $design-tool-surface to simplify and clarify this agent tool set."

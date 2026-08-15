@@ -45,4 +45,10 @@ Never repeat a completed call merely because another item in the batch failed.
 
 Compare the batched result with a small direct sample. Count lower latency or token use as an improvement only if correctness, evidence, and final-answer completeness still pass.
 
+## Example
+
+For six independent source checks and five local asset inspections, define one compact result shape, run the read-only calls together, preserve a source pointer for each result, and reduce once before writing. Keep any publication or external write outside the batch.
+
+Measure success by round trips reduced, calls not repeated, and final evidence completeness.
+
 Read [references/SOURCES.md](references/SOURCES.md) when revising the batching policy.

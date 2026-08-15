@@ -41,4 +41,10 @@ For interface changes, check at least:
 - Never infer success from a click alone.
 - Clean up temporary tabs, listeners, and emulation state after testing.
 
+## Example
+
+When a diagram clips inside an article column despite fitting the browser viewport, inspect the component bounds, verify overflow, resize to a narrow viewport, and compare screenshots. Treat the component container—not the viewport alone—as the responsive constraint.
+
+Measure success by verified target state, visual regressions caught, and temporary browser state removed.
+
 Read [references/SOURCES.md](references/SOURCES.md) when revising the loop or supporting computer-use models.

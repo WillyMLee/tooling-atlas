@@ -6,7 +6,7 @@ Tooling Atlas is an open working library for interface references, diagram packe
 
 - `catalog/` — design profiles with palette, type, brand, layout, and interaction notes.
 - `modules/` — dependency-free JavaScript and CSS diagram primitives.
-- `skills/` — validated Agent Skills for context, batching, browser work, and orchestration.
+- `skills/` — validated Agent Skills for context, batching, browser work, orchestration, evals, and tool-surface design.
 - `docs/` — longer implementation notes and contribution guidance.
 
 ## Run locally

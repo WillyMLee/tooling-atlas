@@ -40,4 +40,10 @@ Preserve intent, decisions, provenance, and active state. Reduce bulk—not evid
 
 Before handing off, confirm that a new agent could continue from the resume packet without rereading the whole task and could still locate every important source.
 
+## Example
+
+For a repository audit with hundreds of files and several long logs, keep the objective, active files, open decisions, and required proof in the working set. Search the full sources in place, reopen only the exact lines needed for a decision, and leave a resume packet that names what was verified and what remains.
+
+Measure success by evidence retained, repeated reads avoided, and whether a fresh run can resume without reconstructing the task.
+
 Read [references/SOURCES.md](references/SOURCES.md) when evaluating Context Mode or revising this method.

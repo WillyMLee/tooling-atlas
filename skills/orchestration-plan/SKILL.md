@@ -37,4 +37,10 @@ Do not delegate merely because a task has many steps.
 - Side effects stay with the explicitly authorized owner.
 - If a stream becomes dependent on another, stop parallel execution and replan.
 
+## Example
+
+For a launch that needs independent research and asset checks followed by shared implementation, parallelize only discovery. Keep shared edits with one owner, require a distinct evidence packet from each stream, and run one integrated production verification.
+
+Measure success by non-overlapping ownership, critical-path reduction, and whether the complete result passes one final check.
+
 Read [references/SOURCES.md](references/SOURCES.md) when choosing between manager-style orchestration and handoffs.
