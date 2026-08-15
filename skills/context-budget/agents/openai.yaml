@@ -1,0 +1,5 @@
+interface:
+  display_name: "Context Budget"
+  short_description: "Reduce context while preserving evidence"
+  brand_color: "#B44C36"
+  default_prompt: "Use $context-budget to keep this long task focused and resumable."

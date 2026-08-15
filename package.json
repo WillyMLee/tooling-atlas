@@ -1,10 +1,10 @@
 {
-  "name": "@willymlee/interface-atlas",
-  "version": "0.1.0",
-  "description": "Open-source diagram modules and field notes for expressive web interfaces.",
+  "name": "@willymlee/tooling-atlas",
+  "version": "0.2.0",
+  "description": "Open-source design references, diagram packets, interaction patterns, and agent workflow skills.",
   "type": "module",
   "license": "MIT",
-  "files": ["modules", "catalog", "docs"],
+  "files": ["modules", "catalog", "skills", "docs"],
   "exports": {
     ".": "./modules/diagram-kit.js",
     "./styles": "./modules/diagram-kit.css"

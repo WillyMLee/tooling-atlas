@@ -1,95 +1,68 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Reusable diagram modules and field notes for expressive web interfaces." />
-  <title>Interface Atlas — Diagram and Web Patterns</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./modules/diagram-kit.css" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="#top"><span>IA</span><strong>Interface Atlas</strong></a>
-    <nav aria-label="Primary navigation">
-      <a href="#diagrams">01 Diagrams</a>
-      <a href="#patterns">02 Web patterns</a>
-      <a href="#principles">03 Principles</a>
-    </nav>
-    <a class="github-link" href="https://github.com/WillyMLee/interface-atlas">GitHub ↗</a>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tooling Atlas is an open library of interface references, diagram packets, interaction patterns, and agent workflow skills." />
+    <meta name="theme-color" content="#f2eee5" />
+    <title>Tooling Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./modules/diagram-kit.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#overview" aria-label="Tooling Atlas overview">
+        <span class="wordmark-mark">T/A</span>
+        <span><strong>Tooling Atlas</strong><small>Reusable systems</small></span>
+      </a>
+      <p class="header-note">Design references + working packets</p>
+      <button class="menu-button" id="menu-button" type="button" aria-expanded="false" aria-controls="directory">Directory</button>
+      <a class="repo-link" href="https://github.com/WillyMLee/tooling-atlas" target="_blank" rel="noreferrer">Open repository ↗</a>
+    </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="kicker"><i></i> Open-source interface field guide</span>
-        <h1>Explain the<br /><em>relationship.</em></h1>
-        <p>Reusable diagram modules and practical notes for building interfaces people can understand—not merely admire.</p>
-        <div class="hero-actions"><a href="#diagrams">Explore modules</a><button id="theme-toggle" type="button">Invert theme</button></div>
-      </div>
-      <div class="hero-specimen" aria-hidden="true">
-        <span class="specimen-ring ring-one"></span><span class="specimen-ring ring-two"></span>
-        <span class="specimen-axis axis-x"></span><span class="specimen-axis axis-y"></span>
-        <span class="specimen-node node-a">Input</span><span class="specimen-node node-b">Model</span><span class="specimen-node node-c">Decision</span>
-        <span class="specimen-core"><i></i>Relationship</span>
-      </div>
-    </section>
+    <div class="app-shell">
+      <aside class="directory" id="directory">
+        <div class="directory-intro">
+          <span class="eyebrow">FIELD INDEX / 2026</span>
+          <p>A practical shelf of things worth reusing.</p>
+        </div>
+        <label class="directory-search">
+          <span>Search the atlas</span>
+          <input id="directory-search" type="search" placeholder="Design, packet, skill…" autocomplete="off" />
+        </label>
+        <nav class="directory-nav" aria-label="Tooling Atlas directory">
+          <div class="nav-group" data-search-group>
+            <span class="nav-label">Start</span>
+            <a href="#overview" data-route-link data-search-item="overview field notes">01 <strong>Overview</strong></a>
+          </div>
+          <div class="nav-group" data-search-group>
+            <span class="nav-label">Design gallery</span>
+            <div id="design-links"></div>
+          </div>
+          <div class="nav-group" data-search-group>
+            <span class="nav-label">Reusable packets</span>
+            <a href="#packets" data-route-link data-search-item="diagram packets flow system map metric decision">02 <strong>Diagram packets</strong></a>
+            <a href="#interactions" data-route-link data-search-item="interaction packets motion hover reveal pulse">03 <strong>Interactions</strong></a>
+          </div>
+          <div class="nav-group" data-search-group>
+            <span class="nav-label">Agent modules</span>
+            <div id="skill-links"></div>
+          </div>
+          <div class="nav-group" data-search-group>
+            <span class="nav-label">Notes</span>
+            <a href="#about" data-route-link data-search-item="about tooling atlas repository">04 <strong>About</strong></a>
+          </div>
+        </nav>
+        <div class="directory-foot"><span>MIT licensed</span><span id="atlas-count">— entries</span></div>
+      </aside>
 
-    <section class="section diagrams-section" id="diagrams">
-      <header class="section-heading">
-        <div><span class="kicker">01 / Modules</span><h2>A small visual grammar.</h2></div>
-        <p>Choose a diagram by the relationship in the content. Each example is semantic, responsive, themeable, and dependency-free.</p>
-      </header>
-      <div class="module-controls" role="group" aria-label="Diagram presentation">
-        <button class="is-active" type="button" data-density="comfortable">Comfortable</button>
-        <button type="button" data-density="compact">Compact</button>
-      </div>
+      <main id="view" tabindex="-1"></main>
+    </div>
 
-      <article class="module-card">
-        <header><span>01</span><div><h3>Flow stack</h3><p>Use when order, transformation, or handoff matters.</p></div><button type="button" data-copy="flow">Copy example</button></header>
-        <div class="module-preview" id="flow-demo"></div>
-      </article>
-      <article class="module-card">
-        <header><span>02</span><div><h3>System map</h3><p>Use when a central platform coordinates several actors or services.</p></div><button type="button" data-copy="system">Copy example</button></header>
-        <div class="module-preview" id="system-demo"></div>
-      </article>
-      <article class="module-card">
-        <header><span>03</span><div><h3>Metric bridge</h3><p>Use when operating changes compound into a business outcome.</p></div><button type="button" data-copy="metric">Copy example</button></header>
-        <div class="module-preview" id="metric-demo"></div>
-      </article>
-      <article class="module-card">
-        <header><span>04</span><div><h3>Decision fork</h3><p>Use when readers need to compare paths and understand the tradeoff.</p></div><button type="button" data-copy="decision">Copy example</button></header>
-        <div class="module-preview" id="decision-demo"></div>
-      </article>
-    </section>
-
-    <section class="section patterns-section" id="patterns">
-      <header class="section-heading">
-        <div><span class="kicker">02 / Observations</span><h2>Website pattern index.</h2></div>
-        <p>An inventory of recurring structures observed across live projects. The catalog records transferable ideas, not private source code.</p>
-      </header>
-      <div class="pattern-toolbar"><div id="pattern-filters"></div><span id="pattern-count"></span></div>
-      <div class="pattern-grid" id="pattern-grid"></div>
-    </section>
-
-    <section class="section principles-section" id="principles">
-      <header class="section-heading">
-        <div><span class="kicker">03 / Rules of use</span><h2>Good diagrams earn their space.</h2></div>
-      </header>
-      <ol class="principle-list">
-        <li><span>01</span><strong>Name the relationship first.</strong><p>Sequence, hierarchy, comparison, causality, and spatial position need different structures.</p></li>
-        <li><span>02</span><strong>Keep prose outside the geometry.</strong><p>The shape should clarify the model; the surrounding copy should hold nuance and evidence.</p></li>
-        <li><span>03</span><strong>Recompose on mobile.</strong><p>Switch from spatial layout to a readable stack instead of shrinking labels below comprehension.</p></li>
-        <li><span>04</span><strong>Make the static state complete.</strong><p>Motion may direct attention, but the relationship must remain legible without it.</p></li>
-      </ol>
-    </section>
-  </main>
-
-  <footer><span>Interface Atlas / v0.1</span><span>MIT licensed · Built from field notes</span></footer>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="./app.js"></script>
-</body>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>

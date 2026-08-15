@@ -1,16 +1,236 @@
 {
   "generated": "2026-08-15",
   "sites": [
-    { "name": "Signal Notes", "url": "https://signal-notes.pages.dev/", "type": "Editorial", "summary": "A dark, grid-based research archive that combines a company table with deep profile notes.", "pattern": "Persistent section rail plus progressive disclosure", "caution": "Complex diagrams can overpower long-form reading." },
-    { "name": "MotionDeck Studio", "url": "https://motiondeck-studio.pages.dev/", "type": "Workbench", "summary": "A light technical workspace for browsing, creating, and connecting visual assets.", "pattern": "Dense library navigation with task-oriented modes", "caution": "High control counts need strong grouping and defaults." },
-    { "name": "Fleeting", "url": "https://fleeting-game.pages.dev/", "type": "Workbook", "summary": "A dark game-development workbook that makes systems, playtests, and roadmap state visible.", "pattern": "Numbered navigation and living design documentation", "caution": "Workbook depth can make the primary action ambiguous." },
-    { "name": "Kaggriculture Fieldbook", "url": "https://kaggriculture-workbook.pages.dev/", "type": "Workbook", "summary": "A mono-led strategy fieldbook for game mechanics, agents, experiments, and findings.", "pattern": "Experimental notebook with explicit strategies", "caution": "Monospace everywhere reduces hierarchy at reading scale." },
-    { "name": "SoundDeck", "url": "https://sounddeck-icm.pages.dev/", "type": "Workbench", "summary": "A light audio workbench that organizes generation, takes, projects, and connectors.", "pattern": "Asset palette paired with a production workspace", "caution": "Large tool surfaces need clear empty and loading states." },
-    { "name": "Mumblings", "url": "https://mumblings.pages.dev/", "type": "Editorial", "summary": "A warm, minimal personal publication with an index and lightweight studio.", "pattern": "Editorial front door with numbered archive views", "caution": "Restrained navigation should still expose search and state." },
-    { "name": "Cost Basis", "url": "https://cost-basis.pages.dev/", "type": "Editorial", "summary": "A finance notebook with strong serif-like scale, warm paper, and structured archive views.", "pattern": "Publication shell around a personal research system", "caution": "Writing tools should stay visually separate from reading." },
-    { "name": "Pokémon Rogue Dungeons", "url": "https://pokemon-rogue-dungeons.pages.dev/", "type": "Game", "summary": "A playful, terrain-colored prototype that links a runnable expedition with design documentation.", "pattern": "Playable object embedded inside its own design workbook", "caution": "Novel visual language needs conventional interaction feedback." },
-    { "name": "Margins and Weather", "url": "https://margins-and-weather.pages.dev/", "type": "Editorial", "summary": "A publication deployment currently sharing the Mumblings shell and information architecture.", "pattern": "Reusable publication starter with swappable identity", "caution": "A shared template needs enough tokens to avoid clone-like results." },
-    { "name": "Worth More?", "url": "https://worth-more-game.pages.dev/", "type": "Data product", "summary": "A valuation game that pairs a simple decision loop with insight and data-studio views.", "pattern": "Game mechanic as an entry point to structured data", "caution": "Analytical depth should not interrupt the core play loop." },
-    { "name": "Good Places, Together", "url": "https://good-places-together.pages.dev/", "type": "Map", "summary": "A warm map-first restaurant guide built around place memory rather than rankings.", "pattern": "Spatial browsing with an editorial point of view", "caution": "Map controls and narrative cards compete on small screens." }
+    {
+      "slug": "mumblings",
+      "name": "Personal Writing",
+      "url": "https://mumblings.pages.dev/",
+      "type": "Editorial",
+      "theme": "Warm paper / rust",
+      "typeface": "Newsreader · DM Sans · DM Mono",
+      "summary": "A warm personal publication that pairs an editorial front door with an index and a lightweight private studio.",
+      "designSummary": "The system feels like a small periodical rather than a blog template. Newsreader carries the voice, DM Sans keeps navigation direct, and DM Mono handles coordinates, issue numbers, and tool states. Fine rules and a muted paper palette make the interface feel collected without making it precious.",
+      "brandElements": ["Numbered navigation", "Issue language", "Field diagrams", "Cut corners"],
+      "layout": "A wide editorial header leads into large two-column feature fields; archive and reading pages use narrow indexes beside generous text columns.",
+      "interactions": "Slow reading progress, restrained hover color, small directional shifts, and a mobile menu that preserves the publication hierarchy.",
+      "pattern": "Editorial front door with numbered archive views",
+      "caution": "Restrained navigation should still expose search, current state, and studio boundaries.",
+      "colors": [
+        { "name": "Paper", "hex": "#F2EEE5" },
+        { "name": "Ink", "hex": "#20211E", "text": "#F2EEE5" },
+        { "name": "Rust", "hex": "#B44C36", "text": "#F8F5EE" },
+        { "name": "Field blue", "hex": "#35697B", "text": "#F8F5EE" }
+      ]
+    },
+    {
+      "slug": "signal-notes",
+      "name": "Signal Notes",
+      "url": "https://signal-notes.pages.dev/",
+      "type": "Research archive",
+      "theme": "Near-black / signal orange",
+      "typeface": "Aptos-style sans · technical mono",
+      "summary": "A dark startup research archive combining a concise company table with deeper profile notes, product diagrams, and competitive context.",
+      "designSummary": "Signal Notes uses an instrument-panel vocabulary without becoming a dashboard. A monochrome shell, technical labels, and measured orange signals leave room for product explanations and long research notes. Logos behave as data marks rather than decorative tiles.",
+      "brandElements": ["Centered radar", "Grid paper", "Signal dot", "Monochrome logo wells"],
+      "layout": "A table-first overview branches into vertically organized company profiles with wide narrative and diagram modules.",
+      "interactions": "Center-out row reveals, slow detection pulses, hash routes, and progressive disclosure between brief and full profile notes.",
+      "pattern": "Persistent section rail plus progressive disclosure",
+      "caution": "Technical diagrams and motion can overpower reading unless their job stays explicit.",
+      "colors": [
+        { "name": "Void", "hex": "#080B09", "text": "#F4F4EE" },
+        { "name": "Panel", "hex": "#121713", "text": "#F4F4EE" },
+        { "name": "Signal", "hex": "#F2603A", "text": "#080B09" },
+        { "name": "Rule", "hex": "#323A34", "text": "#F4F4EE" }
+      ]
+    },
+    {
+      "slug": "motiondeck-studio",
+      "name": "MotionDeck Studio",
+      "url": "https://motiondeck-studio.pages.dev/",
+      "type": "Workbench",
+      "theme": "Soft white / electric violet",
+      "typeface": "Geometric sans · compact mono",
+      "summary": "A light technical workspace for browsing, creating, and connecting visual assets across distinct production modes.",
+      "designSummary": "MotionDeck behaves like a creative operating system. Its neutral workspace lets vivid previews carry the personality while small labels, strong grouping, and compact controls keep production state legible.",
+      "brandElements": ["Asset rails", "Mode switcher", "Canvas grid", "Violet focus state"],
+      "layout": "Persistent library rail, central canvas, and contextual settings form a stable three-column production shell.",
+      "interactions": "Mode changes preserve workspace context; hover and selected states rely on borders, small shadows, and controlled color rather than motion-heavy transitions.",
+      "pattern": "Dense library navigation with task-oriented modes",
+      "caution": "High control counts need strong grouping, reliable defaults, and clear empty states.",
+      "colors": [
+        { "name": "Canvas", "hex": "#F6F5F1" },
+        { "name": "Ink", "hex": "#17171A", "text": "#FFFFFF" },
+        { "name": "Violet", "hex": "#6E55E8", "text": "#FFFFFF" },
+        { "name": "Mist", "hex": "#E5E3EA" }
+      ]
+    },
+    {
+      "slug": "fleeting",
+      "name": "Fleeting",
+      "url": "https://fleeting-game.pages.dev/",
+      "type": "Game workbook",
+      "theme": "Midnight / cyan / magenta",
+      "typeface": "Bold grotesk · mono labels",
+      "summary": "A dark game-development workbook that makes systems, playtests, and roadmap state visible beside the playable idea.",
+      "designSummary": "Fleeting turns documentation into part of the game world. Bright system colors mark different mechanics against a deep background, while numbered routes and compact ledgers make a complicated prototype feel inspectable.",
+      "brandElements": ["Neon traces", "Numbered chapters", "System ledgers", "Playtest status"],
+      "layout": "A chaptered workbook alternates wide concept frames with dense system tables and playable modules.",
+      "interactions": "Hover traces and subtle glow reinforce active systems; navigation behaves like a technical manual rather than marketing pages.",
+      "pattern": "Numbered navigation and living design documentation",
+      "caution": "Workbook depth can make the primary playable action ambiguous.",
+      "colors": [
+        { "name": "Midnight", "hex": "#0C1018", "text": "#F3F4F8" },
+        { "name": "Cyan", "hex": "#57D6D9", "text": "#0C1018" },
+        { "name": "Magenta", "hex": "#D95A9D", "text": "#0C1018" },
+        { "name": "Slate", "hex": "#293142", "text": "#F3F4F8" }
+      ]
+    },
+    {
+      "slug": "kaggriculture-fieldbook",
+      "name": "Kaggriculture Fieldbook",
+      "url": "https://kaggriculture-workbook.pages.dev/",
+      "type": "Strategy fieldbook",
+      "theme": "Soil / crop green",
+      "typeface": "Utility mono · compact sans",
+      "summary": "A strategy fieldbook for game mechanics, agents, experiments, and findings, presented as a living agricultural notebook.",
+      "designSummary": "The Fieldbook uses the language of plots, seasons, and experiments to organize systems thinking. Earth tones give the technical workbook a specific world, while status chips and ruled tables make simulation details easy to scan.",
+      "brandElements": ["Plot grid", "Season markers", "Experiment ledger", "Crop-state colors"],
+      "layout": "A persistent workbook index opens into full-width strategy tables, experiment summaries, and agent notes.",
+      "interactions": "State changes are conveyed through chips and selection rules; motion is kept secondary to legibility.",
+      "pattern": "Experimental notebook with explicit strategies",
+      "caution": "Monospace at reading scale can flatten hierarchy and exhaust longer notes.",
+      "colors": [
+        { "name": "Soil", "hex": "#27231C", "text": "#F3EEDB" },
+        { "name": "Paper", "hex": "#EEE8D5" },
+        { "name": "Crop", "hex": "#7F9A4D", "text": "#17200F" },
+        { "name": "Harvest", "hex": "#D0A346" }
+      ]
+    },
+    {
+      "slug": "sounddeck",
+      "name": "SoundDeck",
+      "url": "https://sounddeck-icm.pages.dev/",
+      "type": "Audio workbench",
+      "theme": "Studio white / waveform blue",
+      "typeface": "Neutral sans · engineering mono",
+      "summary": "A light audio workbench that organizes generation, takes, projects, and connectors around a single production surface.",
+      "designSummary": "SoundDeck treats audio as a visual material. Waveforms and take states carry the color while the surrounding shell remains quiet, reducing the cognitive load of moving between generation, review, and assembly.",
+      "brandElements": ["Waveform bands", "Take counters", "Transport controls", "Connector rails"],
+      "layout": "An asset palette and project rail frame a central production timeline with contextual actions nearby.",
+      "interactions": "Playback state, selection, and generation progress use clear visual feedback and minimal layout movement.",
+      "pattern": "Asset palette paired with a production workspace",
+      "caution": "Large tool surfaces need clear empty, loading, and destructive-action states.",
+      "colors": [
+        { "name": "Studio", "hex": "#F5F7F8" },
+        { "name": "Ink", "hex": "#172027", "text": "#FFFFFF" },
+        { "name": "Wave", "hex": "#3D7FA6", "text": "#FFFFFF" },
+        { "name": "Quiet", "hex": "#DCE4E8" }
+      ]
+    },
+    {
+      "slug": "cost-basis",
+      "name": "Cost Basis",
+      "url": "https://cost-basis.pages.dev/",
+      "type": "Finance notebook",
+      "theme": "Ledger paper / oxblood",
+      "typeface": "Editorial serif · tabular mono",
+      "summary": "A finance notebook with generous editorial scale, warm paper, and structured archive views for personal analysis.",
+      "designSummary": "Cost Basis makes finance feel considered rather than terminal-like. Large serif headings carry the argument, while tabular figures, thin rules, and small mono metadata preserve the precision expected of financial notes.",
+      "brandElements": ["Ledger rules", "Tabular figures", "Oxblood marks", "Footnote scale"],
+      "layout": "Publication-scale essays sit beside compact metadata and structured archive tables.",
+      "interactions": "Reading progress and restrained row states support navigation without introducing dashboard behavior.",
+      "pattern": "Publication shell around a personal research system",
+      "caution": "Writing tools and private data should remain visually and technically separate from public reading.",
+      "colors": [
+        { "name": "Ledger", "hex": "#F1ECE1" },
+        { "name": "Ink", "hex": "#25231F", "text": "#FFFFFF" },
+        { "name": "Oxblood", "hex": "#7B342E", "text": "#FFFFFF" },
+        { "name": "Rule", "hex": "#C9C0B1" }
+      ]
+    },
+    {
+      "slug": "pokemon-rogue-dungeons",
+      "name": "Pokémon Rogue Dungeons",
+      "url": "https://pokemon-rogue-dungeons.pages.dev/",
+      "type": "Playable workbook",
+      "theme": "Terrain / torchlight",
+      "typeface": "Pixel display · readable sans",
+      "summary": "A terrain-colored prototype that links a runnable expedition with its own design documentation.",
+      "designSummary": "The project uses terrain, inventory, and encounter language as both interface and documentation. Playful pixel forms create identity, while a cleaner supporting typeface keeps system notes legible outside the play surface.",
+      "brandElements": ["Terrain tiles", "Expedition cards", "Inventory marks", "Torch accents"],
+      "layout": "A playable expedition is embedded inside a chaptered design workbook with rules and encounter notes.",
+      "interactions": "Direct tile and card feedback is immediate; documentation views use calmer, conventional controls.",
+      "pattern": "Playable object embedded inside its own design workbook",
+      "caution": "Novel visual language still needs conventional focus, hover, and completion feedback.",
+      "colors": [
+        { "name": "Cave", "hex": "#252720", "text": "#F7F0D6" },
+        { "name": "Moss", "hex": "#6F8E58", "text": "#15200F" },
+        { "name": "Torch", "hex": "#E1943B" },
+        { "name": "Parchment", "hex": "#EFE2BC" }
+      ]
+    },
+    {
+      "slug": "margins-and-weather",
+      "name": "Margins and Weather",
+      "url": "https://margins-and-weather.pages.dev/",
+      "type": "Editorial",
+      "theme": "Cloud paper / storm blue",
+      "typeface": "Newsreader · DM Sans · DM Mono",
+      "summary": "An editorial deployment built from the same publication architecture as Personal Writing, with a quieter atmospheric identity.",
+      "designSummary": "This publication tests how far a stable editorial system can travel through token changes alone. Clouded neutrals and weather-map blue shift the mood while the issue structure, reading measures, and navigation stay familiar.",
+      "brandElements": ["Weather coordinates", "Issue rhythm", "Cloud fields", "Forecast blue"],
+      "layout": "A reusable publication shell with editorial home, index, article, about, and studio views.",
+      "interactions": "Subtle progress and hover cues maintain the calm reading system inherited from the base publication.",
+      "pattern": "Reusable publication starter with swappable identity",
+      "caution": "A shared template needs meaningful token and content variation to avoid clone-like results.",
+      "colors": [
+        { "name": "Cloud", "hex": "#EEF0EB" },
+        { "name": "Storm", "hex": "#27343D", "text": "#F7F8F5" },
+        { "name": "Forecast", "hex": "#5B7E91", "text": "#FFFFFF" },
+        { "name": "Mist", "hex": "#D2D9D8" }
+      ]
+    },
+    {
+      "slug": "worth-more",
+      "name": "Worth More?",
+      "url": "https://worth-more-game.pages.dev/",
+      "type": "Data game",
+      "theme": "Ink / market green",
+      "typeface": "Display sans · tabular mono",
+      "summary": "A valuation game that pairs a simple decision loop with deeper insight and data-studio views.",
+      "designSummary": "Worth More? turns comparative valuation into a repeatable game. Big numeric prompts and binary decisions create an immediate loop; deeper data views reuse the same typographic and color logic so analysis feels like a continuation rather than a separate product.",
+      "brandElements": ["Binary choices", "Large figures", "Reveal states", "Market ticks"],
+      "layout": "A focused single-question play surface opens into history, insight, and data-studio views.",
+      "interactions": "Fast choice feedback, animated value reveals, and streak state make the loop playful without obscuring the numbers.",
+      "pattern": "Game mechanic as an entry point to structured data",
+      "caution": "Analytical depth should not interrupt the speed and clarity of the core play loop.",
+      "colors": [
+        { "name": "Ink", "hex": "#101512", "text": "#F4F5EF" },
+        { "name": "Paper", "hex": "#F1F2EC" },
+        { "name": "Market", "hex": "#5F9E6E", "text": "#0C160E" },
+        { "name": "Alert", "hex": "#D46B4C", "text": "#FFFFFF" }
+      ]
+    },
+    {
+      "slug": "good-places-together",
+      "name": "Good Places, Together",
+      "url": "https://good-places-together.pages.dev/",
+      "type": "Map journal",
+      "theme": "Warm map / tomato",
+      "typeface": "Friendly serif · utility sans",
+      "summary": "A warm map-first restaurant guide built around place memory and shared recommendations rather than rankings.",
+      "designSummary": "The guide treats a recommendation as a memory attached to a place. Warm cartographic colors, handwritten-feeling editorial moments, and restrained controls keep the map personal rather than transactional.",
+      "brandElements": ["Place pins", "Memory cards", "Neighborhood color", "Shared lists"],
+      "layout": "A map and editorial place cards share the viewport, with filters and details appearing only when needed.",
+      "interactions": "Pins, cards, and list selection stay synchronized; mobile shifts from split view to a clear map-or-list mode.",
+      "pattern": "Spatial browsing with an editorial point of view",
+      "caution": "Map controls and narrative cards compete for scarce attention on small screens.",
+      "colors": [
+        { "name": "Map", "hex": "#EFE7D7" },
+        { "name": "Ink", "hex": "#23302B", "text": "#FFFFFF" },
+        { "name": "Tomato", "hex": "#C95F43", "text": "#FFFFFF" },
+        { "name": "Park", "hex": "#91A17D" }
+      ]
+    }
   ]
 }

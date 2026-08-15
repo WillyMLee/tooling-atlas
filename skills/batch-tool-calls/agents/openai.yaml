@@ -1,0 +1,5 @@
+interface:
+  display_name: "Batch Tool Calls"
+  short_description: "Batch independent tool work safely"
+  brand_color: "#35697B"
+  default_prompt: "Use $batch-tool-calls to reduce round trips in this tool-heavy task."

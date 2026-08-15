@@ -1,0 +1,5 @@
+interface:
+  display_name: "Web Interaction Loop"
+  short_description: "Observe, act, and verify browser work"
+  brand_color: "#5F7056"
+  default_prompt: "Use $web-interaction-loop to inspect and verify this website flow."

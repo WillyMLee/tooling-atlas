@@ -1,0 +1,5 @@
+interface:
+  display_name: "Orchestration Plan"
+  short_description: "Choose and govern the right work mode"
+  brand_color: "#D2A12A"
+  default_prompt: "Use $orchestration-plan to split this multi-part task into the right work modes."

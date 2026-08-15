@@ -1,62 +1,52 @@
-# Interface Atlas
+# Tooling Atlas
 
-An open-source field guide to reusable diagram modules and web-interface patterns.
+Tooling Atlas is an open working library for interface references, diagram packets, interaction patterns, and agent workflow skills. It exists so useful decisions from one project can become dependable starting points for the next.
 
-Interface Atlas has two jobs:
+## What is inside
 
-1. Provide small, framework-free diagrams that can be dropped into editorial, research, and product sites.
-2. Record what works across real websites without copying their application code or visual identity.
+- `catalog/` — design profiles with palette, type, brand, layout, and interaction notes.
+- `modules/` — dependency-free JavaScript and CSS diagram primitives.
+- `skills/` — validated Agent Skills for context, batching, browser work, and orchestration.
+- `docs/` — longer implementation notes and contribution guidance.
 
-## Included modules
+## Run locally
 
-- **Flow stack** — a sequence with explicit inputs, actions, and outcomes.
-- **System map** — a central system with related actors or services.
-- **Metric bridge** — a causal path from operating change to business result.
-- **Decision fork** — options, tradeoffs, and a recommended path.
-
-All modules use semantic HTML, respect reduced-motion preferences, inherit CSS custom properties, and collapse cleanly on small screens.
-
-## Quick start
-
-```html
-<link rel="stylesheet" href="./modules/diagram-kit.css" />
-<div id="workflow"></div>
-<script type="module">
-  import { renderFlow } from "./modules/diagram-kit.js";
-
-  renderFlow(document.querySelector("#workflow"), {
-    eyebrow: "How it works",
-    steps: [
-      { label: "Input", title: "Work traces", detail: "Observed activity" },
-      { label: "Product action", title: "Model the process", detail: "Context and exceptions" },
-      { label: "Output", title: "Process evidence", detail: "A current operating view", tone: "accent" }
-    ]
-  });
-</script>
+```sh
+npm run dev
 ```
 
-## Repository map
+The command prints the local URL after selecting an available port.
 
-```text
-modules/                 Reusable JavaScript and CSS
-catalog/sites.json       Observed website-pattern inventory
-docs/                    Selection and implementation guidance
-index.html               Live gallery
-app.js                   Gallery interactions and examples
-styles.css               Gallery-only presentation
+## Build
+
+```sh
+npm run build
 ```
 
-## Design principles
+The static site is written to `dist/`.
 
-- Start with the relationship the reader needs to understand.
-- Keep the diagram useful when animation, color, or JavaScript is unavailable.
-- Treat labels as content, not decoration.
-- Prefer one visual grammar per page.
-- Use responsive recomposition instead of shrinking a desktop diagram.
-- Make copyable examples small enough to understand in one sitting.
+## Diagram kit
 
-See [Diagram best practices](docs/DIAGRAM_BEST_PRACTICES.md) and the [website pattern audit](docs/WEBSITE_PATTERN_AUDIT.md).
+```js
+import { renderFlow } from "./modules/diagram-kit.js";
 
-## Status
+renderFlow(document.querySelector("#diagram"), {
+  title: "Signals become a working view",
+  direction: "vertical",
+  steps: [
+    { label: "Input", title: "Collect evidence" },
+    { label: "Model", title: "Create context" },
+    { label: "Outcome", title: "Guide action", tone: "accent" },
+  ],
+});
+```
 
-This is the initial `0.1` field release. The next milestone is packaging the modules for npm and adding screenshot-based regression tests.
+Import `modules/diagram-kit.css` once and override the documented `--ia-*` custom properties from the containing page.
+
+## Skills
+
+Each folder in `skills/` is a standalone Agent Skill with `SKILL.md` and `agents/openai.yaml`. Copy a folder into your agent's skills directory or install it using the tooling supported by that agent. Review the module before enabling it in a production workflow.
+
+## License
+
+MIT

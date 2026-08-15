@@ -69,6 +69,6 @@ Recurring risk: maps, filters, and narrative compete for a small mobile viewport
 
 ## Extraction policy
 
-Interface Atlas records relationships, design decisions, and newly written implementation patterns. It does not publish private repository code, proprietary data, credentials, or copied brand assets.
+Tooling Atlas records relationships, design decisions, and newly written implementation patterns. It does not publish private repository code, proprietary data, credentials, or copied brand assets.
 
 The goal is a transferable pattern, not a template clone.

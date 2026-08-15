@@ -19,4 +19,4 @@ createServer((request, response) => {
   } catch {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" }).end("Not found");
   }
-}).listen(port, "127.0.0.1", () => console.log(`Interface Atlas is running at http://127.0.0.1:${port}`));
+}).listen(port, "127.0.0.1", () => console.log(`Tooling Atlas is running at http://127.0.0.1:${port}`));
