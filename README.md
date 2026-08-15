@@ -1,11 +1,11 @@
 # Tooling Atlas
 
-Tooling Atlas is an open working library for interface references, diagram packets, interaction patterns, and agent workflow skills. It exists so useful decisions from one project can become dependable starting points for the next.
+Tooling Atlas is an open working library for interface references, source-derived pattern packets, interaction patterns, and agent workflow skills. It exists so useful decisions from one project can become dependable starting points for the next.
 
 ## What is inside
 
 - `catalog/` — design profiles with palette, type, brand, layout, and interaction notes.
-- `modules/` — dependency-free JavaScript and CSS diagram primitives.
+- `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
 - `skills/` — validated Agent Skills for context, batching, browser work, orchestration, evals, and tool-surface design.
 - `docs/` — longer implementation notes and contribution guidance.
 
@@ -25,23 +25,19 @@ npm run build
 
 The static site is written to `dist/`.
 
-## Diagram kit
+## Pattern kit
 
 ```js
-import { renderFlow } from "./modules/diagram-kit.js";
+import { renderLiveProcess } from "./modules/diagram-kit.js";
 
-renderFlow(document.querySelector("#diagram"), {
-  title: "Signals become a working view",
-  direction: "vertical",
-  steps: [
-    { label: "Input", title: "Collect evidence" },
-    { label: "Model", title: "Create context" },
-    { label: "Outcome", title: "Guide action", tone: "accent" },
-  ],
+renderLiveProcess(document.querySelector("#module"), {
+  source: "WillyMLee.com",
+  label: "Weekend baking",
+  steps: ["Feed the starter", "Shape the dough", "Wait for the rise"],
 });
 ```
 
-Import `modules/diagram-kit.css` once and override the documented `--ia-*` custom properties from the containing page.
+Import `modules/diagram-kit.css` once and override the documented `--ia-*` custom properties from the containing page. The kit also includes Product Workflow, Problem Narrative, Competitive Radar, Hero Ledger, Step Detail, and Planning Rail renderers.
 
 ## Skills
 

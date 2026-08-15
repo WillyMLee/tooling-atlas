@@ -1,4 +1,7 @@
-import { renderFlow, renderSystemMap, renderMetricBridge, renderDecisionFork, renderEvidenceChain } from "./modules/diagram-kit.js";
+import {
+  renderLiveProcess, renderProductWorkflow, renderProblemNarrative, renderCompetitiveRadar,
+  renderHeroLedger, renderStepDetail, renderPlannerRail,
+} from "./modules/diagram-kit.js";
 
 const view = document.querySelector("#view");
 const toast = document.querySelector("#toast");
@@ -109,61 +112,44 @@ const skills = [
 ];
 
 const packets = [
-  { slug: "flow", name: "Flow Stack", use: "A sequence where each step produces the input for the next.", shows: "How work moves", avoid: "Parallel or circular systems" },
-  { slug: "system", name: "System Field", use: "A central product coordinating several actors, systems, or policy surfaces.", shows: "Who connects to the core", avoid: "Detailed chronological flows" },
-  { slug: "metric", name: "Metric Bridge", use: "An operating change that compounds into a measurable business result.", shows: "Why an improvement matters", avoid: "Large KPI dashboards" },
-  { slug: "decision", name: "Decision Fork", use: "A choice between credible paths with an explicit recommendation and tradeoffs.", shows: "What must be decided", avoid: "More than three options" },
-  { slug: "evidence", name: "Evidence Chain", use: "A visible path from observed signal to interpretation, open question, and next test.", shows: "How the view was formed", avoid: "Private chain-of-thought" },
+  { slug: "live", name: "Live Process", source: "WillyMLee.com", sourceUrl: "https://willymlee.com/", family: "Hero motion", use: "Animate a short, human-readable activity chain inside a hero without turning the whole page into a product demo.", shows: "A process unfolding in real time", avoid: "Long workflows or steps that require paragraphs" },
+  { slug: "workflow", name: "Product Workflow", source: "Signal Notes", sourceUrl: "https://signal-notes.pages.dev/", family: "Product explainer", use: "Let readers switch between product capabilities, then see the input, product action, and usable output for each one.", shows: "What the product actually does", avoid: "A company overview with no concrete action" },
+  { slug: "problem", name: "Problem Narrative", source: "Signal Notes", sourceUrl: "https://signal-notes.pages.dev/", family: "Research narrative", use: "Give a structural problem, a concrete example, and the category response enough room to be understood in sequence.", shows: "Why the category needs to exist", avoid: "Tiny summary cards or unrelated observations" },
+  { slug: "radar", name: "Competitive Radar", source: "Signal Notes", sourceUrl: "https://signal-notes.pages.dev/", family: "Market map", use: "Place a small competitive set across two meaningful axes, with hover detail and a centered live-state marker.", shows: "Relative market positioning", avoid: "Precise quantitative comparisons" },
+  { slug: "ledger", name: "Hero Ledger", source: "Crumb", sourceUrl: "https://crumb-recipe-journal.willymlee.workers.dev/", family: "Hero utility", use: "Pair an expressive hero with one tactile summary card containing a headline metric, supporting facts, and one next action.", shows: "The useful state behind the headline", avoid: "Full analytics dashboards" },
+  { slug: "step", name: "Step Detail", source: "Crumb", sourceUrl: "https://crumb-recipe-journal.willymlee.workers.dev/", family: "Instructional UI", use: "Keep the main instruction readable while a compact companion panel exposes ingredients, tools, or process details needed right now.", shows: "Action plus just-in-time context", avoid: "High-level journeys without operational detail" },
+  { slug: "planner", name: "Planning Rail", source: "Crumb", sourceUrl: "https://crumb-recipe-journal.willymlee.workers.dev/", family: "Interactive planning", use: "Use a selectable time rail above structured slots so the user always knows the active planning context.", shows: "Time selection and resource allocation", avoid: "Static editorial content" },
 ];
 
 const packetOptions = {
-  flow: {
-    eyebrow: "Product path", title: "Signals become a usable operating view", direction: "vertical",
-    steps: [
-      { label: "Input", title: "Collect the evidence", detail: "Bring together the traces that describe the current state." },
-      { label: "Model", title: "Create the context", detail: "Connect events, roles, rules, and exceptions." },
-      { label: "Outcome", title: "Guide the next action", detail: "Expose a clear view that a person or agent can use.", tone: "accent" },
-    ],
-  },
-  system: {
-    eyebrow: "System relationship", title: "The product coordinates the working system",
-    core: { label: "Core", title: "Control plane" },
-    nodes: [
-      { label: "Observe", title: "People", detail: "Behavior and roles" },
-      { label: "Connect", title: "Systems", detail: "Events and state" },
-      { label: "Govern", title: "Policy", detail: "Rules and evidence" },
-      { label: "Execute", title: "Agents", detail: "Bounded action" },
-    ],
-  },
-  metric: {
-    eyebrow: "Value chain", title: "Operating improvement becomes economic value",
-    metrics: [
-      { value: "−28%", label: "Friction", title: "Cycle time", detail: "Less waiting and rework." },
-      { value: "+19%", label: "Capacity", title: "Throughput", detail: "More cases per team." },
-      { value: "$4.2M", label: "Outcome", title: "Annual value", detail: "Measured contribution." },
-    ],
-  },
-  decision: {
-    eyebrow: "Strategic choice", title: "Make the tradeoff legible", questionLabel: "Entry decision", question: "How should the team enter the market?",
-    paths: [
-      { label: "Path A", title: "Own the workflow", detail: "Build deeply around one painful operating process.", tradeoff: "More implementation · stronger position", recommended: true },
-      { label: "Path B", title: "Embed in the suite", detail: "Integrate with an incumbent and inherit distribution.", tradeoff: "Faster access · less control" },
-    ],
-  },
-  evidence: {
-    eyebrow: "Working view", title: "Move from signal to a testable conclusion",
-    steps: [
-      { label: "Observe", title: "The signal", detail: "Start with a source, behavior, or measured change that another reader can inspect." },
-      { label: "Interpret", title: "What it may mean", detail: "Connect the evidence to a market, product, or operating implication without overstating certainty." },
-      { label: "Question", title: "What remains open", detail: "Name the unknown that could change the view." },
-      { label: "Test", title: "What to watch next", detail: "Define the next observable proof point.", tone: "accent" },
-    ],
-  },
+  live: { source: "WillyMLee.com", title: "Live process", label: "Weekend baking", status: "Active", steps: ["Feed the starter", "Shape the dough", "Wait for the rise"] },
+  workflow: { source: "Signal Notes", title: "How the product works", workflows: [
+    { label: "Observe", title: "Capture the work", detail: "Collect interaction signals across applications without waiting for a bespoke integration.", input: "Work traces", action: "Model the operating process", output: "Process evidence" },
+    { label: "Understand", title: "Find the pattern", detail: "Connect events, participants, handoffs, and exceptions into a shared operating view.", input: "Process evidence", action: "Build the process model", output: "Verified bottleneck" },
+    { label: "Improve", title: "Guide the next action", detail: "Turn the operating model into a prioritized intervention a team can test and measure.", input: "Verified bottleneck", action: "Recommend an intervention", output: "Measured improvement" },
+  ] },
+  problem: { source: "Signal Notes", title: "From structural gap to category response", steps: [
+    { label: "Problem overview", title: "The work is visible only in fragments", detail: "Teams see tickets, dashboards, and outcomes, but not the full sequence of decisions and handoffs that created them." },
+    { label: "Example issue", title: "The delay hides between systems", detail: "A case appears to take three days. The actual work takes two hours; queues, re-entry, and unclear ownership consume the rest.", note: "The useful diagram explains the concrete failure before introducing the product." },
+    { label: "Solution approach", title: "Create evidence of how work really moves", detail: "The category reconstructs the operating process, identifies avoidable friction, and gives teams a shared view for redesign." },
+  ] },
+  radar: { source: "Signal Notes", title: "Competitive field", nodes: [
+    { name: "Platform", initial: "P", x: 50, y: 24, note: "Broad system of record" }, { name: "Specialist", initial: "S", x: 72, y: 40, note: "Deep vertical workflow" },
+    { name: "Open source", initial: "O", x: 31, y: 45, note: "Developer-led control" }, { name: "Agent layer", initial: "A", x: 62, y: 70, note: "Action and orchestration" },
+    { name: "Incumbent", initial: "I", x: 33, y: 73, note: "Distribution and bundling" },
+  ] },
+  ledger: { source: "Crumb", title: "Hero summary ledger", eyebrow: "Library summary", period: "2026", value: "24", unit: "recipes", rows: [{ label: "Made", value: "16" }, { label: "Revisions", value: "31" }], action: "Open weekly plan", note: "The object feels useful, not decorative: it summarizes the library and carries the hero into a concrete workflow." },
+  step: { source: "Crumb", title: "Instruction with working context", number: "03", stepTitle: "Build the sauce", time: "12 min", detail: "Toast the aromatics until fragrant, then add the liquids slowly and simmer until the sauce coats the back of a spoon.", tip: "Keep the heat moderate after the liquid goes in; a hard boil can flatten the aromatics.", ingredients: [{ amount: "2 tbsp", name: "olive oil" }, { amount: "3 cloves", name: "garlic" }, { amount: "1 cup", name: "stock" }], process: ["Toast aromatics", "Deglaze", "Reduce until glossy"] },
+  planner: { source: "Crumb", title: "Selectable planning rail", days: [{ label: "Monday", count: "3" }, { label: "Tuesday", count: "2" }, { label: "Wednesday", count: "4" }, { label: "Thursday", count: "2" }, { label: "Friday", count: "3" }], meals: [
+    { icon: "P", label: "Protein", hint: "The main anchor", items: [{ title: "Miso ginger salmon", meta: "35 min" }] },
+    { icon: "V", label: "Vegetable", hint: "One or more sides", items: [{ title: "Sesame broccoli", meta: "20 min" }, { title: "Cucumber salad", meta: "15 min" }] },
+    { icon: "B", label: "Base", hint: "Grain, noodle, or bread", items: [{ title: "Ginger scallion rice", meta: "30 min" }] },
+  ] },
 };
 
-const renderers = { flow: renderFlow, system: renderSystemMap, metric: renderMetricBridge, decision: renderDecisionFork, evidence: renderEvidenceChain };
+const renderers = { live: renderLiveProcess, workflow: renderProductWorkflow, problem: renderProblemNarrative, radar: renderCompetitiveRadar, ledger: renderHeroLedger, step: renderStepDetail, planner: renderPlannerRail };
 let sites = [];
-let currentPacket = "flow";
+let currentPacket = "live";
 let packetAccent = "#b44c36";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
@@ -199,7 +185,7 @@ function renderOverview() {
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">02 / Working packets</span><h2>Start from a proven shape</h2></div><p>Packets keep recurring interface work consistent while leaving the content, tone, and final judgment open.</p></div>
       <div class="overview-grid">
-        <a class="overview-card" href="#packets"><span>D / 05</span><h3>Diagram packets</h3><p>Five code-native explanation patterns with a live configurator.</p><small>Open builder →</small></a>
+        <a class="overview-card" href="#packets"><span>P / 07</span><h3>Pattern packets</h3><p>Seven code-native modules extracted from interfaces already proven across your sites.</p><small>Open library →</small></a>
         <a class="overview-card" href="#interactions"><span>I / 03</span><h3>Interaction packets</h3><p>Quiet motion patterns with timing, purpose, and reduced-motion behavior.</p><small>Inspect motion →</small></a>
         <a class="overview-card" href="#skills"><span>A / 06</span><h3>Agent modules</h3><p>Installable operating playbooks for context, tools, browsing, orchestration, and evals.</p><small>Review modules →</small></a>
       </div>
@@ -236,18 +222,19 @@ function renderDesign(site) {
 }
 
 function renderPackets() {
+  const activePacket = packets.find((packet) => packet.slug === currentPacket) || packets[0];
   view.innerHTML = `<div class="page">
-    ${pageHead("02 / DIAGRAM PACKETS", "Explain the system.<br><em>Keep the seams visible.</em>", "Code-native diagrams for recurring website explanations. Choose a shape, tune its direction and accent, then copy a stable configuration.")}
+    ${pageHead("02 / PATTERN PACKETS", "Reuse what already<br><em>worked.</em>", "A source-derived shelf of diagrams, hero utilities, and interactive modules lifted from WillyMLee.com, Signal Notes, and Crumb—then normalized for reuse.")}
     <section class="content-section">
-      <div class="packet-grid">${packets.map((packet, index) => `<article class="packet-card ${packet.slug === currentPacket ? "is-active" : ""}" data-packet="${packet.slug}" tabindex="0"><div class="packet-card-top"><span>${String(index + 1).padStart(2,"0")}</span><small>${packet.shows}</small></div><h3>${packet.name}</h3><p>${packet.use}</p><dl><div><dt>Best for</dt><dd>${packet.shows}</dd></div><div><dt>Avoid for</dt><dd>${packet.avoid}</dd></div></dl></article>`).join("")}</div>
+      <div class="packet-grid">${packets.map((packet, index) => `<article class="packet-card ${packet.slug === currentPacket ? "is-active" : ""}" data-packet="${packet.slug}" tabindex="0"><div class="packet-card-top"><span>${String(index + 1).padStart(2,"0")}</span><small>${packet.family}</small></div><span class="packet-source">From ${packet.source}</span><h3>${packet.name}</h3><p>${packet.use}</p><dl><div><dt>Shows</dt><dd>${packet.shows}</dd></div><div><dt>Avoid for</dt><dd>${packet.avoid}</dd></div></dl></article>`).join("")}</div>
     </section>
     <section class="packet-layout">
-      <div class="packet-stage" style="--packet-accent:${packetAccent}"><div class="packet-stage-head"><span class="field-label">Live packet</span><strong>${packets.find((packet) => packet.slug === currentPacket).shows}</strong><p>${packets.find((packet) => packet.slug === currentPacket).use}</p></div><div id="packet-preview"></div></div>
+      <div class="packet-stage" style="--packet-accent:${packetAccent}"><div class="packet-stage-head"><span class="field-label">Live module / ${activePacket.source}</span><strong>${activePacket.name}</strong><p>${activePacket.use}</p></div><div id="packet-preview"></div></div>
       <aside class="packet-controls">
-        <span class="field-label">Packet controls</span>
-        <div class="control-group"><label>Diagram type<select id="packet-type">${packets.map((packet) => `<option value="${packet.slug}" ${packet.slug === currentPacket ? "selected" : ""}>${packet.name}</option>`).join("")}</select></label></div>
-        <div class="control-group" ${currentPacket === "flow" ? "" : "hidden"}><label>Flow direction<select id="packet-direction"><option value="vertical">Vertical</option><option value="horizontal">Horizontal</option></select></label></div>
-        <div class="packet-purpose"><span class="field-label">What it does</span><p>${packets.find((packet) => packet.slug === currentPacket).shows}</p><span class="field-label">Do not use it for</span><p>${packets.find((packet) => packet.slug === currentPacket).avoid}</p></div>
+        <span class="field-label">Module notes</span>
+        <div class="control-group"><label>Pattern<select id="packet-type">${packets.map((packet) => `<option value="${packet.slug}" ${packet.slug === currentPacket ? "selected" : ""}>${packet.name}</option>`).join("")}</select></label></div>
+        <div class="packet-origin"><span class="field-label">Observed in</span><a href="${activePacket.sourceUrl}" target="_blank" rel="noreferrer">${activePacket.source} ↗</a><p>This is a normalized implementation of a real pattern in the source site, not a fresh diagram invented for the Atlas.</p></div>
+        <div class="packet-purpose"><span class="field-label">Communicates</span><p>${activePacket.shows}</p><span class="field-label">Do not use it for</span><p>${activePacket.avoid}</p></div>
         <div class="control-group"><span class="field-label">Accent</span><div class="color-options">${["#b44c36","#35697b","#5f7056","#d2a12a"].map((color) => `<button type="button" data-accent="${color}" class="${color === packetAccent ? "is-active" : ""}" style="--choice:${color}" aria-label="Use ${color}"></button>`).join("")}</div></div>
         <button class="button" id="copy-packet" type="button">Copy configuration</button>
         <a class="button secondary" href="https://github.com/WillyMLee/tooling-atlas/tree/main/modules" target="_blank" rel="noreferrer">View source ↗</a>
@@ -261,7 +248,6 @@ function renderPacketPreview() {
   const target = document.querySelector("#packet-preview");
   if (!target) return;
   const options = structuredClone(packetOptions[currentPacket]);
-  if (currentPacket === "flow") options.direction = document.querySelector("#packet-direction")?.value || options.direction;
   renderers[currentPacket](target, options);
 }
 
@@ -321,11 +307,11 @@ document.addEventListener("click", async (event) => {
   const row = event.target.closest("[data-href]"); if (row) routeTo(row.dataset.href);
   const packetCard = event.target.closest("[data-packet]"); if (packetCard) { currentPacket = packetCard.dataset.packet; renderPackets(); }
   const accent = event.target.closest("[data-accent]"); if (accent) { packetAccent = accent.dataset.accent; document.querySelector(".packet-stage")?.style.setProperty("--packet-accent", packetAccent); document.querySelectorAll("[data-accent]").forEach((item) => item.classList.toggle("is-active", item === accent)); }
-  if (event.target.closest("#copy-packet")) { const options = structuredClone(packetOptions[currentPacket]); if (currentPacket === "flow") options.direction = document.querySelector("#packet-direction")?.value || options.direction; await navigator.clipboard.writeText(JSON.stringify({ type: currentPacket, accent: packetAccent, options }, null, 2)); showToast("Configuration copied"); }
+  if (event.target.closest("#copy-packet")) { const options = structuredClone(packetOptions[currentPacket]); await navigator.clipboard.writeText(JSON.stringify({ type: currentPacket, source: packets.find((packet) => packet.slug === currentPacket)?.source, accent: packetAccent, options }, null, 2)); showToast("Configuration copied"); }
 });
 
 document.addEventListener("keydown", (event) => { const target = event.target.closest?.("[data-href], [data-packet]"); if (target && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); target.click(); } });
-document.addEventListener("change", (event) => { if (event.target.id === "packet-type") { currentPacket = event.target.value; renderPackets(); } if (event.target.id === "packet-direction") renderPacketPreview(); });
+document.addEventListener("change", (event) => { if (event.target.id === "packet-type") { currentPacket = event.target.value; renderPackets(); } });
 window.addEventListener("hashchange", renderRoute);
 menuButton.addEventListener("click", () => { const open = directory.classList.toggle("is-open"); menuButton.setAttribute("aria-expanded", String(open)); });
 document.querySelector("#directory-search").addEventListener("input", (event) => {

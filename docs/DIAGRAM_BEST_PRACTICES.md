@@ -1,23 +1,26 @@
 # Diagram best practices
 
-## Choose by relationship
+## Choose by the reader's job
 
-| Reader question | Use | Avoid |
+| Reader question | Source-derived packet | Observed in |
 | --- | --- | --- |
-| What happens first, next, and last? | Flow stack | A free-form system map |
-| What connects to the central platform? | System map | A dense process flow |
-| How does an operating change create value? | Metric bridge | Unrelated KPI cards |
-| Which path should we choose? | Decision fork | A generic comparison table |
-| How did we form this working view? | Evidence chain | Hidden chain-of-thought or unsupported certainty |
+| Can I see a short process unfolding? | Live Process | WillyMLee.com hero |
+| What does each product capability actually do? | Product Workflow | Signal Notes company profiles |
+| Why does this product category need to exist? | Problem Narrative | Signal Notes company profiles |
+| Where do the alternatives sit relative to one another? | Competitive Radar | Signal Notes overview |
+| What useful state should sit beside the hero? | Hero Ledger | Crumb homepage |
+| What context is needed while completing this step? | Step Detail | Crumb recipe pages |
+| How do I select time and allocate items? | Planning Rail | Crumb weekly planner |
 
 ## Content rules
 
 1. Write the one-sentence insight before drawing the diagram.
-2. Keep node titles under seven words.
-3. Put evidence and caveats in prose adjacent to the diagram.
-4. Use a maximum of one accent state unless color carries categorical meaning.
-5. Prefer three to five nodes. Split larger systems into multiple views.
-6. Highlight with brackets, rules, or labels before filling an entire card with color. Preserve the reading hierarchy when the accent changes.
+2. Start from a working source pattern before inventing a new visual grammar.
+3. Keep node titles under seven words.
+4. Put evidence and caveats in prose adjacent to the diagram.
+5. Use a maximum of one accent state unless color carries categorical meaning.
+6. Prefer three to five nodes. Split larger systems into multiple views.
+7. Preserve the interaction's semantic job when adapting its surface style.
 
 ## Layout rules
 
