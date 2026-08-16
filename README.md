@@ -74,7 +74,7 @@ Module pages show two intentionally separate evidence types: dogfood field obser
 
 Context Budget and Batch Tool Calls now expose the first applied policy revisions directly on their module pages. Each revision links the base file to the measured report that caused the change.
 
-Print the three-module pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
+Print the four-module, twelve-scenario pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Cases without real observations remain visibly unmeasured. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
 
 ## License
 

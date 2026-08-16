@@ -15,7 +15,14 @@ try {
     join(root, "scripts", "capture-hook.mjs"),
     "--out", output,
     "--module", "batch-tool-calls",
+    "--module-version", "0.4.0",
     "--variant", "candidate",
+    "--activation-mode", "eval-assigned",
+    "--activation-reason", "eval-assignment",
+    "--task-shape", "large-independent",
+    "--source-count", "12",
+    "--independent-operations", "12",
+    "--orchestration-phase", "execute",
   ], { cwd: root, stdio: ["pipe", "ignore", "inherit"] });
   child.stdin.end(JSON.stringify({
     session_id: "self-test-session",
@@ -38,8 +45,10 @@ try {
   const event = JSON.parse(serialized.trim());
   if (event.event_name !== "tool.completed" || event.tool_name !== "self-test-tool") throw new Error("Collector did not normalize the tool event");
   if (event.module_slug !== "batch-tool-calls" || event.variant !== "candidate") throw new Error("Collector did not retain assigned eval attribution");
+  if (event.module_version !== "0.4.0" || event.activation_mode !== "eval-assigned" || event.activation_reason !== "eval-assignment") throw new Error("Collector did not retain module activation metadata");
+  if (event.task_shape !== "large-independent" || event.source_count !== 12 || event.independent_operation_count !== 12 || event.orchestration_phase !== "execute") throw new Error("Collector did not retain privacy-safe task-shape metadata");
   if (event.input_tokens !== null || event.output_tokens !== null || event.estimated_cost_usd !== null) throw new Error("Unknown usage must remain null");
-  console.log("Verified privacy-minimal hook capture and explicit eval attribution.");
+  console.log("Verified privacy-minimal hook capture, task shape, and explicit eval attribution.");
 } finally {
   const resolved = resolve(directory);
   if (!resolved.startsWith(`${temporaryRoot}${sep}`) || !basename(resolved).startsWith("tooling-atlas-capture-")) throw new Error("Refusing to clean an unexpected test directory");

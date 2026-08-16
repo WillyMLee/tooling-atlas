@@ -115,6 +115,34 @@
           "acceptance": ["working state distinguished from completion", "Ready text verified", "aria-live state verified", "no success inferred from click"]
         }
       ]
+    },
+    {
+      "slug": "orchestration-plan",
+      "name": "Orchestration Plan",
+      "primaryMetric": { "key": "coordinationOverhead", "label": "Unnecessary coordination steps", "direction": "lower" },
+      "cases": [
+        {
+          "id": "orchestration-common-launch-graph",
+          "category": "common",
+          "fixture": "evals/fixtures/orchestration/common/launch-plan.json",
+          "task": "Turn the fixture into an execution graph. Identify parallel-safe discovery, the critical path, one owner for shared implementation, explicit workstream contracts, and final verification. Do not edit files.",
+          "acceptance": ["dependencies are correct", "only independent discovery is parallel", "shared implementation has one owner", "contracts include outputs and stop conditions", "no writes"]
+        },
+        {
+          "id": "orchestration-edge-shared-targets",
+          "category": "edge",
+          "fixture": "evals/fixtures/orchestration/edge/shared-targets.json",
+          "task": "Choose a safe execution mode for the fixture. Some tasks look independent but share target files. Return the dependency graph, ownership boundaries, and the smallest useful orchestration. Do not edit files.",
+          "acceptance": ["shared write targets detected", "no concurrent shared writes", "one integration owner", "read-only discovery may run independently", "no writes"]
+        },
+        {
+          "id": "orchestration-failure-coupled-task",
+          "category": "known-failure",
+          "fixture": "evals/fixtures/orchestration/failure/coupled-task.json",
+          "task": "Choose direct work, batching, or multiple workstreams for this small tightly coupled task. Explain the routing decision in at most eight lines and preserve the stated authorization boundary. Do not edit files.",
+          "acceptance": ["direct work selected", "no invented workstreams", "coordination overhead avoided", "authorization boundary preserved", "line limit respected"]
+        }
+      ]
     }
   ]
 }

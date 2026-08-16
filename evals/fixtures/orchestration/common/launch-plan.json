@@ -1,0 +1,10 @@
+{
+  "goal": "Publish a small product launch page with verified messaging and responsive behavior.",
+  "work": [
+    { "id": "research", "action": "Verify three product claims from supplied sources", "dependsOn": [], "mode": "read-only" },
+    { "id": "asset-audit", "action": "Inventory supplied logo and screenshot assets", "dependsOn": [], "mode": "read-only" },
+    { "id": "implementation", "action": "Update index.html and styles.css", "dependsOn": ["research", "asset-audit"], "mode": "shared-write" },
+    { "id": "qa", "action": "Verify desktop and mobile rendering", "dependsOn": ["implementation"], "mode": "read-only" }
+  ],
+  "constraints": ["One owner for shared files", "No publishing", "Every workstream returns evidence and unresolved items"]
+}

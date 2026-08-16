@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "dataKind": "measured",
   "suite": "atlas-agent-pilot-v1",
-  "generatedAt": "2026-08-15T23:06:28.406Z",
+  "generatedAt": "2026-08-16T03:29:43.955Z",
   "notice": "Measured pilot observations. A pilot pass is evidence for another trial, not universal proof.",
   "summaries": [
     {
@@ -35,6 +35,17 @@
       "baselineQuality": null,
       "candidateQuality": null,
       "primaryMetric": "Verified completion score",
+      "primaryImprovementPercent": null,
+      "decision": "collect-more"
+    },
+    {
+      "module": "orchestration-plan",
+      "pairedRuns": 0,
+      "requiredPairs": 6,
+      "qualityPassed": false,
+      "baselineQuality": null,
+      "candidateQuality": null,
+      "primaryMetric": "Unnecessary coordination steps",
       "primaryImprovementPercent": null,
       "decision": "collect-more"
     }

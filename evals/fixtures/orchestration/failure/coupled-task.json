@@ -1,0 +1,10 @@
+{
+  "goal": "Rename one visible label and verify the same element at desktop and mobile widths.",
+  "work": [
+    { "id": "inspect", "action": "Locate the existing label" },
+    { "id": "edit", "action": "Change the label in app.js", "dependsOn": ["inspect"] },
+    { "id": "verify", "action": "Check the edited element at two widths", "dependsOn": ["edit"] }
+  ],
+  "authorization": "Local edit and verification only; do not commit, push, deploy, or create additional tasks.",
+  "constraints": ["All steps are sequential", "One shared file", "The task is small"]
+}

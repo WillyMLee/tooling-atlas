@@ -9,6 +9,19 @@ const option = (name) => {
 const destination = option("out") || process.env.TOOLING_ATLAS_EVENTS_PATH;
 const assignedModule = option("module") || process.env.TOOLING_ATLAS_MODULE || "";
 const assignedVariant = option("variant") || process.env.TOOLING_ATLAS_VARIANT || "";
+const assignedModuleVersion = option("module-version") || process.env.TOOLING_ATLAS_MODULE_VERSION || "";
+const activationMode = option("activation-mode") || process.env.TOOLING_ATLAS_ACTIVATION_MODE || "";
+const activationReason = option("activation-reason") || process.env.TOOLING_ATLAS_ACTIVATION_REASON || "";
+const taskShape = option("task-shape") || process.env.TOOLING_ATLAS_TASK_SHAPE || "";
+const orchestrationPhase = option("orchestration-phase") || process.env.TOOLING_ATLAS_ORCHESTRATION_PHASE || "";
+const optionalCount = (name, environmentName) => {
+  const raw = option(name) || process.env[environmentName] || "";
+  if (raw === "") return null;
+  const value = Number.parseInt(raw, 10);
+  return Number.isInteger(value) && value >= 0 ? value : null;
+};
+const sourceCount = optionalCount("source-count", "TOOLING_ATLAS_SOURCE_COUNT");
+const independentOperationCount = optionalCount("independent-operations", "TOOLING_ATLAS_INDEPENDENT_OPERATIONS");
 
 if (!destination) process.exit(0);
 
@@ -45,6 +58,13 @@ try {
     project: input.cwd ? basename(input.cwd) : "",
     surface: "codex-hook",
     module_slug: String(assignedModule),
+    module_version: String(assignedModuleVersion),
+    activation_mode: String(activationMode),
+    activation_reason: String(activationReason),
+    task_shape: String(taskShape),
+    source_count: sourceCount,
+    independent_operation_count: independentOperationCount,
+    orchestration_phase: String(orchestrationPhase),
     variant: String(assignedVariant),
     model: String(input.model || ""),
     reasoning_effort: "",

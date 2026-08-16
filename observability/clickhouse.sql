@@ -14,6 +14,13 @@ CREATE TABLE IF NOT EXISTS tooling_atlas.agent_events
     project LowCardinality(String),
     surface LowCardinality(String),
     module_slug LowCardinality(String),
+    module_version LowCardinality(String),
+    activation_mode LowCardinality(String),
+    activation_reason LowCardinality(String),
+    task_shape LowCardinality(String),
+    source_count Nullable(UInt32),
+    independent_operation_count Nullable(UInt32),
+    orchestration_phase LowCardinality(String),
     variant LowCardinality(String),
     model LowCardinality(String),
     reasoning_effort LowCardinality(String),
@@ -56,11 +63,13 @@ ORDER BY module_slug, variant;
 -- Detect modules that add coordination but fail to improve the outcome.
 SELECT
     module_slug,
+    task_shape,
+    activation_reason,
     countIf(event_name = 'module.selected') AS activations,
     countIf(event_name = 'run.completed' AND success = 1) AS successful_runs,
     quantileIf(0.5)(duration_ms, event_name = 'run.completed') AS p50_duration_ms,
     sumIf(tool_calls, event_name = 'run.completed') AS tool_calls
 FROM tooling_atlas.agent_events
 WHERE event_time >= now() - INTERVAL 30 DAY
-GROUP BY module_slug
+GROUP BY module_slug, task_shape, activation_reason
 ORDER BY activations DESC;

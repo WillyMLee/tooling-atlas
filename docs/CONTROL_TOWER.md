@@ -8,7 +8,7 @@ Control Tower answers one question: did a module improve the outcome enough to j
 - A backend-neutral JSON event schema.
 - An opt-in Codex lifecycle hook collector that stores no prompts, tool inputs, tool outputs, or assistant messages.
 - ClickHouse DDL and quality-gated comparison queries.
-- A three-module eval pilot with nine reproducible agent scenarios and a quality-gated scorer.
+- A four-module eval pilot with twelve reproducible agent scenarios and a quality-gated scorer.
 - An Atlas dashboard that prefers measured eval results, exposes actual matched pairs, and otherwise falls back to clearly labeled example data.
 
 The local user hook is installed separately from this repository and requires Codex review/trust before it runs. No ClickHouse database is connected by default.
@@ -81,7 +81,9 @@ Example `hooks.json` entry:
 }
 ```
 
-Pass `--out` or set `TOOLING_ATLAS_EVENTS_PATH` to an explicit NDJSON file before enabling the hook. For a controlled CLI or API experiment, pass `--module` and `--variant`, or set their environment equivalents before launching the agent. General desktop activity remains deliberately unassigned because the content-free hook cannot reliably infer which skill influenced a run. Codex requires hook review and trust after a hook is added or changed.
+Pass `--out` or set `TOOLING_ATLAS_EVENTS_PATH` to an explicit NDJSON file before enabling the hook. For a controlled CLI or API experiment, pass `--module` and `--variant`, or set their environment equivalents before launching the agent. Add `--module-version`, `--activation-mode`, `--activation-reason`, `--task-shape`, `--source-count`, `--independent-operations`, and `--orchestration-phase` when those values are assigned before the run. General desktop activity remains deliberately unassigned because the content-free hook cannot reliably infer which skill influenced a run. Codex requires hook review and trust after a hook is added or changed.
+
+Activation metadata is deliberately categorical. It answers whether a module was explicit, recommended, automatic, or eval-assigned and which coarse task shape triggered it. It does not store task text, source names, file paths, or tool content.
 
 The default personal installation writes to `~/.codex/telemetry/tooling-atlas-events.ndjson`. Inspect counts without exposing content:
 
@@ -107,7 +109,7 @@ The schema uses a 180-day TTL as a starting point, not a universal retention pol
 
 1. Use the local example dataset only for interface development.
 2. Capture privacy-minimal hook events to local NDJSON.
-3. Run the nine stable pilot scenarios in `evals/pilot-suite.json` as matched pairs.
+3. Run the twelve stable pilot scenarios in `evals/pilot-suite.json` as matched pairs.
 4. Score correctness, evidence, instruction adherence, and safety before comparing efficiency.
 5. Add API usage and grader results where available.
 6. Ingest normalized events to ClickHouse using JSONEachRow or OpenTelemetry infrastructure.

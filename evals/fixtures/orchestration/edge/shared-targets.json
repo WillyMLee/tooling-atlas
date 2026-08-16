@@ -1,0 +1,10 @@
+{
+  "goal": "Add navigation and accessibility improvements without merge conflicts.",
+  "work": [
+    { "id": "navigation-review", "reads": ["app.js", "index.html"], "writes": ["app.js", "styles.css"] },
+    { "id": "accessibility-review", "reads": ["app.js", "styles.css"], "writes": ["app.js", "styles.css"] },
+    { "id": "documentation", "reads": ["README.md"], "writes": ["README.md"] },
+    { "id": "verification", "reads": ["app.js", "styles.css", "README.md"], "writes": [] }
+  ],
+  "constraints": ["Discovery may be independent", "Overlapping writes must not run concurrently", "Final verification follows integration"]
+}
