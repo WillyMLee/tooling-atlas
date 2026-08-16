@@ -5,11 +5,19 @@ description: Reduce tool round trips for a substantial set of independent read-o
 
 # Batch Tool Calls
 
+## Evidence-Adjusted Policy
+
+Policy revision: `batch-tool-calls-2026-08-15-r1`
+
+- Default to direct reads for three or four quick operations.
+- Consider batching at roughly eight comparable independent operations when round-trip latency is material and the return shape is compact.
+- Treat this threshold as evidence-responsive, not self-modifying: revise this base file only after a reviewed eval changes the routing decision.
+
 Batch deterministic work. Keep semantic judgment and consequential actions direct.
 
 ## Decide Whether to Batch
 
-Do not load this module merely because a task contains three or four files. A measured Atlas pilot found that the setup and skill-read overhead increased both calls and elapsed time on batches of that size. For small sets, read directly. Treat roughly eight independent operations as a provisional consideration threshold, then confirm that batching can actually reduce round trips.
+Do not load this module merely because a task contains three or four files. For small sets, read directly. At the provisional threshold, still confirm that batching can actually reduce round trips.
 
 Batch when all operations:
 

@@ -24,6 +24,12 @@ for (const module of registry.modules) {
   const openai = await readFile(openaiPath, "utf8");
   if (!skill.startsWith("---\n") || !skill.includes(`\nname: ${module.slug}\n`) || !skill.includes("\ndescription:")) throw new Error(`${module.slug}: invalid SKILL.md frontmatter`);
   if (!openai.includes("display_name:") || !openai.includes("short_description:") || !openai.includes(`$${module.slug}`)) throw new Error(`${module.slug}: stale agents/openai.yaml`);
+  if (module.routingPolicy) {
+    if (module.routingPolicy.mode !== "evidence-responsive" || !module.routingPolicy.currentDefault || !module.routingPolicy.activateWhen?.length || !module.routingPolicy.skipWhen?.length) throw new Error(`${module.slug}: incomplete evidence-responsive routing policy`);
+    const revision = module.latestRevision;
+    if (!revision?.id || revision.version !== module.version || revision.baseFile !== `${module.packagePath}/SKILL.md` || !revision.evidenceFile || !revision.change) throw new Error(`${module.slug}: incomplete or stale base-file revision record`);
+    if (!skill.includes(`Policy revision: \`${revision.id}\``)) throw new Error(`${module.slug}: SKILL.md does not contain registered policy revision ${revision.id}`);
+  }
 }
 
 const siteSlugs = new Set(sites.sites.map((site) => site.slug));

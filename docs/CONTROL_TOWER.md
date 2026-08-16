@@ -37,6 +37,10 @@ Codex hooks / API traces / eval runner
 
 The event contract is the durable interface. ClickHouse is an excellent analytical backend for high-cardinality run, tool, model, and module dimensions, but the Atlas UI should not depend directly on a vendor-specific ingestion path.
 
+## Feedback into modules
+
+Measured runs can change the dashboard recommendation immediately because it is derived from the current baseline/candidate pairs. They cannot silently change an installed agent skill. A routing change becomes reusable only after review, a version bump in `catalog/module-registry.json`, and a matching policy revision in the canonical `skills/<name>/SKILL.md`. The registry records both the base file and the evidence file so the change remains auditable.
+
 ## Capture sources
 
 ### Codex lifecycle hooks

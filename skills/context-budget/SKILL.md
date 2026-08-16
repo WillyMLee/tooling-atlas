@@ -1,9 +1,17 @@
 ---
 name: context-budget
-description: Keep long, tool-heavy tasks focused and resumable by reducing large outputs at the source, retrieving evidence narrowly, and maintaining a compact state packet. Use for broad repository work, logs, research, long browser sessions, or any task at risk of context loss or repeated reading.
+description: Keep long, tool-heavy tasks focused and resumable by reducing large outputs at the source, retrieving evidence narrowly, and maintaining a compact state packet. Use for broad repository work, logs, research, long browser sessions, or tasks at risk of context loss or repeated reading; stay direct for a handful of short sources.
 ---
 
 # Context Budget
+
+## Evidence-Adjusted Policy
+
+Policy revision: `context-budget-2026-08-15-r1`
+
+- Default to direct work for a handful of short sources.
+- Activate the full workflow for many-source or large-output work, repeated retrieval, or a material handoff/compaction risk.
+- Treat this threshold as evidence-responsive, not self-modifying: revise this base file only after a reviewed eval changes the routing decision.
 
 Preserve intent, decisions, provenance, and active state. Reduce bulk—not evidence.
 
@@ -30,8 +38,6 @@ Preserve intent, decisions, provenance, and active state. Reduce bulk—not evid
 
 ## Routing Rules
 
-- Stay direct for a routine task with a handful of short sources. A measured Atlas pilot found that loading this module added overhead on a four-source evidence map.
-- Use the full workflow when the task spans many sources, large outputs, repeated retrieval, or a handoff/compaction risk. In the first measured eleven-project audit, the candidate preserved quality while finishing materially faster, but this still needs replication.
 - Prefer narrow search over full-file reads.
 - Prefer one structured reduction over repeated summaries.
 - Keep user instructions, approvals, failures, and destructive-action boundaries verbatim enough to preserve their meaning.

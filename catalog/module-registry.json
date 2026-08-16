@@ -4,7 +4,7 @@
   "modules": [
     {
       "slug": "context-budget",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "packagePath": "skills/context-budget",
       "maturity": "Experimental",
       "evidenceStatus": "Measured pilot · threshold-dependent",
@@ -12,11 +12,25 @@
       "primaryMetric": "Repeated source reads per completed task",
       "guardrailMetrics": ["Task success", "Evidence completeness", "Resume success"],
       "events": ["module.selected", "context.reduced", "resume_packet.created"],
-      "evalCases": ["Large repository audit", "Long research synthesis", "Compaction recovery"]
+      "evalCases": ["Large repository audit", "Long research synthesis", "Compaction recovery"],
+      "routingPolicy": {
+        "mode": "evidence-responsive",
+        "currentDefault": "Stay direct for a handful of short sources.",
+        "activateWhen": ["Many-source or large-output work", "Repeated retrieval is likely", "A handoff or compaction needs a resume packet"],
+        "skipWhen": ["Roughly four or fewer short sources", "One direct read already returns the required evidence"]
+      },
+      "latestRevision": {
+        "id": "context-budget-2026-08-15-r1",
+        "date": "2026-08-15",
+        "version": "0.4.0",
+        "baseFile": "skills/context-budget/SKILL.md",
+        "evidenceFile": "evals/results/2026-08-15-agent-ab.md",
+        "change": "Added a direct-work fast path for small tasks and reserved the full workflow for broad or handoff-prone work."
+      }
     },
     {
       "slug": "batch-tool-calls",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "packagePath": "skills/batch-tool-calls",
       "maturity": "Experimental",
       "evidenceStatus": "Measured regression on small batches",
@@ -24,7 +38,21 @@
       "primaryMetric": "Tool round trips per completed task",
       "guardrailMetrics": ["Task success", "Evidence completeness", "Duplicate call rate"],
       "events": ["module.selected", "batch.started", "batch.completed"],
-      "evalCases": ["Multi-source company research", "Asset inventory", "Parallel metadata lookup"]
+      "evalCases": ["Multi-source company research", "Asset inventory", "Parallel metadata lookup"],
+      "routingPolicy": {
+        "mode": "evidence-responsive",
+        "currentDefault": "Use direct reads for small batches; batching is opt-in for larger independent sets.",
+        "activateWhen": ["Roughly eight or more comparable independent operations", "Round-trip latency is material", "A strict compact return shape is available"],
+        "skipWhen": ["Three or four quick operations", "One direct command can return all required fields", "Calls depend on earlier results"]
+      },
+      "latestRevision": {
+        "id": "batch-tool-calls-2026-08-15-r1",
+        "date": "2026-08-15",
+        "version": "0.4.0",
+        "baseFile": "skills/batch-tool-calls/SKILL.md",
+        "evidenceFile": "evals/results/2026-08-15-agent-ab.md",
+        "change": "Raised the provisional batching threshold and made direct reads the default for the tested small-workload shape."
+      }
     },
     {
       "slug": "web-interaction-loop",
