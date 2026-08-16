@@ -332,12 +332,22 @@ function renderInteractions() {
 }
 
 function renderSkillsIndex() {
-  view.innerHTML = `<div class="page">${pageHead("AGENT MODULES / WORKING SET", "Choose the operating method<br><em>before adding complexity.</em>", "Installable playbooks for recurring agent failure modes. Each module explains when it should trigger, when it should not, the operating sequence, an example, and how improvement is measured.")}
-    <section class="module-truth"><strong>Package status is not performance evidence.</strong><span>Every module below is valid and reusable; none is labeled proven until representative baseline-versus-candidate runs pass the quality gates.</span><a href="./control-tower.html">Open measurement site ↗</a></section>
-    <section class="content-section"><div class="skill-grid">${skills.map((skill, index) => { const meta = moduleFor(skill.slug); return `<a class="skill-card" href="#skill/${skill.slug}"><div class="skill-card-top"><span>A${String(index+1).padStart(2,"0")}</span><span>${meta.evidenceStatus || "Unmeasured"}</span></div><h2>${skill.name}</h2><p>${skill.summary}</p><dl><div><dt>Use when</dt><dd>${skill.trigger}</dd></div><div><dt>Measure</dt><dd>${meta.primaryMetric || skill.outcome}</dd></div></dl><span>Open playbook →</span></a>`; }).join("")}</div></section></div>`;
+  const phaseOrder = ["Route", "Prepare", "Execute", "Improve"];
+  const phaseDescriptions = { Route: "Choose the lightest execution shape.", Prepare: "Bound context and define evidence.", Execute: "Run only the specialist method the task needs.", Improve: "Measure the result and revise the system." };
+  const taskShapes = [
+    ["Small + coupled", "Work directly", "No module is required when setup costs more than it saves."],
+    ["Broad + many-source", "Orchestration + Context Budget", "Route first, then preserve a compact working set."],
+    ["Large independent read set", "Orchestration + Batch Tool Calls", "Use batching only after independence and threshold checks pass."],
+    ["Visible browser state", "Orchestration + Web Interaction Loop", "Give the browser module a target state and verification contract."],
+  ];
+  view.innerHTML = `<div class="page module-index-page">${pageHead("AGENT MODULES / ORCHESTRATION", "Start with the task shape.<br><em>Add only what helps.</em>", "Orchestration is the coordinator. Skills are optional specialists with explicit inputs, outputs, and evidence—not a stack that runs on every task.")}
+    <section class="skill-flow"><div class="compact-section-head"><span class="field-label">How incorporation works</span><h2>One coordinator, optional specialists.</h2><p>Orchestration chooses the mode and keeps shared decisions. A specialist receives a bounded contract, returns one evidence packet, and hands control back for synthesis.</p></div><ol>${phaseOrder.map((phase,index) => `<li><span>0${index + 1}</span><div><strong>${phase}</strong><p>${phaseDescriptions[phase]}</p></div><div class="skill-flow-tags">${skills.filter((skill) => moduleFor(skill.slug).orchestration?.phase === phase).map((skill) => `<a href="#skill/${skill.slug}">${skill.name}</a>`).join("")}</div></li>`).join("")}</ol></section>
+    <section class="task-shape-guide"><div class="compact-section-head"><span class="field-label">Choose by task shape</span><h2>Most tasks need zero to two modules.</h2></div><div>${taskShapes.map(([shape,choice,reason]) => `<article><span>${shape}</span><strong>${choice}</strong><p>${reason}</p></article>`).join("")}</div></section>
+    <section class="module-truth is-compact"><strong>Evidence changes routing.</strong><span>Measured results can update the recommendation; reviewed, versioned edits update the reusable open-source skill.</span><a href="./control-tower.html">See decisions + evidence ↗</a></section>
+    <section class="skill-phase-groups">${phaseOrder.map((phase) => `<section><header><span>${phase}</span><p>${phaseDescriptions[phase]}</p></header><div>${skills.filter((skill) => moduleFor(skill.slug).orchestration?.phase === phase).map((skill) => { const meta = moduleFor(skill.slug); return `<a class="skill-card is-compact" href="#skill/${skill.slug}"><div class="skill-card-top"><span>${meta.evidenceStatus || "Unmeasured"}</span><span>v${meta.version || "—"}</span></div><h2>${skill.name}</h2><p>${meta.orchestration?.role || skill.summary}</p><small>Open role + handoff →</small></a>`; }).join("")}</div></section>`).join("")}</section></div>`;
 }
 
-function renderSkill(skill) {
+function renderSkillLegacy(skill) {
   if (!skill) return renderNotFound();
   const meta = moduleFor(skill.slug);
   const pilot = pilotSuite.modules.find((module) => module.slug === skill.slug);
@@ -360,7 +370,37 @@ function renderSkill(skill) {
   </article>`;
 }
 
-function renderControlTower() {
+function renderSkill(skill) {
+  if (!skill) return renderNotFound();
+  const meta = moduleFor(skill.slug);
+  const pilot = pilotSuite.modules.find((module) => module.slug === skill.slug);
+  const summary = evalSummaries.find((item) => item.module === skill.slug);
+  const observations = fieldTestFor(skill.slug);
+  const routingSignal = dynamicRoutingSignal(skill.slug);
+  const routingPolicy = meta.routingPolicy;
+  const revision = meta.latestRevision;
+  const orchestration = meta.orchestration || {};
+  const phaseOrder = ["Route", "Prepare", "Execute", "Improve"];
+  const phaseDescriptions = { Route: "Choose mode", Prepare: "Bound the work", Execute: "Run specialist", Improve: "Measure + revise" };
+  const cases = pilot?.cases || (meta.evalCases || []).map((item,index) => ({ id: `${skill.slug}-${index + 1}`, category: "planned", task: item, acceptance: [] }));
+  const partnerLinks = (orchestration.partners || []).map((slug) => { const partner = skills.find((item) => item.slug === slug); return partner ? `<a href="#skill/${slug}">${escapeHtml(partner.name)}</a>` : ""; }).join("");
+  const quickTitle = routingPolicy ? routingSignal.label : `Use it for ${orchestration.phase?.toLowerCase() || "specialist"} work`;
+  const quickDetail = routingPolicy ? `${routingSignal.detail} The source guidance remains reviewed and versioned.` : orchestration.role;
+
+  view.innerHTML = `<article class="page module-page is-simplified">
+    <header class="module-brief"><div><span class="eyebrow">AGENT MODULE / ${escapeHtml(orchestration.phase || "Specialist")}</span><h1>${escapeHtml(skill.name)}</h1><p>${escapeHtml(skill.summary)}</p><a href="${repoUrl(skill.sourcePath)}" target="_blank" rel="noreferrer">Open canonical SKILL.md ↗</a></div><dl><div><dt>Package</dt><dd>v${escapeHtml(meta.version || "—")}</dd></div><div><dt>Evidence</dt><dd>${escapeHtml(meta.evidenceStatus || "Unmeasured")}</dd></div><div><dt>Matched pairs</dt><dd>${summary ? `${summary.pairedRuns}/${summary.requiredPairs}` : "0"}</dd></div></dl></header>
+    <section class="module-decision-grid"><div><span class="field-label">Quick decision</span><h2>${escapeHtml(quickTitle)}</h2><p>${escapeHtml(quickDetail)}</p></div><dl><div><dt>Use when</dt><dd>${escapeHtml(skill.trigger)}</dd></div><div><dt>Skip when</dt><dd>${escapeHtml(skill.avoid)}</dd></div><div><dt>Returns</dt><dd>${escapeHtml(orchestration.handsOff || skill.outcome)}</dd></div></dl></section>
+    <section class="module-orchestration"><div class="compact-section-head"><span class="field-label">Skill incorporation</span><h2>Where it enters the orchestration.</h2><p>The coordinator owns shared decisions and synthesis. This module receives one bounded contract, performs one role, and returns control.</p></div><ol class="orchestration-rail">${phaseOrder.map((phase,index) => `<li class="${orchestration.phase === phase ? "is-active" : ""}"><span>0${index + 1}</span><strong>${phase}</strong><small>${phaseDescriptions[phase]}</small>${orchestration.phase === phase ? `<em>${escapeHtml(skill.name)}</em>` : ""}</li>`).join("")}</ol><aside class="orchestration-contract"><div><span>Role</span><p>${escapeHtml(orchestration.role || skill.summary)}</p></div><div><span>Receives</span><p>${escapeHtml(orchestration.receives || skill.trigger)}</p></div><div><span>Hands back</span><p>${escapeHtml(orchestration.handsOff || skill.outcome)}</p></div><div><span>Usually paired with</span><p class="partner-links">${partnerLinks || "No required partner"}</p></div></aside></section>
+    ${revision ? `<section class="module-revision-summary"><div><span class="field-label">Applied learning</span><h2>The open-source guidance changed.</h2><p>${escapeHtml(revision.change)}</p></div><dl><div><dt>Revision</dt><dd>${escapeHtml(revision.id)}</dd></div><div><dt>Version</dt><dd>v${escapeHtml(revision.version)} / ${escapeHtml(revision.date)}</dd></div><div><dt>Traceability</dt><dd><a href="${repoUrl(revision.baseFile)}" target="_blank" rel="noreferrer">Base file ↗</a><a href="${repoUrl(revision.evidenceFile)}" target="_blank" rel="noreferrer">Causing evidence ↗</a></dd></div></dl></section>` : ""}
+    <section class="module-drawers">
+      <details><summary><span>01</span><strong>Operating steps</strong><small>${skill.steps.length} steps</small></summary><ol class="drawer-steps">${skill.steps.map(([title,detail]) => `<li><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></li>`).join("")}</ol></details>
+      <details><summary><span>02</span><strong>Tests + evidence</strong><small>${cases.length} cases · ${observations.length} field notes</small></summary><div class="drawer-evidence"><div><span class="field-label">Hypothesis</span><p>${escapeHtml(meta.hypothesis || "Not defined")}</p><dl><div><dt>Primary metric</dt><dd>${escapeHtml(meta.primaryMetric || "Not defined")}</dd></div><div><dt>Decision</dt><dd>${escapeHtml(summary?.decision || "collect-more")}</dd></div></dl></div><ol>${cases.map((test,index) => `<li><span>0${index + 1}</span><div><strong>${escapeHtml(test.id.replaceAll("-", " "))}</strong><p>${escapeHtml(test.task)}</p></div></li>`).join("")}</ol></div></details>
+      <details><summary><span>03</span><strong>Safety + sources</strong><small>${skill.safeguards.length} guardrails · ${skill.sources.length} sources</small></summary><div class="drawer-safety"><ul>${skill.safeguards.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul><ul>${skill.sources.map(([label,url]) => `<li><a href="${url}" target="_blank" rel="noreferrer">${escapeHtml(label)} ↗</a></li>`).join("")}</ul></div></details>
+    </section>
+  </article>`;
+}
+
+function renderControlTowerLegacy() {
   const comparisons = moduleRegistry.map((module) => {
     const baseline = aggregateRun(module.slug, "baseline");
     const candidate = aggregateRun(module.slug, "candidate");
@@ -407,6 +447,39 @@ function renderControlTower() {
       <div class="section-heading"><div><span class="section-index">04 / Rollout</span><h2>Earn complexity gradually</h2></div><p>Start with two representative modules and local events. Add ClickHouse when retention and cross-project slicing justify operating a database.</p></div>
       <ol class="rollout-list"><li><span>Done</span><strong>Skills + registry</strong><p>Codex can discover six modules; every claim has a test contract.</p></li><li><span>Ready</span><strong>Privacy-minimal hooks</strong><p>Capture session, turn, workstream, and tool activity without storing content.</p></li><li><span>Measured</span><strong>Agent eval pilot</strong><p>Six real pairs now cover Batch Tool Calls and Context Budget; replicate 2 and the browser module remain.</p></li><li><span>Later</span><strong>ClickHouse</strong><p>Add durable analytics only when real event volume and cross-project questions justify it.</p></li></ol>
     </section>
+  </div>`;
+}
+
+function renderControlTower() {
+  const comparisons = moduleRegistry.map((module) => {
+    const baseline = aggregateRun(module.slug, "baseline");
+    const candidate = aggregateRun(module.slug, "candidate");
+    return { module, baseline, candidate };
+  }).filter((item) => item.baseline && item.candidate);
+  const isMeasured = telemetryKind === "measured";
+  const pairedExamples = [...new Set(telemetryRuns.map((run) => `${run.module}:${run.scenario}`))].map((key) => {
+    const [module, scenario] = key.split(":");
+    const runs = telemetryRuns.filter((run) => run.module === module && run.scenario === scenario);
+    return { module, scenario, baseline: runs.find((run) => run.variant === "baseline"), candidate: runs.find((run) => run.variant === "candidate") };
+  }).filter((pair) => pair.baseline && pair.candidate);
+  const moduleGroups = comparisons.map(({ module }) => ({ module, pairs: pairedExamples.filter((pair) => pair.module === module.slug) }));
+  const revisedCount = moduleRegistry.filter((module) => module.latestRevision).length;
+
+  const pairCard = (pair) => {
+    const test = pilotSuite.modules.find((item) => item.slug === pair.module)?.cases.find((item) => item.id === pair.scenario);
+    const callDelta = pair.candidate.toolCalls - pair.baseline.toolCalls;
+    const timeDelta = pair.candidate.durationMs - pair.baseline.durationMs;
+    const improved = pair.candidate.qualityScore >= pair.baseline.qualityScore && callDelta < 0 && timeDelta < 0;
+    return `<article class="pair-card-compact"><div><span>${escapeHtml(pair.scenario.replaceAll("-", " "))}</span><em class="${improved ? "is-positive" : "is-negative"}">${improved ? "leaner" : "overhead"}</em></div><p>${escapeHtml(test?.task || "Matched task")}</p><dl><div><dt>Baseline</dt><dd>${pair.baseline.toolCalls} calls / ${formatDuration(pair.baseline.durationMs)}</dd></div><div><dt>With skill</dt><dd>${pair.candidate.toolCalls} calls / ${formatDuration(pair.candidate.durationMs)}</dd></div><div><dt>Change</dt><dd class="${improved ? "is-better" : "is-worse"}">${callDelta > 0 ? "+" : ""}${callDelta} calls / ${timeDelta > 0 ? "+" : ""}${formatDuration(timeDelta)}</dd></div></dl></article>`;
+  };
+
+  view.innerHTML = `<div class="page control-tower-page is-simplified">
+    <header class="tower-brief"><div><span class="eyebrow">CONTROL TOWER / DECISION VIEW</span><h1>What changed,<br>and why.</h1><p>Read the recommendation first. Open individual matched runs only when you need the evidence behind it.</p></div><dl><div><dt>Matched pairs</dt><dd>${pairedExamples.length}</dd></div><div><dt>Skills revised</dt><dd>${revisedCount}</dd></div><div><dt>Cost data</dt><dd>Unknown</dd></div></dl></header>
+    <section class="telemetry-notice is-compact ${isMeasured ? "is-measured" : ""}"><strong>${isMeasured ? "Measured pilot" : "Preview data"}</strong><p>${escapeHtml(telemetryNotice)} Quality gates are evaluated before efficiency.</p></section>
+    <section class="tower-reading-guide"><div class="compact-section-head"><span class="field-label">How to read this</span><h2>Recommendation → evidence → source update.</h2></div><ol><li><span>01</span><strong>Read the decision</strong><p>Is the skill on, off, or conditional for this task shape?</p></li><li><span>02</span><strong>Inspect matched pairs</strong><p>Baseline and candidate use the same task and quality gates.</p></li><li><span>03</span><strong>Trace the revision</strong><p>A reusable change links the eval to the canonical SKILL.md.</p></li></ol></section>
+    <section class="tower-decisions"><div class="compact-section-head"><span class="field-label">Current decisions</span><h2>Two modules have measured routing guidance.</h2><p>These are pilot decisions, not universal claims.</p></div><div>${comparisons.map(({ module, baseline, candidate }) => { const signal = dynamicRoutingSignal(module.slug); const time = deltaCell(candidate, baseline, "durationMs"); const calls = deltaCell(candidate, baseline, "toolCalls"); return `<article><header><span>${escapeHtml(skills.find((skill) => skill.slug === module.slug)?.name || module.slug)}</span><em>${escapeHtml(evalSummaries.find((item) => item.module === module.slug)?.decision || "collect-more")}</em></header><h3>${escapeHtml(signal.label)}</h3><p>${escapeHtml(signal.detail)}</p><dl><div><dt>Average time</dt><dd class="${time.className}">${time.value}</dd></div><div><dt>Average calls</dt><dd class="${calls.className}">${calls.value}</dd></div><div><dt>Quality</dt><dd>Passed</dd></div></dl>${module.latestRevision ? `<footer><strong>Source guidance updated v${escapeHtml(module.latestRevision.version)}</strong><a href="./index.html#skill/${module.slug}">See role + applied change →</a></footer>` : ""}</article>`; }).join("")}</div></section>
+    <section class="tower-pair-groups"><div class="compact-section-head"><span class="field-label">Matched evidence</span><h2>Open only the module you want to inspect.</h2></div>${moduleGroups.map(({ module, pairs }) => { const signal = dynamicRoutingSignal(module.slug); return `<details><summary><div><span>${escapeHtml(skills.find((skill) => skill.slug === module.slug)?.name || module.slug)}</span><strong>${escapeHtml(signal.label)}</strong></div><small>${pairs.length} matched pairs</small></summary><div class="pair-card-grid">${pairs.map(pairCard).join("")}</div><footer><a href="${repoUrl(module.latestRevision?.evidenceFile || "evals/results/2026-08-15-agent-ab.md")}" target="_blank" rel="noreferrer">Open outputs + grading ↗</a>${module.latestRevision ? `<a href="${repoUrl(module.latestRevision.baseFile)}" target="_blank" rel="noreferrer">Open applied SKILL.md ↗</a>` : ""}</footer></details>`; }).join("")}</section>
+    <details class="tower-system-details"><summary><div><span>System details</span><strong>How capture, scoring, and storage work</strong></div><small>Open architecture</small></summary><div class="tower-system-grid"><section><span class="field-label">Evaluation contract</span><h2>Quality before efficiency.</h2><ol><li>Same task and model class</li><li>Correctness, evidence, instruction, safety</li><li>Then time, calls, tokens, and cost</li><li>Version the source only after review</li></ol></section><section><span class="field-label">Event path</span><h2>Backend-neutral by design.</h2><ol class="tower-flow compact"><li><span>01</span><strong>Capture</strong><small>Hooks + evals</small></li><li><span>02</span><strong>Normalize</strong><small>Privacy-minimal event</small></li><li><span>03</span><strong>Compare</strong><small>Baseline vs candidate</small></li><li><span>04</span><strong>Decide</strong><small>Keep, revise, retire</small></li></ol><a href="https://github.com/WillyMLee/tooling-atlas/blob/main/docs/CONTROL_TOWER.md" target="_blank" rel="noreferrer">Read full architecture ↗</a></section></div></details>
   </div>`;
 }
 

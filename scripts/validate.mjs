@@ -14,6 +14,7 @@ for (const module of registry.modules) {
   if (slugs.has(module.slug)) throw new Error(`Duplicate module slug: ${module.slug}`);
   slugs.add(module.slug);
   if (!module.hypothesis || !module.primaryMetric || !module.events?.length || !module.evalCases?.length) throw new Error(`${module.slug}: incomplete evaluation contract`);
+  if (!module.orchestration?.phase || !module.orchestration.role || !module.orchestration.receives || !module.orchestration.handsOff || !module.orchestration.partners?.length) throw new Error(`${module.slug}: incomplete orchestration contract`);
 
   const skillRoot = join(root, module.packagePath);
   const skillPath = join(skillRoot, "SKILL.md");

@@ -55,6 +55,8 @@ Each folder in `skills/` is a standalone Agent Skill with `SKILL.md` and `agents
 
 Measured modules can use evidence-responsive routing. Atlas derives a live recommendation from the currently loaded matched runs, while `catalog/module-registry.json` records the reviewed threshold and the exact revision applied to the canonical open-source `SKILL.md`. The dashboard never silently rewrites a skill: an eval can change the recommendation, but a versioned source edit is still required before Codex inherits new guidance.
 
+The module directory is organized as an orchestration flow: Route, Prepare, Execute, Improve. Orchestration owns shared decisions and synthesis; specialist skills receive bounded inputs and return explicit handoff artifacts. Most tasks should use no module or one coordinator plus one specialist, not the entire stack.
+
 For personal Codex use, preview and then create user-scope links while keeping this repository as the source of truth:
 
 ```sh
@@ -65,6 +67,8 @@ npm run skills:link
 ## Control Tower
 
 The Control Tower is a separate measurement surface at `/control-tower.html`, not part of the editorial Atlas directory. It distinguishes a valid module from a proven module. It now prefers the first measured Codex A/B pilot and links each pair to its task, output evidence, grading, and machine-readable observation. See `docs/CONTROL_TOWER.md` for the event flow, privacy boundary, optional Codex hooks, and ClickHouse rollout.
+
+Its default view shows current routing decisions first. Individual pairs and system architecture are progressively disclosed so evidence remains available without overwhelming the decision.
 
 Module pages show two intentionally separate evidence types: dogfood field observations explain what happened during real Atlas work, while matched baseline/candidate benchmarks determine whether a module is actually proven.
 

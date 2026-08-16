@@ -26,6 +26,13 @@
         "baseFile": "skills/context-budget/SKILL.md",
         "evidenceFile": "evals/results/2026-08-15-agent-ab.md",
         "change": "Added a direct-work fast path for small tasks and reserved the full workflow for broad or handoff-prone work."
+      },
+      "orchestration": {
+        "phase": "Prepare",
+        "role": "Reduce and preserve the working set before broad execution.",
+        "receives": "Task graph, source scope, required evidence, and open decisions",
+        "handsOff": "Compact working set and resumable state packet",
+        "partners": ["orchestration-plan", "eval-improvement-loop"]
       }
     },
     {
@@ -52,6 +59,13 @@
         "baseFile": "skills/batch-tool-calls/SKILL.md",
         "evidenceFile": "evals/results/2026-08-15-agent-ab.md",
         "change": "Raised the provisional batching threshold and made direct reads the default for the tested small-workload shape."
+      },
+      "orchestration": {
+        "phase": "Execute",
+        "role": "Run a larger independent read set after the coordinator proves the calls do not depend on one another.",
+        "receives": "Bounded independent operations and a strict return contract",
+        "handsOff": "Reduced evidence packet with provenance and failures",
+        "partners": ["orchestration-plan", "context-budget"]
       }
     },
     {
@@ -64,7 +78,14 @@
       "primaryMetric": "Verified completion rate",
       "guardrailMetrics": ["Regression detection", "Unsafe action rate", "Temporary state cleanup"],
       "events": ["module.selected", "browser.observed", "browser.verified"],
-      "evalCases": ["Responsive UI QA", "Authenticated form flow", "Animation verification"]
+      "evalCases": ["Responsive UI QA", "Authenticated form flow", "Animation verification"],
+      "orchestration": {
+        "phase": "Execute",
+        "role": "Own visible browser interaction and verify the resulting state before returning control.",
+        "receives": "Target state, stable interaction boundary, and completion checks",
+        "handsOff": "Verified DOM and visual evidence",
+        "partners": ["orchestration-plan", "eval-improvement-loop"]
+      }
     },
     {
       "slug": "orchestration-plan",
@@ -76,7 +97,14 @@
       "primaryMetric": "Critical-path duration",
       "guardrailMetrics": ["Task success", "Duplicate work", "Merge conflicts"],
       "events": ["module.selected", "workstream.started", "workstream.completed"],
-      "evalCases": ["Research plus implementation", "Independent asset audit", "Multi-surface verification"]
+      "evalCases": ["Research plus implementation", "Independent asset audit", "Multi-surface verification"],
+      "orchestration": {
+        "phase": "Route",
+        "role": "Choose direct work, deterministic batching, specialist streams, or a handoff from the dependency graph.",
+        "receives": "User outcome, dependencies, shared decisions, and authorization boundaries",
+        "handsOff": "Execution graph with one owner and explicit workstream contracts",
+        "partners": ["context-budget", "batch-tool-calls", "web-interaction-loop"]
+      }
     },
     {
       "slug": "eval-improvement-loop",
@@ -88,7 +116,14 @@
       "primaryMetric": "Quality-gated task success delta",
       "guardrailMetrics": ["Safety", "Evidence adherence", "Regression count"],
       "events": ["module.selected", "eval.started", "eval.completed"],
-      "evalCases": ["Prompt revision", "Model comparison", "Tool-routing regression"]
+      "evalCases": ["Prompt revision", "Model comparison", "Tool-routing regression"],
+      "orchestration": {
+        "phase": "Improve",
+        "role": "Compare completed baseline and candidate runs, then decide whether guidance should change.",
+        "receives": "Representative traces, success criteria, and quality guardrails",
+        "handsOff": "Keep, revise, retire, or collect-more decision",
+        "partners": ["orchestration-plan", "design-tool-surface"]
+      }
     },
     {
       "slug": "design-tool-surface",
@@ -100,7 +135,14 @@
       "primaryMetric": "Correct first tool selection rate",
       "guardrailMetrics": ["Task success", "Error recovery", "Evidence provenance"],
       "events": ["module.selected", "tool.selected", "tool.completed"],
-      "evalCases": ["Search versus browser routing", "Overlapping API tools", "Error recovery"]
+      "evalCases": ["Search versus browser routing", "Overlapping API tools", "Error recovery"],
+      "orchestration": {
+        "phase": "Improve",
+        "role": "Refine ambiguous tools and routing boundaries revealed by traces or failed workstreams.",
+        "receives": "Routing failures, overlapping contracts, and oversized results",
+        "handsOff": "Simplified tool descriptions, inputs, returns, and fallback rules",
+        "partners": ["eval-improvement-loop", "orchestration-plan"]
+      }
     }
   ]
 }
