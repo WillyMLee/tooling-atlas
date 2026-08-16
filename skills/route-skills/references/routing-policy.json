@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "0.1.0",
+  "defaultMode": "direct",
+  "thresholds": {
+    "broadSourceCount": 5,
+    "independentOperationCount": 8
+  },
+  "rules": [
+    {
+      "module": "orchestration-plan",
+      "phase": "route",
+      "activateWhen": ["scope is multi-part"],
+      "skipWhen": ["task is small or tightly coupled"],
+      "reason": "Coordinate a genuine dependency graph while keeping shared decisions with one owner."
+    },
+    {
+      "module": "context-budget",
+      "phase": "prepare",
+      "activateWhen": ["scope is broad", "source count is at least broadSourceCount", "handoff or compaction risk is material"],
+      "skipWhen": ["a handful of short sources can be read directly"],
+      "reason": "Bound a large working set and preserve resumable evidence."
+    },
+    {
+      "module": "batch-tool-calls",
+      "phase": "execute",
+      "activateWhen": ["work shape is independent", "operation count is at least independentOperationCount"],
+      "skipWhen": ["calls depend on earlier results", "the set is small", "operations have side effects"],
+      "reason": "Reduce round trips for a substantial independent read set."
+    },
+    {
+      "module": "web-interaction-loop",
+      "phase": "execute",
+      "activateWhen": ["work shape is browser-visible"],
+      "skipWhen": ["static retrieval can answer the task"],
+      "reason": "Verify visible and semantic state instead of assuming a click succeeded."
+    },
+    {
+      "module": "design-tool-surface",
+      "phase": "improve",
+      "activateWhen": ["tool selection is ambiguous or repeatedly wrong"],
+      "skipWhen": ["the tool set is small and routing is reliable"],
+      "reason": "Clarify overlapping tool contracts and fallback boundaries."
+    },
+    {
+      "module": "eval-improvement-loop",
+      "phase": "improve",
+      "activateWhen": ["improvement is eval or skill"],
+      "skipWhen": ["no stable success criteria or reusable decision exists"],
+      "reason": "Compare a quality-gated baseline and candidate after task completion."
+    },
+    {
+      "module": "implement-skills",
+      "phase": "improve",
+      "activateWhen": ["improvement is skill"],
+      "skipWhen": ["the workflow is one-off and the user did not request a skill"],
+      "reason": "Turn the reviewed workflow into a versioned, validated Codex skill."
+    }
+  ]
+}

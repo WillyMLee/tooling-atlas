@@ -13,6 +13,10 @@
     { "module": "eval-improvement-loop", "variant": "baseline", "success": false, "qualityScore": 0.71, "durationMs": 390000, "toolCalls": 11, "inputTokens": 29800, "outputTokens": 7200, "estimatedCostUsd": 1.58 },
     { "module": "eval-improvement-loop", "variant": "candidate", "success": true, "qualityScore": 0.91, "durationMs": 452000, "toolCalls": 13, "inputTokens": 33700, "outputTokens": 8100, "estimatedCostUsd": 1.79 },
     { "module": "design-tool-surface", "variant": "baseline", "success": true, "qualityScore": 0.79, "durationMs": 350000, "toolCalls": 15, "inputTokens": 32100, "outputTokens": 7600, "estimatedCostUsd": 1.72 },
-    { "module": "design-tool-surface", "variant": "candidate", "success": true, "qualityScore": 0.89, "durationMs": 282000, "toolCalls": 9, "inputTokens": 25700, "outputTokens": 6800, "estimatedCostUsd": 1.39 }
+    { "module": "design-tool-surface", "variant": "candidate", "success": true, "qualityScore": 0.89, "durationMs": 282000, "toolCalls": 9, "inputTokens": 25700, "outputTokens": 6800, "estimatedCostUsd": 1.39 },
+    { "module": "route-skills", "variant": "baseline", "success": true, "qualityScore": 0.82, "durationMs": 92000, "toolCalls": 3, "inputTokens": 9800, "outputTokens": 2200, "estimatedCostUsd": 0.48 },
+    { "module": "route-skills", "variant": "candidate", "success": true, "qualityScore": 0.90, "durationMs": 81000, "toolCalls": 2, "inputTokens": 8300, "outputTokens": 1900, "estimatedCostUsd": 0.41 },
+    { "module": "implement-skills", "variant": "baseline", "success": false, "qualityScore": 0.74, "durationMs": 510000, "toolCalls": 12, "inputTokens": 41000, "outputTokens": 9100, "estimatedCostUsd": 2.20 },
+    { "module": "implement-skills", "variant": "candidate", "success": true, "qualityScore": 0.91, "durationMs": 560000, "toolCalls": 14, "inputTokens": 43800, "outputTokens": 9800, "estimatedCostUsd": 2.34 }
   ]
 }

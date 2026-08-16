@@ -11,11 +11,12 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/validate.mjs && node scripts/eval.mjs check && node scripts/test-capture.mjs && node scripts/build.mjs",
+    "check": "node scripts/validate.mjs && node scripts/eval.mjs check && node scripts/test-router.mjs && node scripts/test-capture.mjs && node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "eval:plan": "node scripts/eval.mjs plan",
     "eval:check": "node scripts/eval.mjs check",
     "eval:score": "node scripts/eval.mjs score",
+    "router:test": "node scripts/test-router.mjs",
     "telemetry:summary": "node scripts/summarize-events.mjs",
     "telemetry:test": "node scripts/test-capture.mjs",
     "skills:link": "node scripts/link-skills.mjs",

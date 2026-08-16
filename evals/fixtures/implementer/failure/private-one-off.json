@@ -1,0 +1,7 @@
+{
+  "pattern": "One-time transfer using a private account identifier and a temporary access code.",
+  "repeatCount": 1,
+  "containsPrivateData": true,
+  "userRequestedSkill": false,
+  "safeAlternative": "Complete the authorized one-off task without persisting its sensitive details."
+}

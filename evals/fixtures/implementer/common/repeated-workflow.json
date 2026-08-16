@@ -1,0 +1,7 @@
+{
+  "pattern": "Across four projects, agents reconstruct a website hero from screenshots and source files, then verify layout at desktop and mobile widths.",
+  "stableMethod": ["inventory source evidence", "decompose hero anatomy", "implement one owner", "verify visual and DOM state"],
+  "failureModes": ["generic hero substituted", "responsive composition omitted", "click treated as completion"],
+  "privacy": "No credentials or private content",
+  "requestedScope": "personal Codex skill"
+}

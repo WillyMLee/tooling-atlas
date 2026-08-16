@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Implementer"
+  short_description: "Turn repeated workflows into tested skills"
+  default_prompt: "Use $implement-skills to create or improve a reusable Codex skill."

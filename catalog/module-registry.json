@@ -143,6 +143,44 @@
         "handsOff": "Simplified tool descriptions, inputs, returns, and fallback rules",
         "partners": ["eval-improvement-loop", "orchestration-plan"]
       }
+    },
+    {
+      "slug": "route-skills",
+      "version": "0.1.0",
+      "packagePath": "skills/route-skills",
+      "maturity": "Experimental",
+      "evidenceStatus": "Unmeasured prototype",
+      "hypothesis": "Task-shape routing reduces unnecessary skill activation while preserving correct specialist selection and authorization boundaries.",
+      "primaryMetric": "Correct first skill selection rate",
+      "guardrailMetrics": ["Task success", "Unnecessary activations", "Authorization preservation"],
+      "events": ["route.started", "module.selected", "route.completed"],
+      "evalCases": ["Small direct task", "Multi-part browser workflow", "Ambiguous overlapping skills"],
+      "orchestration": {
+        "phase": "Route",
+        "role": "Choose direct work or the smallest ordered set of specialists before their full instructions load.",
+        "receives": "User outcome, task shape, available skill descriptions, evidence thresholds, and authorization boundaries",
+        "handsOff": "Compact routing packet with use-now, after-completion, skip, activation, and stop conditions",
+        "partners": ["orchestration-plan", "design-tool-surface", "implement-skills"]
+      }
+    },
+    {
+      "slug": "implement-skills",
+      "version": "0.1.0",
+      "packagePath": "skills/implement-skills",
+      "maturity": "Experimental",
+      "evidenceStatus": "Unmeasured prototype",
+      "hypothesis": "A gated implementation workflow produces smaller, better-triggered, validated skills with fewer stale or overlapping packages.",
+      "primaryMetric": "Validated skill acceptance rate",
+      "guardrailMetrics": ["Routing precision", "Script test pass rate", "Private-content leakage"],
+      "events": ["skill.proposed", "skill.validated", "skill.linked"],
+      "evalCases": ["New repeated workflow", "Update overlapping skill", "Reject one-off private workflow"],
+      "orchestration": {
+        "phase": "Improve",
+        "role": "Turn a reviewed workflow into a concise, validated, installable skill or update the closest existing package.",
+        "receives": "Trigger examples, non-trigger examples, reusable method, authority boundaries, and validation criteria",
+        "handsOff": "Versioned skill package, validation evidence, install state, and next eval",
+        "partners": ["route-skills", "eval-improvement-loop", "design-tool-surface"]
+      }
     }
   ]
 }

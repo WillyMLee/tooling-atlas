@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart Skills Router"
+  short_description: "Choose the lightest useful Codex skill set"
+  default_prompt: "Use $route-skills to choose the lightest skill plan for this task."

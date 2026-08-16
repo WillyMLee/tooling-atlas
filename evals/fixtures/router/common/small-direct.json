@@ -1,0 +1,9 @@
+{
+  "outcome": "Rename one visible label in one local file and run the existing validation command.",
+  "scope": "small",
+  "workShape": "coupled",
+  "sources": 1,
+  "independentOperations": 0,
+  "sideEffects": "local edit only",
+  "improvement": "none"
+}

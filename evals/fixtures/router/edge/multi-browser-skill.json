@@ -1,0 +1,9 @@
+{
+  "outcome": "Research a repeated interface pattern, implement it in shared files, verify desktop and mobile state, then decide whether the method should become a skill.",
+  "scope": "multi",
+  "workShape": "browser",
+  "sources": 7,
+  "sharedWrites": ["app.js", "styles.css"],
+  "improvement": "skill",
+  "authorization": "Local reads, edits, and browser QA only; no deployment."
+}

@@ -8,11 +8,13 @@ const sites = JSON.parse(await readFile(join(root, "catalog", "sites.json"), "ut
 const designSpecs = JSON.parse(await readFile(join(root, "catalog", "design-specs.json"), "utf8"));
 const fieldTests = JSON.parse(await readFile(join(root, "observability", "field-tests.json"), "utf8"));
 const evalSummary = JSON.parse(await readFile(join(root, "observability", "eval-summary.json"), "utf8"));
+const appSource = await readFile(join(root, "app.js"), "utf8");
 const slugs = new Set();
 
 for (const module of registry.modules) {
   if (slugs.has(module.slug)) throw new Error(`Duplicate module slug: ${module.slug}`);
   slugs.add(module.slug);
+  if (!appSource.includes(`slug: "${module.slug}"`)) throw new Error(`${module.slug}: missing Atlas interface entry`);
   if (!module.hypothesis || !module.primaryMetric || !module.events?.length || !module.evalCases?.length) throw new Error(`${module.slug}: incomplete evaluation contract`);
   if (!module.orchestration?.phase || !module.orchestration.role || !module.orchestration.receives || !module.orchestration.handsOff || !module.orchestration.partners?.length) throw new Error(`${module.slug}: incomplete orchestration contract`);
 
@@ -31,6 +33,13 @@ for (const module of registry.modules) {
     if (!revision?.id || revision.version !== module.version || revision.baseFile !== `${module.packagePath}/SKILL.md` || !revision.evidenceFile || !revision.change) throw new Error(`${module.slug}: incomplete or stale base-file revision record`);
     if (!skill.includes(`Policy revision: \`${revision.id}\``)) throw new Error(`${module.slug}: SKILL.md does not contain registered policy revision ${revision.id}`);
   }
+}
+
+const routingPolicy = JSON.parse(await readFile(join(root, "skills", "route-skills", "references", "routing-policy.json"), "utf8"));
+if (routingPolicy.schemaVersion !== 1 || !routingPolicy.policyVersion || routingPolicy.defaultMode !== "direct") throw new Error("Invalid smart skills routing policy");
+if (routingPolicy.thresholds?.broadSourceCount < 1 || routingPolicy.thresholds?.independentOperationCount < 1) throw new Error("Routing thresholds must be positive");
+for (const rule of routingPolicy.rules ?? []) {
+  if (!slugs.has(rule.module) || !rule.phase || !rule.activateWhen?.length || !rule.skipWhen?.length || !rule.reason) throw new Error(`Incomplete routing rule: ${rule.module || "unknown"}`);
 }
 
 const siteSlugs = new Set(sites.sites.map((site) => site.slug));

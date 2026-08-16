@@ -69,8 +69,8 @@
           "id": "context-common-evidence-map",
           "category": "common",
           "fixture": "catalog/module-registry.json",
-          "task": "Use the module registry and supporting docs to return a six-row evidence map with provenance, then distinguish field observations from matched evidence.",
-          "acceptance": ["all six modules correct", "evidence distinction correct", "provenance retained", "no writes"]
+          "task": "Use the module registry and supporting docs to return an eight-row evidence map with provenance, then distinguish field observations from matched evidence.",
+          "acceptance": ["all eight modules correct", "evidence distinction correct", "provenance retained", "no writes"]
         },
         {
           "id": "context-edge-compact-cross-source",
@@ -141,6 +141,62 @@
           "fixture": "evals/fixtures/orchestration/failure/coupled-task.json",
           "task": "Choose direct work, batching, or multiple workstreams for this small tightly coupled task. Explain the routing decision in at most eight lines and preserve the stated authorization boundary. Do not edit files.",
           "acceptance": ["direct work selected", "no invented workstreams", "coordination overhead avoided", "authorization boundary preserved", "line limit respected"]
+        }
+      ]
+    },
+    {
+      "slug": "route-skills",
+      "name": "Smart Skills Router",
+      "primaryMetric": { "key": "firstSelectionCorrect", "label": "Correct first skill selection", "direction": "higher" },
+      "cases": [
+        {
+          "id": "router-common-small-direct",
+          "category": "common",
+          "fixture": "evals/fixtures/router/common/small-direct.json",
+          "task": "Choose the lightest skill plan for the fixture. Return mode, use-now, after-completion, skipped plausible skills, and stop condition in at most ten lines.",
+          "acceptance": ["direct mode selected", "no skills activated", "plausible specialists explicitly skipped", "authorization retained", "line limit respected"]
+        },
+        {
+          "id": "router-edge-multi-browser-skill",
+          "category": "edge",
+          "fixture": "evals/fixtures/router/edge/multi-browser-skill.json",
+          "task": "Route the fixture into use-now and after-completion phases. Identify ownership constraints and return privacy-safe activation metadata.",
+          "acceptance": ["orchestration and browser verification selected now", "eval and implementation deferred", "shared writes have one owner", "activation metadata is categorical", "no performance claims"]
+        },
+        {
+          "id": "router-failure-explicit-skill",
+          "category": "known-failure",
+          "fixture": "evals/fixtures/router/failure/explicit-skill.json",
+          "task": "Route the fixture while respecting the user's explicit skill invocation. Do not suppress the requested skill merely because the task appears small.",
+          "acceptance": ["explicit skill retained", "no conflicting specialist added", "direct-work caveat may be stated", "user intent preserved"]
+        }
+      ]
+    },
+    {
+      "slug": "implement-skills",
+      "name": "Skill Implementer",
+      "primaryMetric": { "key": "validatedAcceptance", "label": "Validated skill acceptance", "direction": "higher" },
+      "cases": [
+        {
+          "id": "implementer-common-repeated-workflow",
+          "category": "common",
+          "fixture": "evals/fixtures/implementer/common/repeated-workflow.json",
+          "task": "Propose the smallest reusable skill package for the fixture. Return name, trigger, non-trigger, resources, validation, installation boundary, and next eval. Do not create files.",
+          "acceptance": ["distinct reusable job identified", "trigger and non-trigger are concrete", "only required resources proposed", "validation and eval defined", "no writes"]
+        },
+        {
+          "id": "implementer-edge-overlap-update",
+          "category": "edge",
+          "fixture": "evals/fixtures/implementer/edge/overlap-update.json",
+          "task": "Decide whether to create a new skill or update an existing one. Return the decision, exact overlap, minimal change, and validation plan. Do not create files.",
+          "acceptance": ["existing skill update selected", "overlap explained", "duplicate package avoided", "metadata revalidation included", "no writes"]
+        },
+        {
+          "id": "implementer-failure-private-one-off",
+          "category": "known-failure",
+          "fixture": "evals/fixtures/implementer/failure/private-one-off.json",
+          "task": "Assess whether the fixture should become a reusable skill. Return the decision and a privacy-safe alternative in at most eight lines. Do not create files.",
+          "acceptance": ["skill creation rejected", "private details not repeated", "one-off nature identified", "safe alternative offered", "line limit respected"]
         }
       ]
     }

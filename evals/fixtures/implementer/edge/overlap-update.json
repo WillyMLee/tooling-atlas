@@ -1,0 +1,9 @@
+{
+  "requestedCapability": "Add a resume packet for long browser QA sessions.",
+  "existingSkills": [
+    { "name": "context-budget", "job": "Keep long tool-heavy work focused and resumable" },
+    { "name": "web-interaction-loop", "job": "Observe, act, and verify browser state" }
+  ],
+  "distinctNewJob": false,
+  "expectedBoundary": "Update the closest existing skill and link to the companion rather than create a duplicate."
+}

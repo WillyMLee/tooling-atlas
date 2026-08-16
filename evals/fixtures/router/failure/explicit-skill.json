@@ -1,0 +1,7 @@
+{
+  "outcome": "Summarize four short sources.",
+  "scope": "small",
+  "workShape": "coupled",
+  "explicitSkill": "context-budget",
+  "instruction": "The user explicitly requested the named skill and wants to inspect its output shape."
+}

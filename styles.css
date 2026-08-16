@@ -468,7 +468,7 @@ a { color: inherit; }
 .module-recommendation>div{min-height:116px;padding:18px}.module-recommendation>div+div{border-left:1px solid #aebbad}
 .module-recommendation strong{font-family:var(--serif);font-size:22px;font-weight:500}.module-recommendation strong a{color:var(--ink);text-decoration-color:#7e8f7c;text-underline-offset:3px}
 .module-recommendation p{max-width:480px;margin:10px 0 0;color:#50594f;font-size:9px;line-height:1.55}
-.task-shape-guide>.task-recipes{max-width:1100px;margin:28px auto 0;grid-template-columns:repeat(3,1fr)}
+.task-shape-guide>.task-recipes{max-width:1100px;margin:28px auto 0;grid-template-columns:repeat(4,1fr)}
 .task-shape-guide>.task-recipes article{min-height:155px}.task-shape-guide>.task-recipes article strong{margin-top:28px}
 
 .control-tower-page .tower-brief{padding-top:42px;padding-bottom:42px}
@@ -482,6 +482,10 @@ a { color: inherit; }
 .tower-eval-queue p{margin:0;display:flex;flex-wrap:wrap;gap:7px}.tower-eval-queue a{padding:7px 9px;border:1px solid var(--line);background:var(--paper-light);color:var(--blue);font:600 7px/1 var(--mono);text-decoration:none;text-transform:uppercase}
 .tower-decisions h3{margin-top:24px;font-size:27px}.tower-decisions article>p{min-height:0}
 .tower-pair-groups details{margin-top:9px}
+
+@media (max-width: 1050px) {
+  .task-shape-guide>.task-recipes{grid-template-columns:repeat(2,1fr)}
+}
 
 @media (max-width: 760px) {
   .module-recommender,.module-recommendation,.task-shape-guide>.task-recipes{grid-template-columns:1fr}

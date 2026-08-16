@@ -7,7 +7,7 @@ Tooling Atlas is an open working library for interface references, source-derive
 - `assets/designs/` — verified live-source opening frames used by the gallery and component crops.
 - `catalog/` — source-derived reconstruction profiles with hero anatomy, frame dimensions, responsive rules, build order, and provenance.
 - `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
-- `skills/` — validated Agent Skills for context, batching, browser work, orchestration, evals, and tool-surface design.
+- `skills/` — validated Agent Skills for routing, implementation, context, batching, browser work, orchestration, evals, and tool-surface design.
 - `observability/` — the backend-neutral event contract, qualified field observations, example dashboard data, and ClickHouse DDL.
 - `docs/` — longer implementation notes and contribution guidance.
 
@@ -57,6 +57,14 @@ Measured modules can use evidence-responsive routing. Atlas derives a live recom
 
 The module directory is organized as an orchestration flow: Route, Prepare, Execute, Improve. Orchestration owns shared decisions and synthesis; specialist skills receive bounded inputs and return explicit handoff artifacts. Most tasks should use no module or one coordinator plus one specialist, not the entire stack.
 
+`route-skills` is the lightweight activation layer. It starts with direct work, selects specialists from task shape and measured thresholds, and keeps evaluation or skill authoring after completion. Its deterministic policy can be inspected without sending task content anywhere:
+
+```sh
+node skills/route-skills/scripts/route.mjs --scope multi --work-shape browser --improvement skill --format text
+```
+
+`implement-skills` turns a reviewed workflow into a concise skill package, checks overlap before creating another skill, validates metadata and scripts, and keeps performance claims unmeasured until matched runs exist.
+
 For personal Codex use, preview and then create user-scope links while keeping this repository as the source of truth:
 
 ```sh
@@ -74,7 +82,7 @@ Module pages show two intentionally separate evidence types: dogfood field obser
 
 Context Budget and Batch Tool Calls now expose the first applied policy revisions directly on their module pages. Each revision links the base file to the measured report that caused the change.
 
-Print the four-module, twelve-scenario pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Cases without real observations remain visibly unmeasured. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
+Print the six-module, eighteen-scenario pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Cases without real observations remain visibly unmeasured. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
 
 ## License
 
