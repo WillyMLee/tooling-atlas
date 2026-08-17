@@ -35,6 +35,12 @@ Run the complete structural validation and build with:
 npm run check
 ```
 
+Publish the validated `dist/` bundle to the production Cloudflare Pages project with:
+
+```sh
+npm run deploy:pages
+```
+
 ## Pattern kit
 
 ```js

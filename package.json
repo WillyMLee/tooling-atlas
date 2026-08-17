@@ -4,7 +4,13 @@
   "description": "Open-source design references, diagram packets, interaction patterns, and agent workflow skills.",
   "type": "module",
   "license": "MIT",
-  "files": ["assets", "modules", "catalog", "skills", "docs"],
+  "files": [
+    "assets",
+    "modules",
+    "catalog",
+    "skills",
+    "docs"
+  ],
   "exports": {
     ".": "./modules/diagram-kit.js",
     "./styles": "./modules/diagram-kit.css"
@@ -19,6 +25,7 @@
     "eval:strategic": "node scripts/eval-strategic-ab.mjs --write",
     "router:test": "node scripts/test-router.mjs",
     "sites:check": "node scripts/check-sites.mjs --write",
+    "deploy:pages": "npm run check && wrangler pages deploy dist --project-name tooling-atlas --branch main",
     "captures:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-design-crops.ps1",
     "telemetry:route": "node scripts/record-route.mjs",
     "telemetry:summary": "node scripts/summarize-events.mjs",
@@ -26,5 +33,10 @@
     "skills:link": "node scripts/link-skills.mjs",
     "skills:link:dry": "node scripts/link-skills.mjs --dry-run"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "wrangler": "^4.123.0"
+  }
 }
