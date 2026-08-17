@@ -110,7 +110,7 @@ const skills = [
     sources: [["Anthropic — effective context engineering", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], ["OpenAI — model and tool guidance", "https://developers.openai.com/api/docs/guides/latest-model"]],
   },
   {
-    slug: "route-skills", name: "Smart Skills Router", status: "Experimental · unmeasured",
+    slug: "route-skills", name: "Smart Skills Router", status: "Experimental · policy measured",
     summary: "Choose direct work or the smallest ordered set of Codex skills from task shape, trigger boundaries, authorization, and measured thresholds.",
     trigger: "Several skills could apply, activation is ambiguous, or a multi-stage workflow needs an explicit use-now and after-completion plan.",
     avoid: "The user explicitly named one sufficient skill or the task is small and has one obvious method.",
@@ -182,6 +182,9 @@ let telemetryKind = "pending";
 let evalSummaries = [];
 let pilotSuite = { modules: [], grading: {} };
 let designSpecs = {};
+let designCaptures = {};
+let galleryQuery = "";
+let galleryFamily = "all";
 let fieldTests = [];
 let currentPacket = "live";
 let packetAccent = "#b44c36";
@@ -236,11 +239,41 @@ const deltaCell = (candidate, baseline, key, lowerIsBetter = true) => {
 };
 const capturePath = (site) => `./assets/designs/${site.slug}-hero.png`;
 const mobileCapturePath = (site) => `./assets/designs/${site.slug}-mobile.png`;
+const regionCapturePath = (site, file) => `./assets/designs/regions/${site.slug}/${file}.png`;
+const sectionCapturePath = (site, file) => `./assets/designs/sections/${site.slug}/${file}.png`;
+const captureSetFor = (site) => designCaptures[site.slug] || { mode: "page-sequence", frames: [] };
+const designFamilyFor = (site) => {
+  if (/editorial|research|finance|portfolio/i.test(site.type)) return "editorial";
+  if (/game/i.test(site.type)) return "interactive";
+  return "product";
+};
+const gallerySearchText = (site, spec) => [site.name, site.type, site.theme, site.typeface, site.summary, site.layout, site.interactions, ...(site.brandElements || []), ...(spec.components || []), ...(spec.sections || [])].join(" ").toLowerCase();
+const filteredDesigns = () => sites.filter((site) => {
+  const familyMatches = galleryFamily === "all" || designFamilyFor(site) === galleryFamily;
+  return familyMatches && (!galleryQuery || gallerySearchText(site, specFor(site.slug)).includes(galleryQuery));
+});
+const renderGalleryContactSheet = (site, compact = false) => {
+  const frames = captureSetFor(site).frames.slice(0, 3);
+  return `<div class="gallery-contact-sheet ${compact ? "is-compact" : ""}">${frames.map((frame, index) => `<figure class="contact-frame contact-frame-${index + 1}"><img src="${sectionCapturePath(site, frame.file)}" alt="${escapeHtml(frame.label)} from ${escapeHtml(site.name)}" ${compact ? 'loading="lazy"' : ""}><figcaption><span>0${index + 1}</span>${escapeHtml(frame.label)}</figcaption></figure>`).join("")}</div>`;
+};
+const renderGalleryResults = () => {
+  const matches = filteredDesigns();
+  if (!matches.length) return `<div class="gallery-empty"><span>No matching profiles</span><h3>Try a broader component or family.</h3><button type="button" data-gallery-reset>Reset the gallery</button></div>`;
+  return `<div class="design-gallery-grid">${matches.map((site) => { const spec = specFor(site.slug); const captureSet = captureSetFor(site); return `<a class="design-gallery-card" href="#design/${site.slug}">${renderGalleryContactSheet(site, true)}<div class="design-gallery-copy"><div class="gallery-card-meta"><span>${escapeHtml(site.type)}</span><em>${captureSet.mode === "product-views" ? "3 product views" : "3 page frames"}</em></div><h3>${escapeHtml(site.name)}</h3><p>${escapeHtml(spec.hero?.composition || site.layout)}</p><div class="gallery-card-tags"><span>${escapeHtml(site.theme)}</span><span>${(spec.components || []).length} components</span><span>Desktop + mobile</span></div><small>Open reconstruction profile →</small></div></a>`; }).join("")}</div>`;
+};
+const refreshGalleryResults = () => {
+  const results = document.querySelector("#gallery-results");
+  if (!results) return;
+  results.innerHTML = renderGalleryResults();
+  const count = document.querySelector("#gallery-count");
+  if (count) count.innerHTML = `<strong>${filteredDesigns().length}</strong> of ${sites.length} profiles`;
+  document.querySelectorAll("[data-gallery-family]").forEach((button) => button.classList.toggle("is-active", button.dataset.galleryFamily === galleryFamily));
+};
 const captureFragments = (site, spec) => [
-  { label: "Header + wayfinding", detail: spec.sections?.[0] || spec.components?.[0] || "Primary navigation", position: "center top" },
-  { label: "Primary hero move", detail: spec.hero?.primary || site.layout, position: "left center" },
-  { label: "Supporting system", detail: spec.hero?.secondary || site.interactions, position: "right center" },
-  { label: "Lower-frame behavior", detail: spec.hero?.visual || site.designSummary, position: "center bottom" },
+  { file: "01-header", label: "Header + wayfinding", detail: spec.sections?.[0] || spec.components?.[0] || "Primary navigation", region: "x 0–100% · y 0–23%", role: "Establish identity, navigation density, and the first horizontal rule." },
+  { file: "02-primary", label: "Primary hero module", detail: spec.hero?.primary || site.layout, region: "x 0–60% · y 16–83%", role: "Reconstruct the dominant copy, scale, alignment, and action hierarchy." },
+  { file: "03-supporting", label: "Supporting hero module", detail: spec.hero?.secondary || site.interactions, region: "x 55–100% · y 16–83%", role: "Rebuild the secondary visual or utility without letting it overpower the primary module." },
+  { file: "04-transition", label: "Below-fold transition", detail: spec.sections?.[1] || spec.hero?.visual || site.designSummary, region: "x 0–100% · y 64–100%", role: "Match how the opening frame hands the reader into the next section." },
 ];
 const renderSourceCapture = (site, spec, compact = false) => `<figure class="source-capture ${compact ? "is-compact" : "is-large"}">
   <img src="${capturePath(site)}" alt="Actual ${escapeHtml(site.name)} opening frame at 1280 by 720 pixels" ${compact ? "loading=\"lazy\"" : ""}>
@@ -255,14 +288,15 @@ function renderSidebar() {
 }
 
 function renderOverview() {
-  const recent = sites;
+  const recent = filteredDesigns();
+  const firstDesign = recent[0] || sites[0];
   view.innerHTML = `<div class="page">
     <section class="overview-hero">
       <div class="overview-copy">
         <span class="eyebrow">A WORKING LIBRARY / OPEN SOURCE</span>
         <h1>Useful things,<br><em>kept within reach.</em></h1>
         <p>Design systems, visual explanations, interactions, and agent workflows—cataloged as reusable parts instead of rediscovered each time.</p>
-        <div class="overview-actions"><a class="text-link" href="#design/${recent[0]?.slug || "mumblings"}">Browse the gallery →</a><a class="text-link secondary" href="#packets">Build a diagram</a></div>
+        <div class="overview-actions"><a class="text-link" href="#design/${firstDesign?.slug || "mumblings"}">Browse the gallery →</a><a class="text-link secondary" href="#packets">Build a diagram</a></div>
       </div>
       <div class="overview-field" aria-hidden="true">
         <div class="atlas-orbit"></div><span class="orbit-label one">Designs</span><span class="orbit-label two">Diagrams</span><span class="orbit-label three">Skills</span><span class="orbit-label four">Interactions</span>
@@ -270,15 +304,21 @@ function renderOverview() {
       </div>
     </section>
     <section class="content-section">
-      <div class="section-heading"><div><span class="section-index">01 / Verified source frames</span><h2>Design gallery</h2></div><p>Every card starts with the actual rendered opening frame. Open it to inspect component crops, hero anatomy, palette, type, layout, breakpoints, and source provenance.</p></div>
-      <div class="design-gallery-grid">${recent.map((site, index) => { const spec = specFor(site.slug); return `<a class="design-gallery-card" href="#design/${site.slug}">${renderSourceCapture(site, spec, true)}<div class="design-gallery-copy"><span>D${String(index + 1).padStart(2,"0")} / ${escapeHtml(site.type)}</span><h3>${escapeHtml(site.name)}</h3><p>${escapeHtml(spec.hero?.composition || site.layout)}</p><small>Inspect source frame + components →</small></div></a>`; }).join("")}</div>
+      <div class="section-heading"><div><span class="section-index">01 / Verified design research</span><h2>Design gallery</h2></div><p>Find a reference by task shape, scan three real page or product states, then open the profile for component crops, responsive behavior, build order, and provenance.</p></div>
+      <div class="gallery-toolbar">
+        <label><span>Search the gallery</span><input id="gallery-search" type="search" value="${escapeHtml(galleryQuery)}" placeholder="Try navigation, editorial, waveform…"></label>
+        <div class="gallery-filters" role="group" aria-label="Design family"><button type="button" data-gallery-family="all" class="${galleryFamily === "all" ? "is-active" : ""}">All</button><button type="button" data-gallery-family="editorial" class="${galleryFamily === "editorial" ? "is-active" : ""}">Editorial + research</button><button type="button" data-gallery-family="product" class="${galleryFamily === "product" ? "is-active" : ""}">Product systems</button><button type="button" data-gallery-family="interactive" class="${galleryFamily === "interactive" ? "is-active" : ""}">Interactive + games</button></div>
+        <p id="gallery-count"><strong>${recent.length}</strong> of ${sites.length} profiles</p>
+      </div>
+      <div class="gallery-method"><article><span>01 / Find</span><strong>Start with the task</strong><p>Search the component, archetype, theme, or interaction you actually need.</p></article><article><span>02 / Inspect</span><strong>Whole page, then parts</strong><p>Separate page sequence, alternate product states, opening-frame anatomy, and mobile behavior.</p></article><article><span>03 / Rebuild</span><strong>Hand the agent a brief</strong><p>Use the hierarchy, dimensions, build order, cautions, and source files as constraints.</p></article></div>
+      <div id="gallery-results">${renderGalleryResults()}</div>
     </section>
     <section class="content-section">
       <div class="section-heading"><div><span class="section-index">02 / Working packets</span><h2>Start from a proven shape</h2></div><p>Packets keep recurring interface work consistent while leaving the content, tone, and final judgment open.</p></div>
       <div class="overview-grid overview-grid-four">
         <a class="overview-card" href="#packets"><span>P / 07</span><h3>Pattern packets</h3><p>Seven code-native modules extracted from interfaces already proven across your sites.</p><small>Open library →</small></a>
         <a class="overview-card" href="#interactions"><span>I / 03</span><h3>Interaction packets</h3><p>Quiet motion patterns with timing, purpose, and reduced-motion behavior.</p><small>Inspect motion →</small></a>
-        <a class="overview-card" href="#skills"><span>A / 06</span><h3>Agent modules</h3><p>Installable operating playbooks for context, tools, browsing, orchestration, and evals.</p><small>Review modules →</small></a>
+        <a class="overview-card" href="#skills"><span>A / 08</span><h3>Agent modules</h3><p>Installable operating playbooks for context, tools, browsing, orchestration, and evals.</p><small>Review modules →</small></a>
         <a class="overview-card" href="./control-tower.html"><span>C / 01</span><h3>Control Tower</h3><p>A separate measurement site for quality, activity, latency, tokens, and cost comparisons.</p><small>Open measurement site ↗</small></a>
       </div>
     </section>
@@ -288,17 +328,21 @@ function renderOverview() {
 function renderDesign(site) {
   if (!site) return renderNotFound();
   const spec = specFor(site.slug);
+  const captureSet = captureSetFor(site);
   view.innerHTML = `<article class="page">
     <header class="design-hero design-profile-hero">
       <div><span class="eyebrow">DESIGN PROFILE / ${escapeHtml(site.type)}</span><h1>${escapeHtml(site.name)}</h1><p class="lede">${escapeHtml(site.summary)}</p></div>
       <dl class="design-meta"><div><dt>Archetype</dt><dd>${escapeHtml(spec.hero?.composition || site.layout)}</dd></div><div><dt>Frame</dt><dd>${escapeHtml(spec.frame?.desktop || "Not recorded")}</dd></div><div><dt>Breakpoint</dt><dd>${escapeHtml(spec.frame?.breakpoint || "Not recorded")}</dd></div><div><dt>Source</dt><dd><a href="${site.url}" target="_blank" rel="noreferrer">Open live site ↗</a></dd></div></dl>
     </header>
-    <section class="reconstruction-preview"><div class="preview-heading"><div><span class="field-label">Verified source frame</span><h2>Start with what the site actually renders.</h2></div><p>This is a captured 1280 × 720 opening frame from the live source—not an Atlas approximation. The fragments below isolate the systems an agent should inspect before rebuilding.</p></div>${renderSourceCapture(site, spec)}<div class="capture-fragment-grid">${captureFragments(site, spec).map((fragment,index) => `<article><div class="capture-fragment"><img src="${capturePath(site)}" alt="${escapeHtml(fragment.label)} crop from ${escapeHtml(site.name)}" style="object-position:${fragment.position}"></div><span>0${index + 1} / ${escapeHtml(fragment.label)}</span><h3>${escapeHtml(fragment.detail)}</h3></article>`).join("")}</div><ol class="preview-callouts"><li><span>01</span><strong>Primary move</strong><p>${escapeHtml(spec.hero?.primary || site.layout)}</p></li><li><span>02</span><strong>Supporting move</strong><p>${escapeHtml(spec.hero?.secondary || site.interactions)}</p></li><li><span>03</span><strong>Visual language</strong><p>${escapeHtml(spec.hero?.visual || site.designSummary)}</p></li></ol></section>
-    <div class="reconstruction-layout">
+    <nav class="design-profile-nav" aria-label="Profile sections"><button type="button" data-scroll-target="page-anatomy">Page frames</button><button type="button" data-scroll-target="component-anatomy">Component anatomy</button><button type="button" data-scroll-target="build-spec">Build specification</button><button type="button" data-scroll-target="responsive-proof">Responsive proof</button><a href="${site.url}" target="_blank" rel="noreferrer">Live source ↗</a></nav>
+    <section class="design-research-brief"><article><span>Use this reference when</span><p>${escapeHtml(site.pattern)}</p></article><article><span>Study these decisions</span><p>${escapeHtml((site.brandElements || []).join(" · "))}</p></article><article><span>Avoid copying blindly</span><p>${escapeHtml(site.caution)}</p></article><aside><strong>${captureSet.frames.length + 5} verified visuals</strong><span>${captureSet.frames.length} desktop frames · 4 component crops · 1 mobile frame</span></aside></section>
+    <section class="page-capture-section" id="page-anatomy"><div class="preview-heading"><div><span class="field-label">Page anatomy / live captures</span><h2>Browse the sequence,<br>not only the hero.</h2></div><p>${captureSet.mode === "product-views" ? "This interface is best understood through distinct product views, so the gallery records real navigation states instead of pretending that repeated scroll positions are new sections." : "These are separate live viewports from the source page. Use them to understand the handoff from the opening frame into real content sections."}</p></div><div class="page-frame-grid">${captureSet.frames.map((frame, index) => `<article><figure><img src="${sectionCapturePath(site, frame.file)}" alt="${escapeHtml(frame.label)} live capture from ${escapeHtml(site.name)}"><figcaption><span>0${index + 1}</span><strong>${escapeHtml(frame.label)}</strong><small>2026-08-17</small></figcaption></figure><p>${escapeHtml(frame.role)}</p></article>`).join("")}</div></section>
+    <section class="reconstruction-preview" id="component-anatomy"><div class="preview-heading"><div><span class="field-label">Opening-frame anatomy</span><h2>Now isolate<br>the working parts.</h2></div><p>The complete opening frame is followed by four coordinate-based raster crops. These explain the hierarchy inside the hero; the page frames above explain what happens beyond it.</p></div>${renderSourceCapture(site, spec)}<div class="component-capture-grid">${captureFragments(site, spec).map((fragment,index) => `<article><figure><img src="${regionCapturePath(site, fragment.file)}" alt="Actual ${escapeHtml(fragment.label)} raster crop from ${escapeHtml(site.name)}"><figcaption><span>Actual source crop</span><span>${escapeHtml(fragment.region)}</span></figcaption></figure><div><span>0${index + 1} / ${escapeHtml(fragment.label)}</span><h3>${escapeHtml(fragment.detail)}</h3><p>${escapeHtml(fragment.role)}</p><dl><div><dt>Captured region</dt><dd>${escapeHtml(fragment.region)}</dd></div><div><dt>Agent instruction</dt><dd>Recreate this role and hierarchy before styling adjacent sections.</dd></div></dl></div></article>`).join("")}</div><ol class="preview-callouts"><li><span>01</span><strong>Primary move</strong><p>${escapeHtml(spec.hero?.primary || site.layout)}</p></li><li><span>02</span><strong>Supporting move</strong><p>${escapeHtml(spec.hero?.secondary || site.interactions)}</p></li><li><span>03</span><strong>Visual language</strong><p>${escapeHtml(spec.hero?.visual || site.designSummary)}</p></li></ol></section>
+    <div class="reconstruction-layout" id="build-spec">
       <main>
         <section class="profile-block"><span class="field-label">Design character</span><h2>What makes it recognizable</h2><p>${escapeHtml(site.designSummary)}</p></section>
         <section class="profile-block"><span class="field-label">Hero anatomy</span><h2>Rebuild the opening frame</h2><dl class="spec-ledger"><div><dt>Composition</dt><dd>${escapeHtml(spec.hero?.composition || site.layout)}</dd></div><div><dt>Primary module</dt><dd>${escapeHtml(spec.hero?.primary || "Not recorded")}</dd></div><div><dt>Secondary module</dt><dd>${escapeHtml(spec.hero?.secondary || "Not recorded")}</dd></div><div><dt>Minimum height</dt><dd>${escapeHtml(spec.frame?.heroHeight || "Content-led")}</dd></div></dl></section>
-        <section class="profile-block"><span class="field-label">Page sequence</span><h2>Section order and rhythm</h2><ol class="section-sequence">${(spec.sections || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><strong>${escapeHtml(item)}</strong></li>`).join("")}</ol></section>
+        <section class="profile-block"><span class="field-label">Page sequence</span><h2>Section order and rhythm</h2><p class="coverage-note">The three frames above are visual evidence. The full sequence below comes from the source implementation and is marked as a source map, not extra screenshot coverage.</p><ol class="section-sequence">${(spec.sections || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><strong>${escapeHtml(item)}</strong><em>source map</em></li>`).join("")}</ol></section>
         <section class="profile-block"><span class="field-label">Agent build order</span><h2>Recreate it without copying blindly</h2><ol class="build-sequence">${(spec.buildSteps || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
       </main>
       <aside class="reconstruction-side">
@@ -309,7 +353,7 @@ function renderDesign(site) {
         <section><span class="field-label">Source provenance</span><ul class="source-file-list">${(spec.sourceFiles || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
       </aside>
     </div>
-    <section class="responsive-spec"><div><span class="field-label">Verified mobile frame</span><h2>See what actually changes.</h2><p>${escapeHtml(site.caution)}</p><figure class="mobile-source-capture"><img src="${mobileCapturePath(site)}" alt="Actual mobile opening frame from ${escapeHtml(site.name)} at 390 by 844 pixels"><figcaption>Live source capture · 390 × 844</figcaption></figure></div><ol>${(spec.responsive || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
+    <section class="responsive-spec" id="responsive-proof"><div><span class="field-label">Verified mobile frame</span><h2>See what actually changes.</h2><p>${escapeHtml(site.caution)}</p><figure class="mobile-source-capture"><img src="${mobileCapturePath(site)}" alt="Actual mobile opening frame from ${escapeHtml(site.name)} at 390 by 844 pixels"><figcaption>Live source capture · 390 × 844</figcaption></figure></div><ol>${(spec.responsive || []).map((item,index) => `<li><span>${String(index + 1).padStart(2,"0")}</span><p>${escapeHtml(item)}</p></li>`).join("")}</ol></section>
   </article>`;
 }
 
@@ -558,11 +602,19 @@ document.addEventListener("click", async (event) => {
   const row = event.target.closest("[data-href]"); if (row) routeTo(row.dataset.href);
   const packetCard = event.target.closest("[data-packet]"); if (packetCard) { currentPacket = packetCard.dataset.packet; renderPackets(); }
   const accent = event.target.closest("[data-accent]"); if (accent) { packetAccent = accent.dataset.accent; document.querySelector(".packet-stage")?.style.setProperty("--packet-accent", packetAccent); document.querySelectorAll("[data-accent]").forEach((item) => item.classList.toggle("is-active", item === accent)); }
+  const family = event.target.closest("[data-gallery-family]"); if (family) { galleryFamily = family.dataset.galleryFamily; refreshGalleryResults(); }
+  if (event.target.closest("[data-gallery-reset]")) { galleryQuery = ""; galleryFamily = "all"; const input = document.querySelector("#gallery-search"); if (input) input.value = ""; refreshGalleryResults(); }
+  const scrollButton = event.target.closest("[data-scroll-target]"); if (scrollButton) document.getElementById(scrollButton.dataset.scrollTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
   if (event.target.closest("#copy-packet")) { const options = structuredClone(packetOptions[currentPacket]); await navigator.clipboard.writeText(JSON.stringify({ type: currentPacket, source: packets.find((packet) => packet.slug === currentPacket)?.source, accent: packetAccent, options }, null, 2)); showToast("Configuration copied"); }
 });
 
 document.addEventListener("keydown", (event) => { const target = event.target.closest?.("[data-href], [data-packet]"); if (target && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); target.click(); } });
 document.addEventListener("change", (event) => { if (event.target.id === "packet-type") { currentPacket = event.target.value; renderPackets(); } });
+document.addEventListener("input", (event) => {
+  if (event.target.id !== "gallery-search") return;
+  galleryQuery = event.target.value.trim().toLowerCase();
+  refreshGalleryResults();
+});
 window.addEventListener("hashchange", renderRoute);
 menuButton.addEventListener("click", () => { const open = directory.classList.toggle("is-open"); menuButton.setAttribute("aria-expanded", String(open)); });
 document.querySelector("#directory-search").addEventListener("input", (event) => {
@@ -571,7 +623,7 @@ document.querySelector("#directory-search").addEventListener("input", (event) =>
   document.querySelectorAll("[data-search-group]").forEach((group) => { group.hidden = Boolean(query) && !group.querySelector("[data-search-item]:not([hidden])"); });
 });
 
-Promise.all([fetch("./catalog/sites.json"), fetch("./catalog/module-registry.json"), fetch("./catalog/design-specs.json"), fetch("./observability/example-runs.json"), fetch("./observability/eval-summary.json"), fetch("./observability/field-tests.json"), fetch("./evals/pilot-suite.json")])
+Promise.all([fetch("./catalog/sites.json"), fetch("./catalog/module-registry.json"), fetch("./catalog/design-specs.json"), fetch("./catalog/design-captures.json"), fetch("./observability/example-runs.json"), fetch("./observability/eval-summary.json"), fetch("./observability/field-tests.json"), fetch("./evals/pilot-suite.json")])
   .then(async (responses) => { if (responses.some((response) => !response.ok)) throw new Error("Atlas data request failed"); return Promise.all(responses.map((response) => response.json())); })
-  .then(([sitePayload, modulePayload, designPayload, examplePayload, measuredPayload, fieldPayload, suitePayload]) => { sites = sitePayload.sites; moduleRegistry = modulePayload.modules; designSpecs = designPayload.profiles; fieldTests = fieldPayload.observations; pilotSuite = suitePayload; const telemetryPayload = measuredPayload.dataKind === "measured" && measuredPayload.runs.length ? measuredPayload : examplePayload; telemetryRuns = telemetryPayload.runs; telemetryNotice = telemetryPayload.notice; telemetryKind = telemetryPayload.dataKind; evalSummaries = measuredPayload.summaries || []; renderSidebar(); renderRoute(); })
+  .then(([sitePayload, modulePayload, designPayload, capturePayload, examplePayload, measuredPayload, fieldPayload, suitePayload]) => { sites = sitePayload.sites; moduleRegistry = modulePayload.modules; designSpecs = designPayload.profiles; designCaptures = capturePayload.profiles; fieldTests = fieldPayload.observations; pilotSuite = suitePayload; const telemetryPayload = measuredPayload.dataKind === "measured" && measuredPayload.runs.length ? measuredPayload : examplePayload; telemetryRuns = telemetryPayload.runs; telemetryNotice = telemetryPayload.notice; telemetryKind = telemetryPayload.dataKind; evalSummaries = measuredPayload.summaries || []; renderSidebar(); renderRoute(); })
   .catch(() => { sites = []; renderSidebar(); renderRoute(); showToast("Design catalog unavailable"); });

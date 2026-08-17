@@ -7,6 +7,8 @@ description: Choose the smallest useful set of Codex skills from the task shape,
 
 Route first; load specialist instructions only after selection.
 
+Policy revision: `route-skills-2026-08-16-r1`
+
 ## Workflow
 
 1. Honor any skill the user explicitly names. Routing may add a necessary companion but never suppress an explicit skill.
@@ -20,6 +22,7 @@ Route first; load specialist instructions only after selection.
 5. Order selected skills by phase: route, prepare, execute, then improve. Do not run improvement skills as execution overhead.
 6. Preserve authorization. A routed skill cannot expand allowed tools, writes, external communication, deployment, or delegation.
 7. Return the routing packet before substantial work when the choice is material.
+8. For a material routing decision, record one privacy-minimal `routing.decided` event before execution and one `routing.completed` event after the outcome is known. Use `scripts/record.mjs`; never store prompts, messages, tool arguments, tool output, credentials, or file contents.
 
 ## Routing Packet
 
@@ -44,6 +47,17 @@ node scripts/route.mjs --scope multi --work-shape browser --improvement skill
 
 Treat thresholds as provisional. Measured routing revisions may change them; do not infer universal gains from one pilot.
 
+## Activity record
+
+Use one stable route ID for the pair:
+
+```sh
+node scripts/record.mjs --stage decision --route-id <id> --task-shape multi-part --routing-mode orchestrated --selected orchestration-plan,web-interaction-loop --skipped batch-tool-calls
+node scripts/record.mjs --stage outcome --route-id <id> --task-shape multi-part --routing-mode orchestrated --selected orchestration-plan,web-interaction-loop --outcome completed --quality-passed true
+```
+
+The default destination is the user-local Atlas NDJSON file. Set `TOOLING_ATLAS_EVENTS_PATH` or pass `--out` to use another destination. Recording must never block the task; if it fails, continue and report the telemetry gap.
+
 ## Boundaries
 
 - Prefer direct work for small, tightly coupled tasks.
@@ -51,4 +65,3 @@ Treat thresholds as provisional. Measured routing revisions may change them; do 
 - Keep shared mutable targets with one owner.
 - Keep evaluation and skill implementation after task completion unless the task explicitly is evaluation or skill authoring.
 - Do not claim a skill improved quality, time, tokens, or cost without matched evidence.
-

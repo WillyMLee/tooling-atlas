@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-16",
+  "items": [
+    { "id": 1, "status": "active", "title": "Central website registry", "outcome": "One canonical list with purpose, repository, hosting, visibility, and live health." },
+    { "id": 2, "status": "active", "title": "Automated health monitoring", "outcome": "Repeatable HTTP checks with timestamps, latency, and failure state." },
+    { "id": 3, "status": "active", "title": "Routing decision telemetry", "outcome": "Privacy-minimal records of selected, skipped, and completed skill routes." },
+    { "id": 4, "status": "active", "title": "Larger matched A/B evaluations", "outcome": "Quality-gated comparisons for routing, context, batching, and orchestration." },
+    { "id": 5, "status": "active", "title": "Shared performance metrics", "outcome": "Visible coverage for quality, latency, calls, retries, tokens, and estimated cost." },
+    { "id": 6, "status": "active", "title": "Focused Control Tower", "outcome": "A separate, readable monitoring surface instead of a dense Atlas section." },
+    { "id": 7, "status": "later", "title": "Skill maturity stages", "outcome": "Draft, pilot, measured, recommended, and retired lifecycle states." },
+    { "id": 8, "status": "later", "title": "Personal Atlas plugin", "outcome": "Broader ChatGPT and Codex distribution after local workflows stabilize." },
+    { "id": 9, "status": "later", "title": "Simpler Atlas navigation", "outcome": "Plain-language entry points and progressive disclosure across modules." },
+    { "id": 10, "status": "later", "title": "Cross-project pattern ingestion", "outcome": "Promote reviewed project learnings into reusable modules and specs." },
+    { "id": 11, "status": "later", "title": "Shared project backlog", "outcome": "Reduce duplicated work across websites, agents, games, and research tools." },
+    { "id": 12, "status": "later", "title": "Security and recovery audit", "outcome": "Review authentication, secrets, billing alerts, backups, and recovery paths." }
+  ]
+}

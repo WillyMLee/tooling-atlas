@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "policy-evaluation-plan",
+  "slug": "atlas-strategic-ab-v1",
+  "notice": "Deterministic policy-level tests. They measure decision logic and operational proxies, not end-to-end agent quality or universal cost savings.",
+  "modules": [
+    {
+      "slug": "route-skills",
+      "primaryMetric": "Incorrect or unnecessary module selections",
+      "direction": "lower",
+      "cases": [
+        { "id": "route-small", "scope": "small", "workShape": "coupled", "sourceCount": 2, "operationCount": 2, "improvement": "none", "expected": [] },
+        { "id": "route-broad", "scope": "broad", "workShape": "coupled", "sourceCount": 9, "operationCount": 4, "improvement": "none", "expected": ["context-budget"] },
+        { "id": "route-batch-below", "scope": "small", "workShape": "independent", "sourceCount": 3, "operationCount": 7, "improvement": "none", "expected": [] },
+        { "id": "route-batch-above", "scope": "small", "workShape": "independent", "sourceCount": 3, "operationCount": 10, "improvement": "none", "expected": ["batch-tool-calls"] },
+        { "id": "route-browser", "scope": "multi", "workShape": "browser", "sourceCount": 4, "operationCount": 5, "improvement": "none", "expected": ["orchestration-plan", "web-interaction-loop"] },
+        { "id": "route-improve", "scope": "multi", "workShape": "coupled", "sourceCount": 5, "operationCount": 4, "improvement": "skill", "expected": ["orchestration-plan", "context-budget", "eval-improvement-loop", "implement-skills"] }
+      ]
+    },
+    {
+      "slug": "context-budget",
+      "primaryMetric": "Bytes admitted before evidence review",
+      "direction": "lower",
+      "cases": [
+        { "id": "context-four-short", "sources": 4, "relevantBytes": 18000, "irrelevantBytes": 4000 },
+        { "id": "context-six-mixed", "sources": 6, "relevantBytes": 22000, "irrelevantBytes": 56000 },
+        { "id": "context-eleven-repos", "sources": 11, "relevantBytes": 48000, "irrelevantBytes": 218000 },
+        { "id": "context-large-log", "sources": 8, "relevantBytes": 32000, "irrelevantBytes": 420000 },
+        { "id": "context-handoff", "sources": 7, "relevantBytes": 27000, "irrelevantBytes": 92000 },
+        { "id": "context-proof-reopen", "sources": 9, "relevantBytes": 41000, "irrelevantBytes": 175000 }
+      ]
+    },
+    {
+      "slug": "batch-tool-calls",
+      "primaryMetric": "Estimated tool round trips",
+      "direction": "lower",
+      "cases": [
+        { "id": "batch-four", "operations": 4, "independent": true, "expectedMode": "direct" },
+        { "id": "batch-seven", "operations": 7, "independent": true, "expectedMode": "direct" },
+        { "id": "batch-eight", "operations": 8, "independent": true, "expectedMode": "batch" },
+        { "id": "batch-twelve", "operations": 12, "independent": true, "expectedMode": "batch" },
+        { "id": "batch-dependent", "operations": 10, "independent": false, "expectedMode": "direct" },
+        { "id": "batch-partial-failure", "operations": 9, "independent": true, "expectedMode": "batch", "hasPermanentFailure": true }
+      ]
+    },
+    {
+      "slug": "orchestration-plan",
+      "primaryMetric": "Unsafe or unnecessary coordination decisions",
+      "direction": "lower",
+      "cases": [
+        { "id": "orchestration-small", "tasks": 2, "sharedWrites": false, "coupled": true, "expectedMode": "direct" },
+        { "id": "orchestration-discovery", "tasks": 6, "sharedWrites": false, "coupled": false, "expectedMode": "orchestrated" },
+        { "id": "orchestration-shared-css", "tasks": 5, "sharedWrites": true, "coupled": false, "expectedMode": "single-owner" },
+        { "id": "orchestration-migration", "tasks": 8, "sharedWrites": true, "coupled": true, "expectedMode": "single-owner" },
+        { "id": "orchestration-review", "tasks": 4, "sharedWrites": false, "coupled": false, "expectedMode": "orchestrated" },
+        { "id": "orchestration-one-fix", "tasks": 3, "sharedWrites": false, "coupled": true, "expectedMode": "direct" }
+      ]
+    }
+  ]
+}

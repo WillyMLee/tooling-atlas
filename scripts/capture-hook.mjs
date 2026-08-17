@@ -47,10 +47,11 @@ const eventName = (hookName = "") => ({
 try {
   const input = JSON.parse(await readStdin());
   const event = {
-    schema_version: 1,
+    schema_version: 2,
     event_time: new Date().toISOString(),
     event_name: eventName(input.hook_event_name),
     run_id: String(input.session_id || crypto.randomUUID()),
+    route_id: "",
     turn_id: String(input.turn_id || ""),
     trace_id: "",
     span_id: String(input.tool_use_id || input.agent_id || ""),
@@ -61,6 +62,12 @@ try {
     module_version: String(assignedModuleVersion),
     activation_mode: String(activationMode),
     activation_reason: String(activationReason),
+    routing_mode: "",
+    skills_considered: [],
+    skills_selected: [],
+    skills_skipped: [],
+    outcome: "",
+    quality_gate_passed: null,
     task_shape: String(taskShape),
     source_count: sourceCount,
     independent_operation_count: independentOperationCount,
@@ -75,6 +82,7 @@ try {
     output_tokens: null,
     cached_tokens: null,
     tool_calls: input.hook_event_name === "PostToolUse" ? 1 : 0,
+    retry_count: 0,
     estimated_cost_usd: null,
     quality_score: null,
     success: null,

@@ -6,8 +6,13 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const registry = JSON.parse(await readFile(join(root, "catalog", "module-registry.json"), "utf8"));
 const sites = JSON.parse(await readFile(join(root, "catalog", "sites.json"), "utf8"));
 const designSpecs = JSON.parse(await readFile(join(root, "catalog", "design-specs.json"), "utf8"));
+const designCaptures = JSON.parse(await readFile(join(root, "catalog", "design-captures.json"), "utf8"));
 const fieldTests = JSON.parse(await readFile(join(root, "observability", "field-tests.json"), "utf8"));
 const evalSummary = JSON.parse(await readFile(join(root, "observability", "eval-summary.json"), "utf8"));
+const policyEval = JSON.parse(await readFile(join(root, "observability", "strategic-ab-summary.json"), "utf8"));
+const productRegistry = JSON.parse(await readFile(join(root, "catalog", "product-registry.json"), "utf8"));
+const siteHealth = JSON.parse(await readFile(join(root, "observability", "site-health.json"), "utf8"));
+const backlog = JSON.parse(await readFile(join(root, "catalog", "strategic-backlog.json"), "utf8"));
 const appSource = await readFile(join(root, "app.js"), "utf8");
 const slugs = new Set();
 
@@ -44,13 +49,22 @@ for (const rule of routingPolicy.rules ?? []) {
 
 const siteSlugs = new Set(sites.sites.map((site) => site.slug));
 const specSlugs = new Set(Object.keys(designSpecs.profiles ?? {}));
+const captureSlugs = new Set(Object.keys(designCaptures.profiles ?? {}));
 if (designSpecs.schemaVersion !== 1 || specSlugs.size !== siteSlugs.size) throw new Error("Design specs must provide one versioned profile per site");
+if (designCaptures.schemaVersion !== 1 || captureSlugs.size !== siteSlugs.size) throw new Error("Design captures must provide one versioned profile per site");
 for (const slug of siteSlugs) {
   const spec = designSpecs.profiles[slug];
   if (!spec) throw new Error(`Missing design spec: ${slug}`);
   if (!spec.preview?.headline || !spec.frame?.desktop || !spec.hero?.composition) throw new Error(`${slug}: incomplete preview, frame, or hero spec`);
   await access(join(root, "assets", "designs", `${slug}-hero.png`));
   await access(join(root, "assets", "designs", `${slug}-mobile.png`));
+  for (const region of ["01-header", "02-primary", "03-supporting", "04-transition"]) await access(join(root, "assets", "designs", "regions", slug, `${region}.png`));
+  const capture = designCaptures.profiles[slug];
+  if (!capture || !["page-sequence", "product-views"].includes(capture.mode) || capture.frames?.length !== 3) throw new Error(`${slug}: incomplete page capture set`);
+  for (const frame of capture.frames) {
+    if (!frame.file || !frame.label || !frame.role) throw new Error(`${slug}: incomplete page capture metadata`);
+    await access(join(root, "assets", "designs", "sections", slug, `${frame.file}.png`));
+  }
   for (const field of ["sections", "components", "responsive", "buildSteps", "sourceFiles"]) {
     if (!Array.isArray(spec[field]) || spec[field].length < 2) throw new Error(`${slug}: incomplete ${field}`);
   }
@@ -58,6 +72,7 @@ for (const slug of siteSlugs) {
 for (const slug of specSlugs) {
   if (!siteSlugs.has(slug)) throw new Error(`Design spec has no matching site: ${slug}`);
 }
+for (const slug of captureSlugs) if (!siteSlugs.has(slug)) throw new Error(`Design capture has no matching site: ${slug}`);
 
 if (fieldTests.dataKind !== "field-observation" || !fieldTests.notice) throw new Error("Field tests must remain qualified as non-benchmark observations");
 for (const observation of fieldTests.observations ?? []) {
@@ -67,8 +82,19 @@ for (const observation of fieldTests.observations ?? []) {
   }
 }
 if (evalSummary.dataKind !== "measured" || evalSummary.runs.length < 12) throw new Error("Control Tower must load the measured pilot rather than synthetic preview results");
+if (policyEval.dataKind !== "measured-policy-eval" || policyEval.runs.length !== 48 || policyEval.summaries.length !== 4) throw new Error("Strategic policy A/B results must contain 24 matched pairs across four modules");
+for (const summary of policyEval.summaries) if (!summary.qualityGatePassed) throw new Error(`${summary.module}: policy candidate failed its quality gate`);
+
+if (productRegistry.schemaVersion !== 1 || productRegistry.sites.length < 15) throw new Error("Product registry must contain the verified live-site inventory");
+const productSlugs = new Set(productRegistry.sites.map((site) => site.slug));
+if (productSlugs.size !== productRegistry.sites.length) throw new Error("Product registry contains duplicate slugs");
+for (const site of productRegistry.sites) for (const field of ["name", "url", "category", "purpose", "hosting", "surface"]) if (!site[field]) throw new Error(`${site.slug}: incomplete product registry entry`);
+if (siteHealth.dataKind !== "measured-health" || siteHealth.checks.length !== productRegistry.sites.length) throw new Error("Site health must cover every registered site");
+for (const check of siteHealth.checks) if (!productSlugs.has(check.slug) || !["healthy", "degraded", "down"].includes(check.status)) throw new Error(`Invalid site health check: ${check.slug}`);
+if (backlog.items.length !== 12 || backlog.items.filter((item) => item.status === "active").length !== 6 || backlog.items.filter((item) => item.status === "later").length !== 6) throw new Error("Strategic backlog must preserve six active and six later priorities");
 
 const eventSchema = JSON.parse(await readFile(join(root, "observability", "events.schema.json"), "utf8"));
+if (eventSchema.properties.schema_version.const !== 2) throw new Error("Agent event schema must use privacy-minimal routing schema v2");
 for (const field of ["schema_version", "event_time", "event_name", "run_id", "status"]) {
   if (!eventSchema.required.includes(field)) throw new Error(`Event schema must require ${field}`);
 }
@@ -80,4 +106,4 @@ for (const run of example.runs) {
   if (!["baseline", "candidate"].includes(run.variant)) throw new Error(`Invalid example variant: ${run.variant}`);
 }
 
-console.log(`Validated ${registry.modules.length} agent modules, ${sites.sites.length} captured design profiles, ${fieldTests.observations.length} field observations, ${evalSummary.runs.length} measured runs, and ${example.runs.length} labeled examples.`);
+console.log(`Validated ${registry.modules.length} agent modules, ${sites.sites.length} design profiles with page frames and component crops, ${productRegistry.sites.length} live sites, ${policyEval.runs.length / 2} policy pairs, ${evalSummary.runs.length / 2} agent pairs, and ${example.runs.length} labeled examples.`);

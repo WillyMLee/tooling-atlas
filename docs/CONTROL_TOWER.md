@@ -5,11 +5,13 @@ Control Tower answers one question: did a module improve the outcome enough to j
 ## What is implemented
 
 - A versioned module registry with hypotheses and evaluation contracts.
-- A backend-neutral JSON event schema.
+- A backend-neutral v2 JSON event schema with explicit routing decision and outcome fields.
 - An opt-in Codex lifecycle hook collector that stores no prompts, tool inputs, tool outputs, or assistant messages.
 - ClickHouse DDL and quality-gated comparison queries.
 - A six-module eval pilot with eighteen reproducible agent scenarios and a quality-gated scorer.
-- An Atlas dashboard that prefers measured eval results, exposes actual matched pairs, and otherwise falls back to clearly labeled example data.
+- A canonical fifteen-site registry with a daily HTTP health snapshot.
+- Twenty-four deterministic policy-level A/B pairs across routing, context, batching, and orchestration.
+- A focused Control Tower application that keeps policy fixtures, real agent evidence, activity, and unknown usage fields separate.
 
 The local user hook is installed separately from this repository and requires Codex review/trust before it runs. No ClickHouse database is connected by default.
 
@@ -19,7 +21,7 @@ The local user hook is installed separately from this repository and requires Co
 Codex hooks / API traces / eval runner
                   |
                   v
-         normalized v1 events
+         normalized v2 events
                   |
           +-------+--------+
           |                |
@@ -84,6 +86,23 @@ Example `hooks.json` entry:
 Pass `--out` or set `TOOLING_ATLAS_EVENTS_PATH` to an explicit NDJSON file before enabling the hook. For a controlled CLI or API experiment, pass `--module` and `--variant`, or set their environment equivalents before launching the agent. Add `--module-version`, `--activation-mode`, `--activation-reason`, `--task-shape`, `--source-count`, `--independent-operations`, and `--orchestration-phase` when those values are assigned before the run. General desktop activity remains deliberately unassigned because the content-free hook cannot reliably infer which skill influenced a run. Codex requires hook review and trust after a hook is added or changed.
 
 Activation metadata is deliberately categorical. It answers whether a module was explicit, recommended, automatic, or eval-assigned and which coarse task shape triggered it. It does not store task text, source names, file paths, or tool content.
+
+### Routing decision pairs
+
+`skills/route-skills/scripts/record.mjs` writes one `routing.decided` event before a meaningful routed task and one `routing.completed` event afterward. Both use the same route ID. The pair records selected and skipped skills, routing mode, coarse task shape, outcome, quality-gate result, and retries. The router continues even when telemetry cannot be written.
+
+```sh
+npm run telemetry:route -- --stage decision --route-id example --task-shape multi-part --routing-mode orchestrated --selected orchestration-plan
+npm run telemetry:route -- --stage outcome --route-id example --task-shape multi-part --routing-mode orchestrated --selected orchestration-plan --outcome completed --quality-passed true
+```
+
+### Website health
+
+`npm run sites:check` checks every entry in `catalog/product-registry.json`, records HTTP status, redirect destination, latency, and a timestamp in `observability/site-health.json`, and exits non-zero when a site is down. The scheduled GitHub workflow refreshes this snapshot daily. HTTP reachability does not prove authenticated flows, scheduled jobs, or data freshness.
+
+### Policy-level A/B tests
+
+`npm run eval:strategic` runs twenty-four deterministic pairs against decision fixtures. These tests catch threshold and coordination regressions cheaply. They are not end-to-end agent trials and do not establish token or dollar savings. Real agent evidence remains in the original pilot dataset.
 
 The default personal installation writes to `~/.codex/telemetry/tooling-atlas-events.ndjson`. Inspect counts without exposing content:
 

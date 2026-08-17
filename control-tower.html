@@ -18,16 +18,10 @@
         <span class="wordmark-mark">T/A</span>
         <span><strong>Control Tower</strong><small>Measurement site</small></span>
       </a>
-      <p class="header-note">Agent activity + module evidence</p>
-      <button class="menu-button" id="menu-button" type="button" hidden>Directory</button>
+      <p class="header-note">Sites · routes · evidence · metrics</p>
       <a class="repo-link" href="./index.html#skills">Return to agent modules ↗</a>
     </header>
-    <div class="app-shell tower-app-shell">
-      <aside class="directory" id="directory" hidden aria-hidden="true"><input id="directory-search" type="search" /><div id="design-links"></div><div id="skill-links"></div><span id="atlas-count"></span></aside>
-      <main id="view" tabindex="-1"></main>
-    </div>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script>if (!location.hash) location.hash = "control-tower";</script>
-    <script type="module" src="./app.js"></script>
+    <div id="control-tower-root"></div>
+    <script type="module" src="./control-tower.js"></script>
   </body>
 </html>

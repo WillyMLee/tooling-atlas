@@ -146,14 +146,14 @@
     },
     {
       "slug": "route-skills",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "packagePath": "skills/route-skills",
       "maturity": "Experimental",
-      "evidenceStatus": "Unmeasured prototype",
+      "evidenceStatus": "Policy A/B measured · agent trial pending",
       "hypothesis": "Task-shape routing reduces unnecessary skill activation while preserving correct specialist selection and authorization boundaries.",
       "primaryMetric": "Correct first skill selection rate",
       "guardrailMetrics": ["Task success", "Unnecessary activations", "Authorization preservation"],
-      "events": ["route.started", "module.selected", "route.completed"],
+      "events": ["routing.decided", "routing.completed"],
       "evalCases": ["Small direct task", "Multi-part browser workflow", "Ambiguous overlapping skills"],
       "orchestration": {
         "phase": "Route",
@@ -161,6 +161,20 @@
         "receives": "User outcome, task shape, available skill descriptions, evidence thresholds, and authorization boundaries",
         "handsOff": "Compact routing packet with use-now, after-completion, skip, activation, and stop conditions",
         "partners": ["orchestration-plan", "design-tool-surface", "implement-skills"]
+      },
+      "routingPolicy": {
+        "mode": "evidence-responsive",
+        "currentDefault": "Work directly first; add only threshold-matched specialists.",
+        "activateWhen": ["Several skills plausibly apply", "A multi-stage task needs ordered specialists", "The user asks for an explicit routing explanation"],
+        "skipWhen": ["One explicit skill fully covers the task", "The task is small and has one obvious method"]
+      },
+      "latestRevision": {
+        "id": "route-skills-2026-08-16-r1",
+        "version": "0.2.0",
+        "date": "2026-08-16",
+        "baseFile": "skills/route-skills/SKILL.md",
+        "evidenceFile": "observability/strategic-ab-summary.json",
+        "change": "Added privacy-minimal decision/outcome records and a six-case threshold evaluation; end-to-end agent gains remain unproven."
       }
     },
     {

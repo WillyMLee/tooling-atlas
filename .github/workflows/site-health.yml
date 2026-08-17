@@ -1,0 +1,27 @@
+name: Website health snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 12 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/check-sites.mjs --write
+      - name: Commit changed snapshot
+        run: |
+          if git diff --quiet -- observability/site-health.json; then exit 0; fi
+          git config user.name "tooling-atlas-monitor"
+          git config user.email "actions@users.noreply.github.com"
+          git add observability/site-health.json
+          git commit -m "Update website health snapshot"
+          git push

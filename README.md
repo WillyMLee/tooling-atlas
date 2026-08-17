@@ -4,11 +4,11 @@ Tooling Atlas is an open working library for interface references, source-derive
 
 ## What is inside
 
-- `assets/designs/` — verified live-source opening frames used by the gallery and component crops.
-- `catalog/` — source-derived reconstruction profiles with hero anatomy, frame dimensions, responsive rules, build order, and provenance.
+- `assets/designs/` — three live page/product-state frames, four opening-frame component crops, and one verified mobile frame per profile.
+- `catalog/` — reconstruction profiles, the canonical live-product registry, and the twelve-item strategic backlog.
 - `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
 - `skills/` — validated Agent Skills for routing, implementation, context, batching, browser work, orchestration, evals, and tool-surface design.
-- `observability/` — the backend-neutral event contract, qualified field observations, example dashboard data, and ClickHouse DDL.
+- `observability/` — website health, policy and agent eval summaries, the privacy-minimal event contract, and optional ClickHouse DDL.
 - `docs/` — longer implementation notes and contribution guidance.
 
 - `evals/` — stable baseline/candidate agent scenarios, fixtures, scoring rules, and observation guidance.
@@ -49,6 +49,10 @@ renderLiveProcess(document.querySelector("#module"), {
 
 Import `modules/diagram-kit.css` once and override the documented `--ia-*` custom properties from the containing page. The kit also includes Product Workflow, Problem Narrative, Competitive Radar, Hero Ledger, Step Detail, and Planning Rail renderers.
 
+## Design gallery
+
+The gallery is organized for research and reconstruction rather than screenshot volume. Search by task, theme, component, or interaction; each profile then separates page anatomy, opening-frame component anatomy, source-mapped section order, build sequence, and responsive proof. Capture metadata lives in `catalog/design-captures.json`, and the benchmark rubric is documented in `docs/DESIGN_GALLERY_BENCHMARK.md`.
+
 ## Skills
 
 Each folder in `skills/` is a standalone Agent Skill with `SKILL.md` and `agents/openai.yaml`. Copy a folder into your agent's skills directory or install it using the tooling supported by that agent. Review the module before enabling it in a production workflow.
@@ -63,6 +67,8 @@ The module directory is organized as an orchestration flow: Route, Prepare, Exec
 node skills/route-skills/scripts/route.mjs --scope multi --work-shape browser --improvement skill --format text
 ```
 
+Meaningful routing decisions can now produce a privacy-minimal decision/outcome pair in the local Atlas NDJSON file. The record contains categorical task shape, selected and skipped skills, outcome, quality-gate state, and retries; it never stores prompts, messages, tool arguments, tool output, credentials, or file contents.
+
 `implement-skills` turns a reviewed workflow into a concise skill package, checks overlap before creating another skill, validates metadata and scripts, and keeps performance claims unmeasured until matched runs exist.
 
 For personal Codex use, preview and then create user-scope links while keeping this repository as the source of truth:
@@ -74,7 +80,7 @@ npm run skills:link
 
 ## Control Tower
 
-The Control Tower is a separate measurement surface at `/control-tower.html`, not part of the editorial Atlas directory. It distinguishes a valid module from a proven module. It now prefers the first measured Codex A/B pilot and links each pair to its task, output evidence, grading, and machine-readable observation. See `docs/CONTROL_TOWER.md` for the event flow, privacy boundary, optional Codex hooks, and ClickHouse rollout.
+The Control Tower is a separate application at `/control-tower.html`. It combines the canonical fifteen-site registry, measured HTTP health, routing telemetry contract, twenty-four deterministic policy A/B pairs, six real agent pairs, metric coverage, and the active/later strategic backlog. Policy fixtures and real agent evidence remain visually and semantically separate.
 
 Its default view shows current routing decisions first. Individual pairs and system architecture are progressively disclosed so evidence remains available without overwhelming the decision.
 
@@ -82,7 +88,7 @@ Module pages show two intentionally separate evidence types: dogfood field obser
 
 Context Budget and Batch Tool Calls now expose the first applied policy revisions directly on their module pages. Each revision links the base file to the measured report that caused the change.
 
-Print the six-module, eighteen-scenario pilot plan with `npm run eval:plan`. Reproduce the current measured score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`, or pass another observation file to update the Control Tower. Cases without real observations remain visibly unmeasured. Inspect privacy-minimal local activity separately with `npm run telemetry:summary`.
+Refresh the live site snapshot with `npm run sites:check`; the scheduled GitHub workflow runs the same checker daily. Reproduce the deterministic policy matrix with `npm run eval:strategic`. Print the six-module, eighteen-scenario agent plan with `npm run eval:plan`, and reproduce the current agent score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`. Inspect private local activity separately with `npm run telemetry:summary`.
 
 ## License
 

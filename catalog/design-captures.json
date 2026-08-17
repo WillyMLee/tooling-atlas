@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-08-17",
+  "method": "Live desktop browser captures. Scrollable sites use sequential below-fold viewports; fixed workspaces use distinct product views.",
+  "profiles": {
+    "mumblings": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Opening frame", "role": "Identity, premise, and the first editorial composition." },
+      { "file": "02-first-section", "label": "Recent stories", "role": "The first complete content section and its card hierarchy." },
+      { "file": "03-second-section", "label": "Story grid continuation", "role": "How the editorial grid sustains rhythm below the first row." }
+    ]},
+    "signal-notes": { "mode": "product-views", "frames": [
+      { "file": "01-opening", "label": "Overview", "role": "Research premise, signal map, and top-level navigation." },
+      { "file": "02-first-section", "label": "Research catalog", "role": "The dense browse state used to compare company profiles." },
+      { "file": "03-second-section", "label": "Recent rounds", "role": "The time-oriented funding view and its reading hierarchy." }
+    ]},
+    "motiondeck-studio": { "mode": "product-views", "frames": [
+      { "file": "01-opening", "label": "Studio workbench", "role": "The persistent production shell and live creative stage." },
+      { "file": "02-first-section", "label": "Asset gallery", "role": "The browse state for reusable production assets." },
+      { "file": "03-second-section", "label": "Connectors", "role": "The handoff view linking external creative tools." }
+    ]},
+    "fleeting": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Opening frame", "role": "The game premise and chaptered workbook language." },
+      { "file": "02-first-section", "label": "First system section", "role": "The first detailed mechanic or system explanation." },
+      { "file": "03-second-section", "label": "Next workbook section", "role": "How the technical narrative continues below the hero." }
+    ]},
+    "kaggriculture-fieldbook": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Opening frame", "role": "The strategy premise and fixed fieldbook index." },
+      { "file": "02-first-section", "label": "Competition section", "role": "The first operational section inside the notebook shell." },
+      { "file": "03-second-section", "label": "Strategy detail", "role": "A denser fieldbook state with evidence and mechanics." }
+    ]},
+    "sounddeck": { "mode": "product-views", "frames": [
+      { "file": "01-opening", "label": "Audio workbench", "role": "The generation, waveform, assistant, and tuning workspace." },
+      { "file": "02-first-section", "label": "Sound library", "role": "The browse state for takes and reusable audio assets." },
+      { "file": "03-second-section", "label": "Connectors", "role": "The production handoff view for external audio tools." }
+    ]},
+    "cost-basis": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Markets hero", "role": "The editorial thesis and compact research ledger." },
+      { "file": "02-first-section", "label": "Featured research", "role": "The first article-led section after the opening thesis." },
+      { "file": "03-second-section", "label": "Research archive", "role": "The repeatable note and topic rhythm farther down the page." }
+    ]},
+    "seat-scout": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Command hero", "role": "The reservation decision and concierge entry point." },
+      { "file": "02-first-section", "label": "Upcoming reservations", "role": "The first operational list below the command surface." },
+      { "file": "03-second-section", "label": "Release planning", "role": "The timing and shortlist information used for the next action." }
+    ]},
+    "crumb": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Journal hero", "role": "The recipe premise, quick import, and tactile ledger." },
+      { "file": "02-first-section", "label": "Library overview", "role": "The first reusable recipe and collection modules." },
+      { "file": "03-second-section", "label": "Recipe collection", "role": "The content rhythm and actions below the overview." }
+    ]},
+    "willymlee": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Identity hero", "role": "The personal statement, portrait rail, and primary navigation." },
+      { "file": "02-first-section", "label": "Selected work", "role": "The first project-led proof section after the introduction." },
+      { "file": "03-second-section", "label": "Experience narrative", "role": "The recurring row grammar for work and background." }
+    ]},
+    "worth-more": { "mode": "page-sequence", "frames": [
+      { "file": "01-opening", "label": "Game setup", "role": "The premise, mode controls, and start of the comparison loop." },
+      { "file": "02-first-section", "label": "Matchup", "role": "The central known-versus-unknown decision state." },
+      { "file": "03-second-section", "label": "Answer and evidence", "role": "The reveal, controls, or supporting game explanation." }
+    ]}
+  }
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas mobile QA frame</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: #d8d3c9; }
+      body { padding: 24px; display: grid; place-items: start center; }
+      iframe { width: 390px; height: 844px; border: 1px solid #20211e; background: #fff; box-shadow: 12px 14px 0 rgba(32,33,30,.12); }
+    </style>
+  </head>
+  <body>
+    <iframe id="mobile-preview" title="390 pixel mobile QA preview"></iframe>
+    <script>
+      const requested = new URLSearchParams(location.search).get("path") || "/control-tower.html";
+      document.querySelector("#mobile-preview").src = new URL(requested, location.origin);
+    </script>
+  </body>
+</html>
