@@ -9,8 +9,7 @@ $atlasRegionRootResolved = [System.IO.Path]::GetFullPath($atlasRegionRoot)
 $atlasRegions = @(
   @{ Name = '01-header'; X = 0.00; Y = 0.00; W = 1.00; H = 0.23 },
   @{ Name = '02-primary'; X = 0.00; Y = 0.16; W = 0.60; H = 0.67 },
-  @{ Name = '03-supporting'; X = 0.55; Y = 0.16; W = 0.45; H = 0.67 },
-  @{ Name = '04-transition'; X = 0.00; Y = 0.64; W = 1.00; H = 0.36 }
+  @{ Name = '03-supporting'; X = 0.55; Y = 0.16; W = 0.45; H = 0.67 }
 )
 
 Get-ChildItem -LiteralPath $atlasDesignRoot -Filter '*-hero.png' | ForEach-Object {

@@ -4,7 +4,7 @@ Tooling Atlas is an open working library for interface references, source-derive
 
 ## What is inside
 
-- `assets/designs/` — three live page/product-state frames, four opening-frame component crops, and one verified mobile frame per profile.
+- `assets/designs/` — three live page/product-state frames and three opening-frame component crops per profile.
 - `catalog/` — reconstruction profiles, the canonical live-product registry, and the twelve-item strategic backlog.
 - `modules/` — dependency-free JavaScript and CSS patterns extracted from working interfaces.
 - `skills/` — validated Agent Skills for routing, implementation, context, batching, browser work, orchestration, evals, and tool-surface design.
@@ -57,7 +57,7 @@ Import `modules/diagram-kit.css` once and override the documented `--ia-*` custo
 
 ## Design gallery
 
-The gallery is organized for research and reconstruction rather than screenshot volume. Search by task, theme, component, or interaction; each profile then separates page anatomy, opening-frame component anatomy, source-mapped section order, build sequence, and responsive proof. Capture metadata lives in `catalog/design-captures.json`, and the benchmark rubric is documented in `docs/DESIGN_GALLERY_BENCHMARK.md`.
+The gallery is organized for research and reconstruction rather than screenshot volume. Search by task, theme, component, or interaction; each profile then separates page anatomy, opening-frame component anatomy, source-mapped section order, and build sequence. Capture metadata lives in `catalog/design-captures.json`, and the benchmark rubric is documented in `docs/DESIGN_GALLERY_BENCHMARK.md`.
 
 ## Skills
 

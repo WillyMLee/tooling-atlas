@@ -57,8 +57,7 @@ for (const slug of siteSlugs) {
   if (!spec) throw new Error(`Missing design spec: ${slug}`);
   if (!spec.preview?.headline || !spec.frame?.desktop || !spec.hero?.composition) throw new Error(`${slug}: incomplete preview, frame, or hero spec`);
   await access(join(root, "assets", "designs", `${slug}-hero.png`));
-  await access(join(root, "assets", "designs", `${slug}-mobile.png`));
-  for (const region of ["01-header", "02-primary", "03-supporting", "04-transition"]) await access(join(root, "assets", "designs", "regions", slug, `${region}.png`));
+  for (const region of ["01-header", "02-primary", "03-supporting"]) await access(join(root, "assets", "designs", "regions", slug, `${region}.png`));
   const capture = designCaptures.profiles[slug];
   if (!capture || !["page-sequence", "product-views"].includes(capture.mode) || capture.frames?.length !== 3) throw new Error(`${slug}: incomplete page capture set`);
   for (const frame of capture.frames) {

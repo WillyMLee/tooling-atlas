@@ -28,8 +28,7 @@ A design profile is complete only when it has:
 
 - one verified desktop opening frame;
 - two additional live page frames or distinct product views;
-- four opening-frame component crops;
-- one verified mobile frame;
+- three opening-frame component crops: navigation, primary hero, and supporting module;
 - a named archetype, layout, breakpoint, component list, page sequence, build order, and source provenance;
 - no claim that a specified section has screenshot coverage when it does not.
 
