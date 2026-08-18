@@ -12,6 +12,7 @@ Control Tower answers one question: did a module improve the outcome enough to j
 - A canonical fifteen-site registry with a daily HTTP health snapshot.
 - Twenty-four deterministic policy-level A/B pairs across routing, context, batching, and orchestration.
 - A focused Control Tower application that keeps policy fixtures, real agent evidence, activity, and unknown usage fields separate.
+- A privacy-minimal installed/selected/completed tally for every registered Atlas skill.
 
 The local user hook is installed separately from this repository and requires Codex review/trust before it runs. No ClickHouse database is connected by default.
 
@@ -109,6 +110,14 @@ The default personal installation writes to `~/.codex/telemetry/tooling-atlas-ev
 ```sh
 npm run telemetry:summary
 ```
+
+Export a publishable aggregate for the static Control Tower:
+
+```sh
+npm run telemetry:export
+```
+
+The export records only per-module installation status, route-selection counts, paired outcomes, quality-gate counts, and timestamps. It contains no prompts, paths, messages, tool arguments, or tool output. Because the dashboard is static, its activity tally is a build-time snapshot rather than a live connection to the local event file.
 
 ### OpenAI API agents and evals
 

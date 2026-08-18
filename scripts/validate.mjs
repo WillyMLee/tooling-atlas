@@ -12,6 +12,7 @@ const evalSummary = JSON.parse(await readFile(join(root, "observability", "eval-
 const policyEval = JSON.parse(await readFile(join(root, "observability", "strategic-ab-summary.json"), "utf8"));
 const productRegistry = JSON.parse(await readFile(join(root, "catalog", "product-registry.json"), "utf8"));
 const siteHealth = JSON.parse(await readFile(join(root, "observability", "site-health.json"), "utf8"));
+const activity = JSON.parse(await readFile(join(root, "observability", "activity-summary.json"), "utf8"));
 const backlog = JSON.parse(await readFile(join(root, "catalog", "strategic-backlog.json"), "utf8"));
 const appSource = await readFile(join(root, "app.js"), "utf8");
 const slugs = new Set();
@@ -83,6 +84,13 @@ for (const observation of fieldTests.observations ?? []) {
 if (evalSummary.dataKind !== "measured" || evalSummary.runs.length < 12) throw new Error("Control Tower must load the measured pilot rather than synthetic preview results");
 if (policyEval.dataKind !== "measured-policy-eval" || policyEval.runs.length !== 48 || policyEval.summaries.length !== 4) throw new Error("Strategic policy A/B results must contain 24 matched pairs across four modules");
 for (const summary of policyEval.summaries) if (!summary.qualityGatePassed) throw new Error(`${summary.module}: policy candidate failed its quality gate`);
+if (activity.dataKind !== "aggregated-local-activity" || activity.schemaVersion !== 1) throw new Error("Control Tower activity must be a privacy-minimal aggregate");
+if (activity.modules.length !== registry.modules.length || activity.installation.registered !== registry.modules.length) throw new Error("Activity summary must cover every registered module");
+for (const item of activity.modules) {
+  if (!slugs.has(item.slug)) throw new Error(`Unknown activity module: ${item.slug}`);
+  for (const field of ["selectedRoutes", "completedRoutes", "qualityPassedRoutes"]) if (!Number.isInteger(item[field]) || item[field] < 0) throw new Error(`${item.slug}: invalid activity tally ${field}`);
+  if (item.completedRoutes > item.selectedRoutes || item.qualityPassedRoutes > item.completedRoutes) throw new Error(`${item.slug}: inconsistent activity tally`);
+}
 
 if (productRegistry.schemaVersion !== 1 || productRegistry.sites.length < 15) throw new Error("Product registry must contain the verified live-site inventory");
 const productSlugs = new Set(productRegistry.sites.map((site) => site.slug));

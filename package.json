@@ -29,6 +29,7 @@
     "captures:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-design-crops.ps1",
     "telemetry:route": "node scripts/record-route.mjs",
     "telemetry:summary": "node scripts/summarize-events.mjs",
+    "telemetry:export": "node scripts/export-activity-summary.mjs",
     "telemetry:test": "node scripts/test-capture.mjs",
     "skills:link": "node scripts/link-skills.mjs",
     "skills:link:dry": "node scripts/link-skills.mjs --dry-run"

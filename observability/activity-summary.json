@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "dataKind": "aggregated-local-activity",
+  "generatedAt": "2026-08-18T14:47:57.571Z",
+  "notice": "Privacy-minimal local routing counts captured at build time. They prove selection and completion, not causal efficiency gains.",
+  "installation": {
+    "installed": 8,
+    "registered": 8
+  },
+  "routes": {
+    "decisions": 9,
+    "outcomes": 8,
+    "open": 1,
+    "qualityPassed": 8
+  },
+  "lastSelection": {
+    "selected": [
+      "route-skills",
+      "eval-improvement-loop"
+    ],
+    "taskShape": "measured-audit",
+    "routingMode": "specialist",
+    "at": "2026-08-18T14:36:45.599Z"
+  },
+  "modules": [
+    {
+      "slug": "context-budget",
+      "installed": true,
+      "selectedRoutes": 1,
+      "completedRoutes": 1,
+      "qualityPassedRoutes": 1,
+      "latestSelectedAt": "2026-08-17T14:51:48.893Z",
+      "latestOutcomeAt": "2026-08-17T15:09:23.800Z"
+    },
+    {
+      "slug": "batch-tool-calls",
+      "installed": true,
+      "selectedRoutes": 0,
+      "completedRoutes": 0,
+      "qualityPassedRoutes": 0,
+      "latestSelectedAt": null,
+      "latestOutcomeAt": null
+    },
+    {
+      "slug": "web-interaction-loop",
+      "installed": true,
+      "selectedRoutes": 6,
+      "completedRoutes": 5,
+      "qualityPassedRoutes": 5,
+      "latestSelectedAt": "2026-08-17T14:51:48.893Z",
+      "latestOutcomeAt": "2026-08-17T15:09:23.800Z"
+    },
+    {
+      "slug": "orchestration-plan",
+      "installed": true,
+      "selectedRoutes": 0,
+      "completedRoutes": 0,
+      "qualityPassedRoutes": 0,
+      "latestSelectedAt": null,
+      "latestOutcomeAt": null
+    },
+    {
+      "slug": "eval-improvement-loop",
+      "installed": true,
+      "selectedRoutes": 2,
+      "completedRoutes": 2,
+      "qualityPassedRoutes": 2,
+      "latestSelectedAt": "2026-08-18T14:36:45.599Z",
+      "latestOutcomeAt": "2026-08-18T14:47:56.917Z"
+    },
+    {
+      "slug": "design-tool-surface",
+      "installed": true,
+      "selectedRoutes": 0,
+      "completedRoutes": 0,
+      "qualityPassedRoutes": 0,
+      "latestSelectedAt": null,
+      "latestOutcomeAt": null
+    },
+    {
+      "slug": "route-skills",
+      "installed": true,
+      "selectedRoutes": 3,
+      "completedRoutes": 3,
+      "qualityPassedRoutes": 3,
+      "latestSelectedAt": "2026-08-18T14:36:45.599Z",
+      "latestOutcomeAt": "2026-08-18T14:47:56.917Z"
+    },
+    {
+      "slug": "implement-skills",
+      "installed": true,
+      "selectedRoutes": 0,
+      "completedRoutes": 0,
+      "qualityPassedRoutes": 0,
+      "latestSelectedAt": null,
+      "latestOutcomeAt": null
+    }
+  ],
+  "missing": [
+    "Unrecorded tasks are not counted.",
+    "Tokens and billed cost are unavailable in current local route events.",
+    "A completed route is not evidence that one selected skill caused the result."
+  ]
+}

@@ -86,7 +86,7 @@ npm run skills:link
 
 ## Control Tower
 
-The Control Tower is a separate application at `/control-tower.html`. It combines the canonical fifteen-site registry, measured HTTP health, routing telemetry contract, twenty-four deterministic policy A/B pairs, six real agent pairs, metric coverage, and the active/later strategic backlog. Policy fixtures and real agent evidence remain visually and semantically separate.
+The Control Tower is a separate application at `/control-tower.html`. It combines an installed/selected/completed skill tally, the canonical fifteen-site registry, measured HTTP health, routing telemetry contract, twenty-four deterministic policy A/B pairs, six real agent pairs, metric coverage, and the active/later strategic backlog. Policy fixtures, route activity, and real agent evidence remain visually and semantically separate.
 
 Its default view shows current routing decisions first. Individual pairs and system architecture are progressively disclosed so evidence remains available without overwhelming the decision.
 
@@ -94,7 +94,7 @@ Module pages show two intentionally separate evidence types: dogfood field obser
 
 Context Budget and Batch Tool Calls now expose the first applied policy revisions directly on their module pages. Each revision links the base file to the measured report that caused the change.
 
-Refresh the live site snapshot with `npm run sites:check`; the scheduled GitHub workflow runs the same checker daily. Reproduce the deterministic policy matrix with `npm run eval:strategic`. Print the six-module, eighteen-scenario agent plan with `npm run eval:plan`, and reproduce the current agent score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`. Inspect private local activity separately with `npm run telemetry:summary`.
+Refresh the live site snapshot with `npm run sites:check`; the scheduled GitHub workflow runs the same checker daily. Reproduce the deterministic policy matrix with `npm run eval:strategic`. Print the six-module, eighteen-scenario agent plan with `npm run eval:plan`, and reproduce the current agent score with `npm run eval:score -- evals/observations/2026-08-15-measured.json`. Inspect private local activity with `npm run telemetry:summary`, then publish only its privacy-minimal aggregate with `npm run telemetry:export`.
 
 ## License
 
