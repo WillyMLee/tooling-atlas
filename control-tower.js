@@ -25,6 +25,8 @@ const render = ({ registry, health, modules, agentEval, policyEval, activity, ba
   const activityBySlug = new Map(activity.modules.map((item) => [item.slug, item]));
   const agentBySlug = new Map(agentEval.summaries.map((item) => [item.module, item]));
   const policyBySlug = new Map(policyEval.summaries.map((item) => [item.module, item]));
+  const integration = activity.systemIntegration || {};
+  const status = (ready) => ready ? "Ready" : "Needs setup";
   const metricCoverage = [
     ["Quality", "Available", `${policyEval.runs.length} policy runs + ${agentEval.runs.length} agent runs`],
     ["Latency", "Partial", `${agentEval.runs.filter((run) => run.durationMs != null).length} agent runs + ${health.checks.length} site checks`],
@@ -52,6 +54,12 @@ const render = ({ registry, health, modules, agentEval, policyEval, activity, ba
 
       <section class="ct-section ct-skills" id="skills">
         <div class="ct-section-head"><div><span>01 / Skill status</span><h2>Installed is not<br>the same as active.</h2></div><p>The tally separates availability, recorded selection, completed routes, and measured A/B impact. That prevents a loaded skill from receiving credit for work it did not cause.</p></div>
+        <div class="ct-system-chain" aria-label="Codex-wide Atlas integration">
+          <article class="${integration.skillsDiscoverable ? "is-ready" : ""}"><span>01 / Discover</span><strong>${status(integration.skillsDiscoverable)}</strong><p>${activity.installation.installed}/${activity.installation.registered} skills in the user-level library, available to local Codex tasks.</p></article>
+          <article class="${integration.globalRoutingConfigured ? "is-ready" : ""}"><span>02 / Route</span><strong>${status(integration.globalRoutingConfigured)}</strong><p>Global guidance selects one clear specialist or asks Smart Skills Router to resolve ambiguity.</p></article>
+          <article class="${integration.lifecycleCaptureConfigured ? "is-ready" : ""}"><span>03 / Observe</span><strong>${integration.lifecycleCaptureConfigured ? "Configured" : "Needs setup"}</strong><p>${integration.configuredHookEvents || 0}/${integration.expectedHookEvents || 9} lifecycle events configured. Trust is reviewed separately in Codex.</p></article>
+        </div>
+        <p class="ct-system-note">Build-time local status · Scope: this user’s Codex desktop, CLI, and IDE tasks · Hook trust: review with <code>/hooks</code></p>
         <div class="ct-skill-legend"><article><b>Installed</b><p>The skill package exists in your local Codex skill directory.</p></article><article><b>Selected</b><p>The router assigned it before a recorded task began.</p></article><article><b>Measured</b><p>A baseline/candidate comparison exists and passed its quality gate.</p></article></div>
         <div class="ct-current-route">
           <div><span>Latest routed selection</span><strong>${activity.lastSelection.selected.length ? activity.lastSelection.selected.map(titleCase).join(" + ") : "Direct work"}</strong><small>${escapeHtml(activity.lastSelection.taskShape)} · ${escapeHtml(activity.lastSelection.routingMode)} · snapshot ${dateTime(activity.generatedAt)}</small></div>

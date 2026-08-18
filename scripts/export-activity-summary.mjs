@@ -14,6 +14,14 @@ const input = requested
   : join(homedir(), ".codex", "telemetry", "tooling-atlas-events.ndjson");
 const output = join(root, "observability", "activity-summary.json");
 const registry = JSON.parse(await readFile(join(root, "catalog", "module-registry.json"), "utf8"));
+const codexHome = process.env.CODEX_HOME ? resolve(process.env.CODEX_HOME) : join(homedir(), ".codex");
+const readOptional = async (path) => {
+  try { return await readFile(path, "utf8"); }
+  catch (error) {
+    if (error.code === "ENOENT") return "";
+    throw error;
+  }
+};
 
 let raw = "";
 try {
@@ -51,6 +59,19 @@ const modules = await Promise.all(registry.modules.map(async (module) => {
   };
 }));
 
+const baseGuidance = await readOptional(join(codexHome, "AGENTS.md"));
+const overrideGuidance = await readOptional(join(codexHome, "AGENTS.override.md"));
+const activeGuidance = overrideGuidance.trim() ? overrideGuidance : baseGuidance;
+const hookEvents = ["SessionStart", "SessionEnd", "UserPromptSubmit", "Stop", "SubagentStart", "SubagentStop", "PostToolUse", "PreCompact", "PostCompact"];
+let hooks = {};
+try { hooks = JSON.parse(await readOptional(join(codexHome, "hooks.json"))).hooks ?? {}; }
+catch { hooks = {}; }
+const configuredHookEvents = hookEvents.filter((event) =>
+  (hooks[event] ?? []).some((group) => (group.hooks ?? []).some((hook) =>
+    typeof hook.command === "string" && hook.command.includes("capture-hook.mjs") && hook.command.includes("tooling-atlas-events.ndjson"),
+  )),
+);
+
 const summary = {
   schemaVersion: 1,
   dataKind: "aggregated-local-activity",
@@ -59,6 +80,15 @@ const summary = {
   installation: {
     installed: modules.filter((module) => module.installed).length,
     registered: modules.length,
+  },
+  systemIntegration: {
+    skillsDiscoverable: modules.every((module) => module.installed),
+    globalRoutingConfigured: activeGuidance.includes("<!-- tooling-atlas:system-routing:start -->"),
+    lifecycleCaptureConfigured: configuredHookEvents.length === hookEvents.length,
+    configuredHookEvents: configuredHookEvents.length,
+    expectedHookEvents: hookEvents.length,
+    lifecycleCaptureTrust: "review-in-codex",
+    scope: "local-user",
   },
   routes: {
     decisions: decisions.length,

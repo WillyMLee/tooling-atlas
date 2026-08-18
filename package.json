@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/validate.mjs && node scripts/eval.mjs check && node scripts/eval-strategic-ab.mjs --check && node scripts/test-router.mjs && node scripts/test-capture.mjs && node scripts/test-route-events.mjs && node scripts/build.mjs",
+    "check": "node scripts/validate.mjs && node scripts/eval.mjs check && node scripts/eval-strategic-ab.mjs --check && node scripts/test-router.mjs && node scripts/test-capture.mjs && node scripts/test-route-events.mjs && node scripts/test-system-install.mjs && node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "eval:plan": "node scripts/eval.mjs plan",
     "eval:check": "node scripts/eval.mjs check",
@@ -32,7 +32,11 @@
     "telemetry:export": "node scripts/export-activity-summary.mjs",
     "telemetry:test": "node scripts/test-capture.mjs",
     "skills:link": "node scripts/link-skills.mjs",
-    "skills:link:dry": "node scripts/link-skills.mjs --dry-run"
+    "skills:link:dry": "node scripts/link-skills.mjs --dry-run",
+    "system:install": "node scripts/install-system.mjs",
+    "system:dry": "node scripts/install-system.mjs --dry-run",
+    "system:check": "node scripts/install-system.mjs --check",
+    "system:test": "node scripts/test-system-install.mjs"
   },
   "engines": {
     "node": ">=20"

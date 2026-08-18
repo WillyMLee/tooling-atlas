@@ -1,26 +1,34 @@
 {
   "schemaVersion": 1,
   "dataKind": "aggregated-local-activity",
-  "generatedAt": "2026-08-18T14:47:57.571Z",
+  "generatedAt": "2026-08-18T15:39:19.257Z",
   "notice": "Privacy-minimal local routing counts captured at build time. They prove selection and completion, not causal efficiency gains.",
   "installation": {
     "installed": 8,
     "registered": 8
   },
+  "systemIntegration": {
+    "skillsDiscoverable": true,
+    "globalRoutingConfigured": true,
+    "lifecycleCaptureConfigured": true,
+    "configuredHookEvents": 9,
+    "expectedHookEvents": 9,
+    "lifecycleCaptureTrust": "review-in-codex",
+    "scope": "local-user"
+  },
   "routes": {
-    "decisions": 9,
-    "outcomes": 8,
+    "decisions": 11,
+    "outcomes": 10,
     "open": 1,
-    "qualityPassed": 8
+    "qualityPassed": 10
   },
   "lastSelection": {
     "selected": [
-      "route-skills",
-      "eval-improvement-loop"
+      "web-interaction-loop"
     ],
-    "taskShape": "measured-audit",
+    "taskShape": "browser-visible",
     "routingMode": "specialist",
-    "at": "2026-08-18T14:36:45.599Z"
+    "at": "2026-08-18T15:36:23.112Z"
   },
   "modules": [
     {
@@ -44,11 +52,11 @@
     {
       "slug": "web-interaction-loop",
       "installed": true,
-      "selectedRoutes": 6,
-      "completedRoutes": 5,
-      "qualityPassedRoutes": 5,
-      "latestSelectedAt": "2026-08-17T14:51:48.893Z",
-      "latestOutcomeAt": "2026-08-17T15:09:23.800Z"
+      "selectedRoutes": 7,
+      "completedRoutes": 6,
+      "qualityPassedRoutes": 6,
+      "latestSelectedAt": "2026-08-18T15:36:23.112Z",
+      "latestOutcomeAt": "2026-08-18T15:39:00.752Z"
     },
     {
       "slug": "orchestration-plan",
@@ -80,20 +88,20 @@
     {
       "slug": "route-skills",
       "installed": true,
-      "selectedRoutes": 3,
-      "completedRoutes": 3,
-      "qualityPassedRoutes": 3,
-      "latestSelectedAt": "2026-08-18T14:36:45.599Z",
-      "latestOutcomeAt": "2026-08-18T14:47:56.917Z"
+      "selectedRoutes": 4,
+      "completedRoutes": 4,
+      "qualityPassedRoutes": 4,
+      "latestSelectedAt": "2026-08-18T15:01:59.519Z",
+      "latestOutcomeAt": "2026-08-18T15:39:07.808Z"
     },
     {
       "slug": "implement-skills",
       "installed": true,
-      "selectedRoutes": 0,
-      "completedRoutes": 0,
-      "qualityPassedRoutes": 0,
-      "latestSelectedAt": null,
-      "latestOutcomeAt": null
+      "selectedRoutes": 1,
+      "completedRoutes": 1,
+      "qualityPassedRoutes": 1,
+      "latestSelectedAt": "2026-08-18T15:01:59.519Z",
+      "latestOutcomeAt": "2026-08-18T15:39:07.808Z"
     }
   ],
   "missing": [

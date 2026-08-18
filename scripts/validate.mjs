@@ -85,6 +85,8 @@ if (evalSummary.dataKind !== "measured" || evalSummary.runs.length < 12) throw n
 if (policyEval.dataKind !== "measured-policy-eval" || policyEval.runs.length !== 48 || policyEval.summaries.length !== 4) throw new Error("Strategic policy A/B results must contain 24 matched pairs across four modules");
 for (const summary of policyEval.summaries) if (!summary.qualityGatePassed) throw new Error(`${summary.module}: policy candidate failed its quality gate`);
 if (activity.dataKind !== "aggregated-local-activity" || activity.schemaVersion !== 1) throw new Error("Control Tower activity must be a privacy-minimal aggregate");
+if (!activity.systemIntegration || !["skillsDiscoverable", "globalRoutingConfigured", "lifecycleCaptureConfigured"].every((field) => typeof activity.systemIntegration[field] === "boolean")) throw new Error("Activity summary must report the three Codex system-integration layers");
+if (!Number.isInteger(activity.systemIntegration.configuredHookEvents) || activity.systemIntegration.configuredHookEvents < 0 || activity.systemIntegration.configuredHookEvents > activity.systemIntegration.expectedHookEvents) throw new Error("Activity summary has invalid lifecycle hook coverage");
 if (activity.modules.length !== registry.modules.length || activity.installation.registered !== registry.modules.length) throw new Error("Activity summary must cover every registered module");
 for (const item of activity.modules) {
   if (!slugs.has(item.slug)) throw new Error(`Unknown activity module: ${item.slug}`);

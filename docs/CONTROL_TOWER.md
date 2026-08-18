@@ -14,7 +14,7 @@ Control Tower answers one question: did a module improve the outcome enough to j
 - A focused Control Tower application that keeps policy fixtures, real agent evidence, activity, and unknown usage fields separate.
 - A privacy-minimal installed/selected/completed tally for every registered Atlas skill.
 
-The local user hook is installed separately from this repository and requires Codex review/trust before it runs. No ClickHouse database is connected by default.
+The user-level integration can be installed and verified with `npm run system:install` and `npm run system:check`. Codex still requires review/trust before changed hooks run. No ClickHouse database is connected by default.
 
 ## Event flow
 

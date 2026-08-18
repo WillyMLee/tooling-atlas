@@ -40,13 +40,17 @@ A cheaper failed run is not an improvement. A faster run that omits proof is not
 
 `observability/field-tests.json` records direct dogfood findings such as a truncated batch or a successful recovery. These findings can justify a design change and make current testing visible, but they do not promote maturity. Only representative, matched baseline/candidate runs with the quality and safety gates intact count as performance evidence.
 
-## Using the skills across projects
+## Using the skills across Codex
 
-Run `npm run skills:link` to create user-scope links under the supported Codex skill directory. The repository remains the source of truth, so edits here become available to future Codex sessions without maintaining copies.
+Run `npm run system:install` for the complete user-level integration. It links the eight canonical packages into `~/.agents/skills`, adds a small managed routing block to `~/.codex/AGENTS.md`, and merges privacy-minimal lifecycle capture into `~/.codex/hooks.json`. This makes the skills discoverable from any local Codex project while keeping activation selective.
 
-Run `npm run skills:link:dry` first to inspect the exact links. The linker refuses to replace an existing file or directory.
+The routing block does not turn on all modules for every prompt. Codex matches a clear specialist directly and uses `route-skills` when several modules could apply, activation is ambiguous, or phases need ordering. Measurement and implementation modules remain opt-in overhead for tasks that actually need them.
 
-Restart Codex or start a new task if an updated skill does not appear immediately.
+Use `npm run system:dry` to inspect status without writing and `npm run system:check` as the ongoing doctor. The installer is idempotent, preserves unrelated global instructions and hooks, and refuses to overwrite a conflicting skill directory. The older `npm run skills:link` command remains available when only discovery links are wanted.
+
+After installing or changing hooks, review their exact definitions with `/hooks` in Codex. Codex intentionally skips untrusted user hooks. Restart Codex or start a new task if updated skills or global instructions do not appear immediately.
+
+This installation scope covers the local Codex desktop app, CLI, and IDE extension for this user account. Packaging Atlas as a plugin is the separate distribution path when the goal expands to Chat and Work on web or mobile.
 
 ## Adding a module
 
