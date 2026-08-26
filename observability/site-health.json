@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataKind": "measured-health",
-  "generatedAt": "2026-08-25T13:15:12.007Z",
+  "generatedAt": "2026-08-26T13:26:37.997Z",
   "notice": "Live HTTP status and response latency. This does not prove authenticated workflows, scheduled jobs, or data freshness.",
   "summary": {
     "total": 15,
@@ -14,135 +14,135 @@
       "slug": "tooling-atlas",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 151,
+      "latencyMs": 272,
       "finalUrl": "https://tooling-atlas.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.089Z",
+      "checkedAt": "2026-08-26T13:26:37.316Z",
       "errorCode": ""
     },
     {
       "slug": "willymlee",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 646,
+      "latencyMs": 326,
       "finalUrl": "https://willymlee.com/",
-      "checkedAt": "2026-08-25T13:15:11.642Z",
+      "checkedAt": "2026-08-26T13:26:37.430Z",
       "errorCode": ""
     },
     {
       "slug": "startup-radar",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 97,
+      "latencyMs": 312,
       "finalUrl": "https://startup-funding-radar-edge.willymlee.workers.dev/",
-      "checkedAt": "2026-08-25T13:15:11.095Z",
+      "checkedAt": "2026-08-26T13:26:37.417Z",
       "errorCode": ""
     },
     {
       "slug": "earnings-intelligence",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 126,
+      "latencyMs": 151,
       "finalUrl": "https://earnings-intelligence-pipeline.willymlee.workers.dev/",
-      "checkedAt": "2026-08-25T13:15:11.125Z",
+      "checkedAt": "2026-08-26T13:26:37.257Z",
       "errorCode": ""
     },
     {
       "slug": "crumb",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 128,
+      "latencyMs": 275,
       "finalUrl": "https://crumb-recipe-journal.willymlee.workers.dev/",
-      "checkedAt": "2026-08-25T13:15:11.128Z",
+      "checkedAt": "2026-08-26T13:26:37.383Z",
       "errorCode": ""
     },
     {
       "slug": "mumblings",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 81,
+      "latencyMs": 115,
       "finalUrl": "https://mumblings.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.722Z",
+      "checkedAt": "2026-08-26T13:26:37.545Z",
       "errorCode": ""
     },
     {
       "slug": "margins-and-weather",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 83,
+      "latencyMs": 216,
       "finalUrl": "https://margins-and-weather.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.726Z",
+      "checkedAt": "2026-08-26T13:26:37.647Z",
       "errorCode": ""
     },
     {
       "slug": "cost-basis",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 90,
+      "latencyMs": 179,
       "finalUrl": "https://cost-basis.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.735Z",
+      "checkedAt": "2026-08-26T13:26:37.611Z",
       "errorCode": ""
     },
     {
       "slug": "seat-scout",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 244,
+      "latencyMs": 203,
       "finalUrl": "https://seat-scout.willymlee.workers.dev/",
-      "checkedAt": "2026-08-25T13:15:11.890Z",
+      "checkedAt": "2026-08-26T13:26:37.637Z",
       "errorCode": ""
     },
     {
       "slug": "motiondeck",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 213,
+      "latencyMs": 246,
       "finalUrl": "https://motiondeck-studio.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.861Z",
+      "checkedAt": "2026-08-26T13:26:37.681Z",
       "errorCode": ""
     },
     {
       "slug": "sounddeck",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 79,
+      "latencyMs": 196,
       "finalUrl": "https://sounddeck-icm.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.969Z",
+      "checkedAt": "2026-08-26T13:26:37.878Z",
       "errorCode": ""
     },
     {
       "slug": "fleeting",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 96,
+      "latencyMs": 197,
       "finalUrl": "https://fleeting-game.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.988Z",
+      "checkedAt": "2026-08-26T13:26:37.879Z",
       "errorCode": ""
     },
     {
       "slug": "worth-more",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 80,
+      "latencyMs": 313,
       "finalUrl": "https://worth-more-game.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:11.973Z",
+      "checkedAt": "2026-08-26T13:26:37.997Z",
       "errorCode": ""
     },
     {
       "slug": "kaggriculture",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 109,
+      "latencyMs": 155,
       "finalUrl": "https://kaggriculture-workbook.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:12.004Z",
+      "checkedAt": "2026-08-26T13:26:37.840Z",
       "errorCode": ""
     },
     {
       "slug": "good-places-together",
       "status": "healthy",
       "httpStatus": 200,
-      "latencyMs": 112,
+      "latencyMs": 281,
       "finalUrl": "https://good-places-together.pages.dev/",
-      "checkedAt": "2026-08-25T13:15:12.007Z",
+      "checkedAt": "2026-08-26T13:26:37.967Z",
       "errorCode": ""
     }
   ]
